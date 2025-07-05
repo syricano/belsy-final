@@ -1,6 +1,6 @@
 # Belsy Restaurant
 
-A modern restaurant web application to showcase Belsy Restaurant's menu, drinks, and booking system with user authentication.
+A modern restaurant web application to showcase Belsy Restaurant's menu, drinks, and booking system with user authentication and admin management.
 
 ---
 
@@ -16,7 +16,8 @@ A modern restaurant web application to showcase Belsy Restaurant's menu, drinks,
   - Express.js (Node.js framework) for RESTful API and server logic
 
 - **Authentication:**
-  - User signup and login system to manage user sessions securely
+  - User signup and login system with session or token-based access
+  - Admin login and role-based access control
 
 ---
 
@@ -27,8 +28,9 @@ Belsy Restaurant aims to provide users a seamless online experience to:
 - Explore the restaurant’s menu and drinks
 - Register and login as users
 - Book a table online
+- (Admin) Manage bookings and menu content from a secure dashboard
 
-This project will be built incrementally, starting with essential user-facing features and a solid authentication system. Future phases may include eCommerce features like placing orders online.
+This project is built incrementally, beginning with user-facing features and admin control. Future phases may include eCommerce-style online ordering.
 
 ---
 
@@ -37,35 +39,40 @@ This project will be built incrementally, starting with essential user-facing fe
 ### Minimum Viable Product (MVP)
 
 - **User Authentication:**
-  - User Signup
-  - User Login
-  - Session management with tokens or cookies
+  - User Signup and Login
+  - Admin Login and Role Management
+  - Session/token-based authentication
 
 - **Menu & Drinks:**
-  - Display restaurant menu items
-  - Display drinks menu
-  - Responsive and attractive UI using TailwindCSS and DaisyUI
+  - Display restaurant menu and drinks
+  - Admin can add, edit, or delete menu items and images
 
 - **Booking System:**
   - Users can book a table online
-  - Booking form with date, time, number of guests
+  - Admin can view and manage bookings
 
 - **Navigation & Routing:**
-  - React Router for navigating between pages (Home, Menu, Drinks, Booking, Login, Signup)
+  - React Router for client-side routing across Home, Menu, Book, Login, etc.
+
+- **Admin Dashboard:**
+  - Role-based access to admin-only features
+  - Manage bookings
+  - Full CRUD for menu and drink listings
+  - Upload images for menu items
 
 ### Future Features (Phase 2+)
 
-- Order placement system (eCommerce) for food and drinks
+- Online ordering and checkout system
 - User profile management
-- Admin dashboard for managing bookings, menus, and orders
-- Email notifications and booking confirmations
-- Payment integration for online orders
+- Email booking confirmations and alerts
+- Payment integration
+- Enhanced analytics for admin dashboard
 
 ---
 
 ## Tags / Keywords
 
-`React` `Vite` `TailwindCSS` `DaisyUI` `React Router` `Express` `Node.js` `Authentication` `Booking System` `Restaurant Website`
+`React` `Vite` `TailwindCSS` `DaisyUI` `React Router` `Express` `Node.js` `Authentication` `Admin Dashboard` `Booking System` `Restaurant Website`
 
 ---
 
@@ -75,10 +82,16 @@ This project will be built incrementally, starting with essential user-facing fe
 
 ---
 
+## Contribution
 
-## License
-
+Contributions are welcome! Please open an issue or submit a pull request for improvements or new features.
 
 ---
 
-**Belsy Restaurant** — Bringing fine dining online, one booking at a time.
+## License
+
+*(Specify your license here)*
+
+---
+
+**Belsy Restaurant** — Bringing fine dining online, with authentic Syrian flavor and seamless admin control.

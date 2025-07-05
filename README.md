@@ -84,7 +84,7 @@ This project is built incrementally, beginning with user-facing features and adm
 
 ## Contribution
 
-Contributions are welcome! Please open an issue or submit a pull request for improvements or new features.
+Contributions are not possible since it's a task project, but ideas are welcome! 
 
 ---
 

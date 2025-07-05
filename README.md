@@ -28,7 +28,7 @@ Belsy Restaurant aims to provide users a seamless online experience to:
 - Explore the restaurant’s menu and drinks
 - Register and login as users
 - Book a table online
-- (Admin) Manage bookings and menu content from a secure dashboard
+- (Admin) Manage bookings, menus, images, working hours, and contact information from a secure dashboard
 
 This project is built incrementally, beginning with user-facing features and admin control. Future phases may include eCommerce-style online ordering.
 
@@ -36,37 +36,38 @@ This project is built incrementally, beginning with user-facing features and adm
 
 ## Project Plan & Features
 
-### Minimum Viable Product (MVP)
+### **Phase 1: Base Structure & Deployment**
 
-- **User Authentication:**
-  - User Signup and Login
-  - Admin Login and Role Management
-  - Session/token-based authentication
+- **Setup React Frontend with Vite**
+- **Integrate TailwindCSS and DaisyUI**
+- **Setup React Router for Navigation**
+- **Setup Deployment Pipeline for Frontend and Backend**
+- **Display Restaurant Menu and Drinks**
+- **Implement Table Booking Feature**
+- **Setup Error Handling and Notifications**
+- **Implement User Profile Management**
 
-- **Menu & Drinks:**
-  - Display restaurant menu and drinks
-  - Admin can add, edit, or delete menu items and images
+### **Phase 2: Admin Dashboard & Management Features**
 
-- **Booking System:**
-  - Users can book a table online
-  - Admin can view and manage bookings
+- **Create Admin Dashboard (View and Manage Bookings, Menu Management, Category Management, Image Upload, Stats, and Navigation)**
+- **Enable Image Upload for Menu Items**
+- **Add Category Management for Menu Items**
+- **Design Admin Dashboard UI with Stats and Navigation**
 
-- **Navigation & Routing:**
-  - React Router for client-side routing across Home, Menu, Book, Login, etc.
+### **Phase 3: Admin Dashboard Updates for Management**
 
-- **Admin Dashboard:**
-  - Role-based access to admin-only features
-  - Manage bookings
-  - Full CRUD for menu and drink listings
-  - Upload images for menu items
+- **Update Admin Dashboard to Manage Working Hours (CRUD for restaurant working hours)**
+- **Update Admin Dashboard to Manage Contact Information (CRUD for restaurant contact details)**
+- **Update Admin Dashboard to Manage Menu Items (CRUD for menu items and images)**
 
-### Future Features (Phase 2+)
+### **Phase 4: Future Enhancements**
 
-- Online ordering and checkout system
-- User profile management
-- Email booking confirmations and alerts
-- Payment integration
-- Enhanced analytics for admin dashboard
+- **Plan and Implement AI Assistance Features (Future)**
+- **Add Loading Spinners and UX Feedback**
+- **Optimize Performance and Accessibility**
+- **Add Email Confirmation for Bookings**
+- **Prepare for Future eCommerce Features**
+- **Add Feedback and Review System**
 
 ---
 
@@ -84,7 +85,7 @@ This project is built incrementally, beginning with user-facing features and adm
 
 ## Contribution
 
-Contributions are not possible since it's a task project, but ideas are welcome! 
+Contributions are not possible since it's a task project, but ideas are welcome!
 
 ---
 

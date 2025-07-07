@@ -4,15 +4,15 @@ import Footer from '../components/Footer'
 
 const RootLayout = () => {
     return(
-        <div>
+        <>
             <header>
                 <Navbar />
             </header>
             <main>
-
+                <Outlet />
             </main>
             <Footer />
-        </div>
+        </>
     )
 }
 

@@ -1,42 +1,117 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body, html {
+  font-family: 'Lato', sans-serif;
+  line-height: 1.6;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Global Theme Variables */
+:root {
+  --bg-color-light: #F5F1E6; /* Light, soft cream */
+  --bg-color-dark: #1D2B2A;  /* Deep greenish blue */
+  
+  --text-color-light: #3B2D2A; /* Warm brownish black */
+  --text-color-dark: #F5F1E6;  /* Light beige for dark theme */
+  
+  --primary-color-light: #9A5D4B; /* Rich terracotta red */
+  --primary-color-dark: #FFD700; /* Gold for dark mode */
+  
+  --secondary-color-light: #DAB29B; /* Soft beige gold */
+  --secondary-color-dark: #C38E3C; /* Amber gold */
+  
+  --accent-color-light: #B17464; /* Deep red */
+  --accent-color-dark: #FF6F3C; /* Rich orange for dark mode */
+  
+  --border-color-light: #E4D8C1; /* Soft beige border */
+  --border-color-dark: #2C3A3B; /* Dark greenish grey border */
+}
+
+/* Theme Switching */
+[data-theme='light'] {
+  --bg-color: var(--bg-color-light);
+  --text-color: var(--text-color-light);
+  --primary-color: var(--primary-color-light);
+  --secondary-color: var(--secondary-color-light);
+  --accent-color: var(--accent-color-light);
+  --border-color: var(--border-color-light);
+}
+
+[data-theme='dark'] {
+  --bg-color: var(--bg-color-dark);
+  --text-color: var(--text-color-dark);
+  --primary-color: var(--primary-color-dark);
+  --secondary-color: var(--secondary-color-dark);
+  --accent-color: var(--accent-color-dark);
+  --border-color: var(--border-color-dark);
+}
+
+/* General Text */
+body {
+  color: var(--text-color); /* Dynamic text color based on theme */
+}
+
+/* Links */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover, a:focus {
+  color: var(--accent-color); /* Accent color for hover */
+}
+
+/* Navbar */
+.navbar__link {
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.navbar__link:hover, .navbar__link.active {
+  color: var(--accent-color); /* Active link color */
+}
+
+/* Footer */
+.footer__link {
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.footer__link:hover {
+  color: var(--accent-color); /* Hover effect for footer links */
+}
+
+/* Mobile Menu */
+.navbar__mobile-link {
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.navbar__mobile-link:hover {
+  color: var(--accent-color);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .navbar__logo {
+    font-size: 1.5rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .navbar__link {
+    font-size: 1rem;
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .hero-header {
+    font-size: 2.5rem;
   }
-}
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  .card {
+    padding: 1.5rem;
+  }
 }

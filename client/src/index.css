@@ -2,11 +2,3 @@
 @plugin "daisyui" {
    themes: light --default, dark --prefersdark;
 }
-
-footerLink {
-  @apply hover:text-primary transition-colors duration-300 cursor-pointer select-none;
-}
-
-footerContainer {
-  @apply container mx-auto px-4 flex flex-col md:flex-row justify-between items-center;
-}

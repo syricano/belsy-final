@@ -12,6 +12,7 @@ id: Primary key (integer)
 
 username: String (unique)
 
+
 email: String (unique)
 
 password: String (hashed password)
@@ -236,3 +237,36 @@ Email Notifications: Send email notifications for status updates (e.g., reservat
 Online Ordering: Future features may include allowing users to place orders online.
 
 Payment Integration: Add functionality to process payments with confirmed reservations.
+
+------------------------------
+1. Making Reservations (User Logic)
+Select a Table: The user chooses a table and time slot during the restaurant’s working hours.
+
+Create Reservation: The system creates a reservation entry with the user’s details, chosen table, and time.
+
+Status Set to Pending: Initially, the reservation is set to "Pending" until the admin reviews it.
+
+Add Notes: The user can add a note (e.g., special requests) during the reservation process.
+
+Wait for Admin Approval: The user waits for the admin to review and decide on the reservation.
+
+View Status: Once the admin approves or declines, the user is notified, and the reservation status is updated (Approved/Declined).
+
+Admin Response: If the reservation is approved or declined, the admin can leave a response explaining the decision, which the user can see.
+
+2. Admin Management (Admin Logic)
+View Pending Reservations: Admin sees all pending reservations in the dashboard.
+
+Approve or Decline: For each pending reservation, the admin can approve (set to Approved) or decline (set to Declined).
+
+Admin Response: The admin adds a response in the adminResponse field, explaining the decision or providing any other details (e.g., confirming the reservation or explaining why it was declined).
+
+Manage Tables: Admin can view and manage tables, marking them as available or unavailable for booking.
+
+Manage Menu Items: Admin can add, edit, or delete menu items, including uploading images and setting prices.
+
+Manage Working Hours: Admin sets and edits the working hours for each day of the week, ensuring users can only book tables during open hours.
+
+Manage Contact Information: Admin updates the restaurant’s contact details (email, phone, address) as needed.
+
+Notifications: Admin can potentially send email notifications to users for status changes (this can be part of future features).

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Home = () => {
+const HomePage = () => {
   return (
     <div className="hero-section text-center my-10">
       <h1 className="hero-header text-4xl font-extrabold text-center text-primary-700 mb-6 transition-all">
@@ -11,4 +11,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

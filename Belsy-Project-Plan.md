@@ -10,6 +10,10 @@ Attributes:
 
 id: Primary key (integer)
 
+firstName: String (unique)
+
+lastName: String (unique)
+
 username: String (unique)
 
 
@@ -38,6 +42,8 @@ seats: Integer (fixed to 2 seats per table)
 
 isAvailable: Boolean (indicates if the table is available for booking)
 
+location: Enum (inRestaurant, inHall) - indicates whether the table is inside the restaurant or in the hallway.
+
 createdAt: Timestamp
 
 updatedAt: Timestamp
@@ -45,6 +51,8 @@ updatedAt: Timestamp
 Associations:
 
 A table can have many reservations.
+
+B Tables can be classified into inRestaurant or inHall based on their location.
 
 3. Reservations Model
 Attributes:
@@ -241,6 +249,7 @@ Payment Integration: Add functionality to process payments with confirmed reserv
 ------------------------------
 1. Making Reservations (User Logic)
 Select a Table: The user chooses a table and time slot during the restaurant’s working hours.
+
 
 Create Reservation: The system creates a reservation entry with the user’s details, chosen table, and time.
 

@@ -24,7 +24,7 @@ const MenuPage = () => {
   };
 
   return (
-    <section className=" min-h-screen max-w-full flex justify-center items-cente">
+    <section className=" min-h-screen max-w-full flex justify-center">
       <div className="px-6 py-16 max-w-7xl mx-auto ">
         <div className='h-20'>
           <h1 className="px-6 text-4xl font-serif text-center text-primary  font-semibold bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">

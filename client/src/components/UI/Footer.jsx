@@ -1,11 +1,13 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router'; // Ensure you're using 'react-router-dom' for navigation
 
 const Footer = () => {
   return (
-    <footer className="footer text-base-content py-6 mt-16">
-      <div className="footerContainer">
-        <p className="footer__copyright text-sm select-none bg-center text-primary-700">&copy; {new Date().getFullYear()} Belsy Restaurant. All rights reserved.</p>
-        <div className="flex space-x-6 mt-4 md:mt-0 gap-4">
+    <footer>
+      <div className="p-4 gap-4 text:sm w-full">
+        <p className="footer__copyright text-sm select-none bg-center text-primary-700 w-full">
+          &copy; {new Date().getFullYear()} Belsy Restaurant. All rights reserved.
+        </p>
+        <div className="footer__social-links">
           <a
             href="https://facebook.com/syriacano"
             target="_blank"
@@ -22,7 +24,12 @@ const Footer = () => {
           >
             GitHub
           </a>
-          <Link to="/contact" className="footer__link hover:text-accent-color transition duration-300">Contact</Link>
+          <Link
+            to="/contact"
+            className="footer__link hover:text-accent-color transition duration-300"
+          >
+            Contact
+          </Link>
         </div>
       </div>
     </footer>

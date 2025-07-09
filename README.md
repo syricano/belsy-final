@@ -96,3 +96,21 @@ Contributions are not possible since it's a task project, but ideas are welcome!
 ---
 
 **Belsy Restaurant** — Bringing fine dining online, with authentic Syrian flavor and seamless admin control.
+
+---
+
+**API Routes** — All backend endpoints used in the project, including authentication and admin features for the Belsy Restaurant system.
+
+| Method | Endpoint                          | Description                              | Middleware                  |
+| ------ | --------------------------------- | ---------------------------------------- | --------------------------- |
+| GET    | `/api/auth/me`                    | Get current authenticated user info      | `verifyToken`               |
+| POST   | `/api/auth/signup`                | Register a new user                      | `validateZod(userSchema)`   |
+| POST   | `/api/auth/signin`                | Sign in and receive authentication token | `validateZod(signInSchema)` |
+| POST   | `/api/auth/signout`               | Sign out and clear session/token         | –                           |
+| POST   | `/api/auth/forgot-password`       | Request password reset email/link        | –                           |
+| POST   | `/api/auth/reset-password/:token` | Reset user password using token          | –                           |
+
+| Method | Endpoint               | Description              | Middleware                  |
+| ------ | ---------------------- | ------------------------ | --------------------------- |
+| GET    | `/api/admin/dashboard` | Admin dashboard overview | *(Middleware not shown yet)* |
+

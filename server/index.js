@@ -1,7 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import sequelize from './db/index.js';
-import User from './models/User.js';
 import errorHandler from './middleware/errorHandler.js';
 import adminRouter from './routes/adminRouter.js';
 import authRouter from './routes/authRouter.js';

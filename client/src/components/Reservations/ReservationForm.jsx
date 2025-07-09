@@ -178,7 +178,18 @@ const ReservationForm = ({ onSuccess }) => {
       <div className="p-10">
         <button
           type="submit"
-          className="btn bg-amber-600 hover:bg-amber-700 text-white font-semibold text-lg px-10 py-3 rounded-xl shadow-xl transition-all"
+          className="
+                                    /* same square footprint */
+                flex items-center justify-center
+                w-full
+                rounded-xl shadow-2xl
+                bg-amber-800                  /* default shade */
+                text-white text-lg font-bold
+                cursor-pointer
+                transition-all duration-300
+                hover:bg-amber-600            /* lighter on hover */
+                hover:-translate-y-1          /* subtle lift */
+              "
           disabled={loading}
         >
           {loading ? 'Booking...' : 'Book Now'}

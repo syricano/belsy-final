@@ -1,4 +1,6 @@
-/* Global Styles */
+/* ======================================
+   Global Styles
+====================================== */
 * {
   margin: 0;
   padding: 0;
@@ -6,77 +8,134 @@
   transition: all 0.3s ease;
 }
 
-body, html {
+html, body {
   width: 100%;
+  height: 100%;
   font-family: 'Lato', sans-serif;
   line-height: 1.6;
-  width : 100%;
-  height: 100%; /* Ensure body takes full height */
+  color: var(--text-color);
 }
 
-body {
-  color: var(--text-color); /* Dynamic text color based on theme */
-}
-
+/* Main layout area */
 main {
-  
-  min-height: 100vh; /* Ensures main takes full screen height */
+  min-height: 100vh;
   width: 100%;
-  background-color: var(--bg-color); /* Dynamic background color based on theme */
+  background-color: var(--bg-color); /* dynamic via theme */
 }
 
-/* Global Theme Variables */
+/* ======================================
+   Theme Variables
+====================================== */
 :root {
   height: 100%;
-  --bg-color-light: #F5F1E6; /* Light, soft cream */
-  --bg-color-dark: #000000;  /* Deep greenish blue */
 
-  --text-color-light: #1D2B2A; /* Warm brownish black */
-  --text-color-dark: #F5F1E6;  /* Light beige for dark theme */
-  
-  --primary-color-light: #9A5D4B; /* Rich terracotta red */
-  --primary-color-dark: #FFD700; /* Gold for dark mode */
-  
-  --secondary-color-light: #DAB29B; /* Soft beige gold */
-  --secondary-color-dark: #C38E3C; /* Amber gold */
-  
-  --accent-color-light: #B17464; /* Deep red */
-  --accent-color-dark: #FF6F3C; /* Rich orange for dark mode */
-  
-  --border-color-light: #E4D8C1; /* Soft beige border */
-  --border-color-dark: #2C3A3B; /* Dark greenish grey border */
-  
+  /* Light Theme Colors */
+  --navbar-color-light: #3A5A40;
+  --main-bg-color-light: #F5F1E6;
+  --footer-bg-color-light: #000000;
+
+  /* Dark Theme Colors */
+  --navbar-color-dark: #000000;
+  --main-bg-color-dark: #FBBF24;       /* amber-300 */
+  --footer-bg-color-dark: #B45309;     /* amber-700 */
+
+  /* Shared Theme Colors */
+  --bg-color-light: #F5F1E6;
+  --bg-color-dark: #000000;
+
+  --text-color-light: #000000;
+  --text-color-dark: #FFFFFF;
+
+  --primary-color-light: #9A5D4B;
+  --primary-color-dark: #FFD700;
+
+  --secondary-color-light: #DAB29B;
+  --secondary-color-dark: #C38E3C;
+
+  --accent-color-light: #DAB29B;
+  --accent-color-dark: #FFD700;
+
+  --border-color-light: #E4D8C1;
+  --border-color-dark: #2C3A3B;
 }
 
-/*bg-amber-800: #9A5D4B; /* Rich terracotta red */
-  /* bg-amber-600: #B17464; /* Deep red */
-
-/* Theme Switching */
+/* ======================================
+   Theme Switch
+====================================== */
 [data-theme='light'] {
-  --bg-color: var(--bg-color-light);
+  --bg-color: var(--main-bg-color-light);
   --text-color: var(--text-color-light);
   --primary-color: var(--primary-color-light);
   --secondary-color: var(--secondary-color-light);
   --accent-color: var(--accent-color-light);
   --border-color: var(--border-color-light);
+
+  --navbar-color: var(--navbar-color-light);
+  --main-bg-color: var(--main-bg-color-light);
+  --footer-bg-color: var(--footer-bg-color-light);
 }
 
 [data-theme='dark'] {
-  --bg-color: var(--bg-color-dark);
+  --bg-color: var(--main-bg-color-dark);
   --text-color: var(--text-color-dark);
   --primary-color: var(--primary-color-dark);
   --secondary-color: var(--secondary-color-dark);
   --accent-color: var(--accent-color-dark);
   --border-color: var(--border-color-dark);
+
+  --navbar-color: var(--navbar-color-dark);
+  --main-bg-color: var(--main-bg-color-dark);
+  --footer-bg-color: var(--footer-bg-color-dark);
 }
 
-/* Footer Styles */
-footer {
-  background-color: var(--bg-color);
+/* ======================================
+   Utility Classes for Background
+====================================== */
+.bg-dynamic-main {
+  background-color: var(--main-bg-color);
+}
+
+.bg-dynamic-navbar {
+  background-color: var(--navbar-color);
+}
+
+.bg-dynamic-footer {
+  background-color: var(--footer-bg-color);
+}
+
+/* ======================================
+   Navbar
+====================================== */
+nav,
+.navbar-section {
+  background-color: var(--navbar-color);
+  color: var(--text-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem 1rem;
+}
+
+.navbar__link,
+.navbar__mobile-link {
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.navbar__link:hover,
+.navbar__link.active,
+.navbar__mobile-link:hover {
+  color: var(--accent-color);
+}
+
+/* ======================================
+   Footer
+====================================== */
+footer,
+.footer-section {
+  background-color: var(--footer-bg-color);
   color: var(--text-color);
   padding: 2rem;
   text-align: center;
-  margin-top: auto; /* Ensure footer stays at the bottom */
+  margin-top: auto;
 }
 
 .footer__link {
@@ -87,24 +146,23 @@ footer {
 }
 
 .footer__link:hover {
-  color: var(--accent-color); /* Accent color for hover */
-  transform: translateY(-6px); /* Add subtle hover effect */
+  color: var(--accent-color);
+  transform: translateY(-6px);
 }
 
 .footer__copyright {
-  color: var(--text-color);
+  color: var(--accent-color);
   font-size: 0.875rem;
-  margin-top: auto;
-  text-align: center; /* Ensure the copyright text is centered */
+  text-align: center;
 }
 
 .footerContainer {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center items horizontally */
-  justify-content: center; /* Center items vertically */
+  align-items: center;
+  justify-content: center;
   gap: 1.5rem;
-  height: 100%; /* Ensure it takes full available space */
+  height: 100%;
 }
 
 .footer__social-links {
@@ -114,54 +172,70 @@ footer {
   flex-wrap: wrap;
 }
 
-/* Links */
-a {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color 0.3s ease;
+/* ======================================
+   Hero Section
+====================================== */
+.hero-overlay {
+  background-color: var(--main-bg-color);
 }
 
-a:hover, a:focus {
-  color: var(--accent-color); /* Accent color for hover */
+.hero-header {
+  font-size: 2.5rem;
 }
 
-/* Navbar */
-nav {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 2rem 1rem;
-}
-
-.navbar__link {
-  color: var(--text-color);
-  transition: color 0.3s ease;
-  transform: translateY(-6px);
-
-}
-
-.navbar__link:hover, .navbar__link.active {
-  color: var(--accent-color); /* Active link color */
-  
-}
-
-/* Mobile Menu */
-.navbar__mobile-link {
-  color: var(--text-color);
-  transition: color 0.3s ease;
-}
-
-.navbar__mobile-link:hover {
-  color: var(--accent-color);
-}
-
+/* ======================================
+   Menu & Cards
+====================================== */
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
 }
 
-/* Media Queries for Responsiveness */
+.card {
+  padding: 1.5rem;
+}
+
+/* ======================================
+   Category Circles
+====================================== */
+.w-24 { width: 6rem; }
+.h-24 { height: 6rem; }
+.rounded-full { border-radius: 50%; }
+
+.bg-gray-200 { background-color: #DAB29B; }
+.bg-primary { background-color: #9A5D4B; }
+.text-primary { color: #9A5D4B; }
+.text-white { color: white; }
+
+.text-lg { font-size: 1.125rem; }
+.font-bold { font-weight: bold; }
+.cursor-pointer { cursor: pointer; }
+
+/* ======================================
+   Transitions
+====================================== */
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+.transition-all.duration-500 {
+  transition: all 0.5s ease-in-out;
+}
+
+.w-24:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.transition-all.ease-in-out {
+  transform: translateY(5px);
+  opacity: 1;
+}
+
+/* ======================================
+   Responsive
+====================================== */
 @media (max-width: 768px) {
   .navbar__logo {
     font-size: 1.5rem;
@@ -171,68 +245,16 @@ nav {
     font-size: 1rem;
   }
 
-  .hero-header {
-    font-size: 2.5rem;
-  }
-
   .card {
     padding: 1.5rem;
   }
 }
 
 
-
-/* Circular Category Styles */
-/* Circular Category Styles */
-.w-24 {
-  width: 6rem; /* Adjust the size of the circle */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
-.h-24 {
-  height: 6rem; /* Adjust the size of the circle */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-.rounded-full {
-  border-radius: 50%;
-}
-.bg-gray-200 {
-  background-color: #DAB29B; /* Soft beige gold color */
-}
-.bg-primary {
-  background-color: #9A5D4B; /* Rich terracotta red for active state */
-}
-.text-primary {
-  color: #9A5D4B; /* Darker text color */
-}
-.text-white {
-  color: white;
-}
-.text-lg {
-  font-size: 1.125rem; /* Adjust font size */
-}
-.font-bold {
-  font-weight: bold;
-}
-.cursor-pointer {
-  cursor: pointer;
-}
-
-/* Transition Effect for Category Expansion */
-.transition-all {
-  transition: all 0.3s ease-in-out; /* Smooth transition for scaling and background */
-}
-
-.transition-all.duration-500 {
-  transition: all 0.5s ease-in-out; /* Smooth transition for the expanding content */
-}
-
-/* Hover Effect for Categories */
-.w-24:hover {
-  transform: scale(1.1); /* Slightly grow the category on hover */
-  transition: transform 0.3s ease-in-out;
-}
-
-/* Menu Content (Expanded View) */
-.transition-all.ease-in-out {
-  transform: translateY(5px); /* Slide effect when expanding */
-  opacity: 1;
-}
-

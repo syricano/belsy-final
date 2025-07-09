@@ -11,7 +11,7 @@ const RootLayout = () => {
             <main>
                 <Outlet />
             </main>
-            <Footer />
+            <Footer className="footer-section"/>
         </>
     )
 }

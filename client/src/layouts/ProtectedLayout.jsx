@@ -1,9 +1,13 @@
-import React from 'react'
+import { Navigate, Outlet } from 'react-router';
+import { useAuth } from '@/context';
 
 const ProtectedLayout = () => {
-  return (
-    <div>ProtectedLayout</div>
-  )
-}
+  const { user, loading } = useAuth();
 
-export default ProtectedLayout
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/signin" />;
+
+  return <Outlet />;
+};
+
+export default ProtectedLayout;

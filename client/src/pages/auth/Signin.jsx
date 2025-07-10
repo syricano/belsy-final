@@ -1,21 +1,31 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+import { useAuth } from '@/context';
+import { useLocation } from 'react-router';
 
 const Signin = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ identifier: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { signin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+
     try {
-      const res = await axios.post('/api/auth/signin', form);
-      localStorage.setItem('token', res.data.token); // assuming token is returned
-      navigate('/profile');
+      await signin(form);
+      navigate(location.state?.next || '/profile');
     } catch (err) {
       console.error(err);
+      setError(err?.response?.data?.error || 'Signin failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -24,10 +34,11 @@ const Signin = () => {
       <h2 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
         Sign In
       </h2>
+      {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="email"
+          name="identifier"
           placeholder="Email"
           type="email"
           onChange={handleChange}
@@ -40,7 +51,7 @@ const Signin = () => {
           onChange={handleChange}
         />
         <button className="btn btn-primary w-full bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white hover:bg-yellow-500">
-          Sign In
+          {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
     </div>

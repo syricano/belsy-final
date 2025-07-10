@@ -1,17 +1,27 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+import { useAuth } from '@/context';
 
 const Signup = () => {
-  const [form, setForm] = useState({ username: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    phone: '',
+    password: ''
+  });
+  const {signup} = useAuth()
+
   const navigate = useNavigate();
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = e =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      await axios.post('/api/auth/signup', form);
+      await signup(form)
       navigate('/signin');
     } catch (err) {
       console.error(err);
@@ -24,10 +34,32 @@ const Signup = () => {
         Create Account
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <label>First Name</label>
+        <input
+          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
+          name="firstName"
+          placeholder="First Name"
+          onChange={handleChange}
+        />
+        <label>Last Name</label>
+        <input
+          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
+          name="lastName"
+          placeholder="Last Name"
+          onChange={handleChange}
+        />
         <input
           className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
           name="username"
           placeholder="Username"
+          onChange={handleChange}
+        />
+        <label>Phone</label>
+        <input
+          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
+          name="phone"
+          placeholder="Phone"
+          type="tel"
           onChange={handleChange}
         />
         <input

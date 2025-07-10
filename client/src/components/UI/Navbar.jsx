@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router'; // Ensure you are using 'react-router-dom' for navigation
 import ThemeToggle from './ThemeToggle';
+import { useAuth } from '@/context';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Check auth state (example using localStorage token)
-  const isLoggedIn = Boolean(localStorage.getItem('token'));
+  
+  const { user, signout } = useAuth();
+  const isLoggedIn = Boolean(user);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    signout();
     setIsOpen(false);
   };
 
@@ -59,11 +61,20 @@ const Navbar = () => {
         {/* Auth Menu (Right-aligned) */}
         <div className="hidden md:flex items-center gap-5">
           {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="btn btn-ghost btn-sm md:btn-md px-4 rounded-md transition duration-200 hover:bg-primary/10 hover:text-[var(--accent-color)] hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 md:text-lg">
-              Logout
-            </button>
+
+            <>
+              <NavLink
+                to="/profile"
+                className="btn btn-ghost btn-sm md:btn-md px-4 rounded-md transition duration-200 hover:bg-primary/10 hover:text-[var(--accent-color)] hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 md:text-lg">
+                Profile
+              </NavLink>
+              
+              <button
+                onClick={handleLogout}
+                className="btn btn-ghost btn-sm md:btn-md px-4 rounded-md transition duration-200 hover:bg-primary/10 hover:text-[var(--accent-color)] hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 md:text-lg">
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <NavLink
@@ -146,15 +157,22 @@ const Navbar = () => {
 
           {/* Auth Links in Mobile */}
           {isLoggedIn ? (
-            <button
-              onClick={() => {
-                handleLogout();
-                setIsOpen(false);
-              }}
-              className="btn btn-ghost w-full rounded-md text-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
-            >
-              Logout
-            </button>
+            <>
+              <NavLink
+                to="/profile"
+                className="btn btn-ghost btn-sm md:btn-md px-4 rounded-md transition duration-200 hover:bg-primary/10 hover:text-[var(--accent-color)] hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 md:text-lg">
+                Profile
+              </NavLink>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsOpen(false);
+                }}
+                className="btn btn-ghost w-full rounded-md text-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <NavLink

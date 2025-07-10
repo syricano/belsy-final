@@ -1,34 +1,68 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useAuth } from '@/context';
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
 
-    axios.get('/api/auth/profile', {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(res => {
-      setUser(res.data);
-    }).catch(err => {
-      console.error(err);
-    });
-  }, []);
+  if (loading) {
+    return (
+      <div className="container mx-auto p-6 max-w-md">
+        <p className="text-gray-500">Loading profile...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="container mx-auto p-6 max-w-md">
+        <p className="text-red-500">User not found. Please sign in again.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-primary-700">My Profile</h2>
-      {user ? (
-        <div className="space-y-2">
-          <p><strong>Username:</strong> {user.username}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
-        </div>
-      ) : (
-        <p className="text-gray-500">Loading profile...</p>
-      )}
+      <h2 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
+        My Profile
+      </h2>
+      <div className="space-y-4">
+        <input
+          className="input input-bordered w-full"
+          value={user.firstName}
+          disabled
+          placeholder="First Name"
+        />
+        <input
+          className="input input-bordered w-full"
+          value={user.lastName}
+          disabled
+          placeholder="Last Name"
+        />
+        <input
+          className="input input-bordered w-full"
+          value={user.username}
+          disabled
+          placeholder="Username"
+        />
+        <input
+          className="input input-bordered w-full"
+          value={user.email}
+          disabled
+          placeholder="Email"
+        />
+        <input
+          className="input input-bordered w-full"
+          value={user.phone || ''}
+          disabled
+          placeholder="Phone"
+        />
+        <input
+          className="input input-bordered w-full"
+          value={user.role}
+          disabled
+          placeholder="Role"
+        />
+      </div>
     </div>
   );
 };

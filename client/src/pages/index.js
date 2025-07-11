@@ -2,8 +2,8 @@
 
 // Auth Pages
 import Signin from './auth/Signin';
-import Signup from './Auth/Signup';
-import UserProfile from './Auth/UserProfile';
+import Signup from './auth/Signup';
+import UserProfile from './auth/UserProfile';
 
 // Other Pages
 import HomePage from './HomePage';

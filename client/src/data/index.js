@@ -6,4 +6,5 @@ export {
   forgotPassword,
   resetPassword,
   signout,
+  deleteAccount
 } from './auth';

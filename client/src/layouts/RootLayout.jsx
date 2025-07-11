@@ -5,13 +5,16 @@ import {Footer} from '@/components/'
 const RootLayout = () => {
     return(
         <>
-            <header>
+            <header >
                 <Navbar />
             </header>
-            <main>
+            <main className="bg-dynamic-main text-[var(--text-color)]">
                 <Outlet />
             </main>
-            <Footer className="footer-section"/>
+
+            <div className="bg-dynamic-footer text-[var(--text-color)]">
+                <Footer />
+            </div>
         </>
     )
 }

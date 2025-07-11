@@ -4,10 +4,10 @@ import ImageSlider from '../components/UI/Hero/ImageSlider';
 
 const HomePage = () => {
   return (
-    <main className="min-h-screen bg-[var(--main-bg-color)] text-[var(--text-color)] flex flex-col items-center px-4 py-6 gap-8 lg:gap-12">
+    <div className="flex flex-col items-center justify-center gap-12">
       <HeroSection />
       <ImageSlider />
-    </main>
+    </div>
   );
 };
 

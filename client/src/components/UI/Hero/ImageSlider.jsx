@@ -1,81 +1,59 @@
-// src/components/ImageSlider.jsx
-
-import React, { useRef } from 'react';
+import React from 'react';
 
 const images = [
-  './public/images/chicken.jpg',
-  './public/images/falafel.jpg',
-  './public/images/fish.jpg',
-  './public/images/kabab.jpg',
-  './public/images/yaprak.jpg'
+  '/images/chicken.jpg',
+  '/images/falafel.jpg',
+  '/images/fish.jpg',
+  '/images/kabab.jpg',
+  '/images/yaprak.jpg',
+  '/images/rose-drink.jpg',
+  '/images/maqluba.jpg',
+  '/images/veg-soup.jpg',
+  '/images/shocolate.jpg',
 ];
 
 const ImageSlider = () => {
-  const scrollRef = useRef(null);
-
-  const handleScrollLeft = () => {
-    scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-  };
-
-  const handleScrollRight = () => {
-    scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-  };
-
   return (
-    <section className="relative h-[55vh] py-8 px-4 bg-[var(--main-bg-color)] text-[var(--text-color)]">
-      <h2 className="text-3xl font-serif text-center mb-6">A Glimpse of Our Atmosphere</h2>
+    <section className="py-8 bg-[var(--main-bg-color)] text-[var(--main-text-color)]">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-serif text-center mb-6">
+          A Glimpse of Our Atmosphere
+        </h2>
 
-      {/* Left Arrow Button */}
-      <button
-        onClick={handleScrollLeft}
-        className="
-          absolute left-4 top-1/2 transform -translate-y-1/2
-          flex items-center justify-center
-          h-16 w-16
-          rounded-xl shadow-2xl
-          bg-amber-800 text-white text-3xl font-bold
-          cursor-pointer
-          transition-all duration-300
-          hover:bg-amber-600 hover:-translate-y-1
-          z-10
-        "
-        aria-label="Scroll Left"
-      >
-        ({'<'})
-      </button>
+        <div className="carousel w-full rounded-xl shadow-lg overflow-hidden">
+          {images.map((src, index) => {
+            const prevIndex = (index - 1 + images.length) % images.length;
+            const nextIndex = (index + 1) % images.length;
 
-      {/* Right Arrow Button */}
-      <button
-        onClick={handleScrollRight}
-        className="
-          absolute right-4 top-1/2 transform -translate-y-1/2
-          flex items-center justify-center
-          h-16 w-16
-          rounded-xl shadow-2xl
-          bg-amber-800 text-white text-3xl font-bold
-          cursor-pointer
-          transition-all duration-300
-          hover:bg-amber-600 hover:-translate-y-1
-          z-10
-        "
-        aria-label="Scroll Right"
-      >
-        {'>'})
-      </button>
-
-      {/* Image Container */}
-      <div
-        ref={scrollRef}
-        className="flex space-x-4 overflow-x-auto scrollbar-hide scroll-smooth px-20"
-      >
-        {images.map((src, index) => (
-          <img
-            key={index}
-            src={src}
-            alt={`slide-${index}`}
-            className="h-[350px] w-auto rounded-xl flex-shrink-0 shadow-lg"
-          />
-        ))}
+            return (
+              <div
+                id={`slide${index + 1}`}
+                key={index}
+                className="carousel-item relative w-full"
+              >
+                <img
+                  src={src}
+                  alt={`slide-${index}`}
+                  className="w-full h-[300px] sm:h-[350px] object-cover"
+                />
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a
+                    href={`#slide${prevIndex + 1}`}
+                    className="btn btn-circle bg-amber-800 text-white hover:bg-amber-600 border-none"
+                  >
+                    ❮
+                  </a>
+                  <a
+                    href={`#slide${nextIndex + 1}`}
+                    className="btn btn-circle bg-amber-800 text-white hover:bg-amber-600 border-none"
+                  >
+                    ❯
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

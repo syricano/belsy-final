@@ -178,7 +178,7 @@ export const resetPassword = async (req, res) => {
 // PUT /api/auth/update-profile
 export const updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, username, email } = req.body;
+    const { firstName, lastName, username, email, phone } = req.body;
     const user = await User.findByPk(req.userId);
 
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -187,6 +187,7 @@ export const updateProfile = async (req, res) => {
     user.lastName = lastName || user.lastName;
     user.username = username || user.username;
     user.email = email || user.email;
+    user.phone = phone || user.phone;
     await user.save();
 
     res.status(200).json({ message: 'Profile updated successfully' });

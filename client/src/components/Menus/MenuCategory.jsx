@@ -4,7 +4,8 @@ import MenuCard from "./MenuCard";
 const MenuCategory = ({ title, items }) => {
   return (
     <div className="block 5 mb-12 px-6  "> {/* Added padding-x for overall container spacing */}
-      <h2 className="text-3xl font-serif text-primary mb-6 border-b border-primary/30 pb-2 px-4">
+      <h2 className="text-3xl text-[var(--main-text-color)] font-serif shadow-2xl
+       mb-6 border-b border-primary/30 pb-2 px-4">
         {title}
       </h2>
       {/* Use grid for responsiveness */}

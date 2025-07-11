@@ -25,9 +25,9 @@ const MenuPage = () => {
 
   return (
     <section className=" min-h-screen max-w-full flex justify-center">
-      <div className="px-6 py-16 max-w-7xl mx-auto ">
+      <div className=" py-16 max-w-7xl mx-auto ">
         <div className='h-20'>
-          <h1 className="px-6 text-4xl font-serif text-center text-primary  font-semibold bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
+          <h1 className="px-6 text-4xl font-serif text-center text-[var(--main-text-color)]  font-semibold bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
             Discover Our Menu
           </h1>
         </div>
@@ -37,11 +37,11 @@ const MenuPage = () => {
           {categories.map((category) => (
             <div
               key={category}
-              className={`w-24 h-24 rounded-xl shadow-2xl flex items-center justify-center cursor-pointer transition-all duration-300 
+              className={`w-24 h-24 rounded-xl shadow-2xl flex items-center justify-center cursor-pointer text-white transition-all duration-300 
                 ${expandedCategory === category ? 'bg-amber-600' : 'bg-amber-800'}`}
               onClick={() => handleCategoryClick(category)}
             >
-              <span className="text-lg font-bold">{category}</span>
+              <span className="text-lg font-bold  ">{category}</span>
             </div>
           ))}
         </div>

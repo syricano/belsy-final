@@ -7,7 +7,8 @@ import {
   signup as signupService,
   forgotPassword as forgotService,
   resetPassword as resetService,
-  updateProfile as updateService
+  updateProfile as updateService,
+  deleteAccount as deleteAccountService,
 } from '@/data';
 
 export const AuthContext = createContext();
@@ -72,6 +73,13 @@ const AuthContextProvider = ({ children }) => {
     return data;
   };
 
+  const deleteAccount = async (credentials) => {
+    await deleteAccountService(credentials);
+    setUser(null);
+    setIsAdmin(false);
+    setCheckSession(prev => !prev); // optional
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -87,6 +95,7 @@ const AuthContextProvider = ({ children }) => {
         resetPassword,
         updateProfile,
         setUser,
+        deleteAccount
       }}
     >
       {children}

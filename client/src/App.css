@@ -9,48 +9,44 @@
 }
 
 html, body {
-  width: 100%;
   height: 100%;
   font-family: 'Lato', sans-serif;
   line-height: 1.6;
-  color: var(--text-color);
+  overflow-x: hidden;
 }
 
-/* Main layout area */
 main {
   min-height: 100vh;
-  width: 100%;
-  background-color: var(--bg-color); /* dynamic via theme */
+  background-color: var(--main-bg-color);
 }
 
 /* ======================================
-   Theme Variables
+   Theme Variables & Switch
 ====================================== */
 :root {
-  height: 100%;
-
-  /* Light Theme Colors */
-  --navbar-color-light: #3A5A40;
-  --main-bg-color-light: #F5F1E6;
-  --footer-bg-color-light: #000000;
-
-  /* Dark Theme Colors */
-  --navbar-color-dark: #000000;
-  --main-bg-color-dark: #f3e5c3;       /* amber-300 */
-  --footer-bg-color-dark: #B45309;     /* amber-700 */
-
-  /* Shared Theme Colors */
   --bg-color-light: #F5F1E6;
   --bg-color-dark: #000000;
 
   --text-color-light: #000000;
   --text-color-dark: #FFFFFF;
 
-  --primary-color-light: #9A5D4B;
-  --primary-color-dark: #FFD700;
+  --navbar-text-color-light: #FFFFFF;
+  --navbar-text-color-dark: #FFFFFF;
 
-  --secondary-color-light: #DAB29B;
-  --secondary-color-dark: #C38E3C;
+  --navbar-color-light: #3A5A40;
+  --navbar-color-dark: #000000;
+
+  --main-bg-color-light: #F5F1E6;
+  --main-bg-color-dark: #F5F1E6;
+
+  --main-text-color-light: #000000;
+  --main-text-color-dark: #3A5A40;
+
+  --footer-bg-color-light: #000000;
+  --footer-bg-color-dark: #B45309;
+
+  --footer-text-color-light: #FFFFFF;
+  --footer-text-color-dark: #FFFFFF;
 
   --accent-color-light: #DAB29B;
   --accent-color-dark: #FFD700;
@@ -59,64 +55,52 @@ main {
   --border-color-dark: #2C3A3B;
 }
 
-/* ======================================
-   Theme Switch
-====================================== */
 [data-theme='light'] {
   --bg-color: var(--main-bg-color-light);
   --text-color: var(--text-color-light);
-  --primary-color: var(--primary-color-light);
-  --secondary-color: var(--secondary-color-light);
+  --navbar-text-color: var(--navbar-text-color-light);
+  --main-text-color: var(--main-text-color-light);
   --accent-color: var(--accent-color-light);
   --border-color: var(--border-color-light);
-
   --navbar-color: var(--navbar-color-light);
   --main-bg-color: var(--main-bg-color-light);
   --footer-bg-color: var(--footer-bg-color-light);
+  --footer-text-color: var(--footer-text-color-light);
+  --footer-link-hover-color: var(--accent-color-light);
+  --footer-copyright-color: var(--accent-color-light);
 }
 
 [data-theme='dark'] {
   --bg-color: var(--main-bg-color-dark);
   --text-color: var(--text-color-dark);
-  --primary-color: var(--primary-color-dark);
-  --secondary-color: var(--secondary-color-dark);
+  --navbar-text-color: var(--navbar-text-color-dark);
+  --main-text-color: var(--main-text-color-dark);
   --accent-color: var(--accent-color-dark);
   --border-color: var(--border-color-dark);
-
   --navbar-color: var(--navbar-color-dark);
   --main-bg-color: var(--main-bg-color-dark);
   --footer-bg-color: var(--footer-bg-color-dark);
+  --footer-text-color: var(--footer-text-color-dark);
+  --footer-link-hover-color: var(--accent-color-dark);
+  --footer-copyright-color: var(--accent-color-dark);
 }
 
-/* ======================================
-   Utility Classes for Background
-====================================== */
-.bg-dynamic-main {
-  background-color: var(--main-bg-color);
-}
+/* ======================================*/
 
-.bg-dynamic-navbar {
-  background-color: var(--navbar-color);
-}
-
-.bg-dynamic-footer {
-  background-color: var(--footer-bg-color);
-}
 
 /* ======================================
    Navbar
 ====================================== */
-nav,
-.navbar-section {
+nav, .navbar-section {
   background-color: var(--navbar-color);
-  color: var(--text-color);
+  color: var(--navbar-text-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 2rem 1rem;
 }
 
 .navbar__link,
 .navbar__mobile-link {
-  color: var(--text-color);
+  color: var(--navbar-text-color);
   transition: color 0.3s ease;
 }
 
@@ -129,33 +113,33 @@ nav,
 /* ======================================
    Footer
 ====================================== */
-footer,
-.footer-section {
+footer, .footer-section {
   background-color: var(--footer-bg-color);
-  color: var(--text-color);
+  color: var(--footer-text-color);
   padding: 2rem;
   text-align: center;
   margin-top: auto;
 }
 
 .footer__link {
-  color: var(--primary-color);
+  color: var(--footer-link-color);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.3s ease, transform 0.2s ease;
 }
-
 .footer__link:hover {
-  color: var(--accent-color);
+  color: var(--footer-link-hover-color);
   transform: translateY(-6px);
 }
 
 .footer__copyright {
-  color: var(--accent-color);
+  color: var(--footer-copyright-color);
   font-size: 0.875rem;
-  text-align: center;
 }
 
+/* ======================================
+   Layout Utilities
+====================================== */
 .footerContainer {
   display: flex;
   flex-direction: column;
@@ -175,16 +159,11 @@ footer,
 /* ======================================
    Hero Section
 ====================================== */
-.hero-overlay {
-  background-color: var(--main-bg-color);
-}
-
-.hero-header {
-  font-size: 2.5rem;
-}
+.hero-overlay { background-color: var(--main-bg-color); }
+.hero-header  { font-size: 2.5rem; }
 
 /* ======================================
-   Menu & Cards
+   Menu, Cards, Circles
 ====================================== */
 .menu-grid {
   display: grid;
@@ -192,24 +171,19 @@ footer,
   gap: 1.5rem;
 }
 
-.card {
-  padding: 1.5rem;
-}
+.card { padding: 1.5rem; }
 
-/* ======================================
-   Category Circles
-====================================== */
 .w-24 { width: 6rem; }
 .h-24 { height: 6rem; }
 .rounded-full { border-radius: 50%; }
 
 .bg-gray-200 { background-color: #DAB29B; }
-.bg-primary { background-color: #9A5D4B; }
-.text-primary { color: #9A5D4B; }
-.text-white { color: white; }
+.bg-primary   { background-color: #9A5D4B; }
 
-.text-lg { font-size: 1.125rem; }
-.font-bold { font-weight: bold; }
+.text-primary { color: #9A5D4B; }
+.text-white   { color: white; }
+.text-lg      { font-size: 1.125rem; }
+.font-bold    { font-weight: bold; }
 .cursor-pointer { cursor: pointer; }
 
 /* ======================================
@@ -237,23 +211,15 @@ footer,
    Responsive
 ====================================== */
 @media (max-width: 768px) {
-  .navbar__logo {
-    font-size: 1.5rem;
-  }
-
-  .navbar__link {
-    font-size: 1rem;
-  }
-
-  .card {
-    padding: 1.5rem;
-  }
+  .navbar__logo { font-size: 1.5rem; }
+  .navbar__link { font-size: 1rem; }
+  .card { padding: 1.5rem; }
 }
 
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+/* ======================================
+   Scrollbar
+====================================== */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

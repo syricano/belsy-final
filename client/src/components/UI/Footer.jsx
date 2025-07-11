@@ -2,38 +2,17 @@ import { Link } from 'react-router'; // Ensure you're using 'react-router-dom' f
 
 const Footer = () => {
   return (
-    <footer>
-      <div className="p-4 gap-4 text:sm w-full">
-        <p className="footer__copyright text-sm select-none bg-center  w-full">
-          &copy; {new Date().getFullYear()} Belsy Restaurant. All rights reserved.
-        </p>
-        <div className="footer__social-links">
-          <a
-            href="https://facebook.com/syriacano"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer__link hover: transition duration-300"
-          >
-            Facebook
-          </a>
-          <a
-            href="https://github.com/syricano"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer__link hover: transition duration-300"
-          >
-            GitHub
-          </a>
-          <Link
-            to="/contact"
-            className="footer__link hover: transition duration-300"
-          >
-            Contact
-          </Link>
-        </div>
+    <footer className='footer-section' >
+      <div className="px-4">
+        <aside className="text-center sm:text-left">
+          <p className='text-center '>
+            Copyright © {new Date().getFullYear()} Belsy Restaurant – All rights reserved
+          </p>
+        </aside>
       </div>
     </footer>
   );
 };
 
 export default Footer;
+

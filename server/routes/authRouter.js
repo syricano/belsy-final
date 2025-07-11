@@ -18,7 +18,7 @@ const authRouter = Router();
 authRouter.get("/me", verifyToken, me);
 authRouter.post("/signup", validateZod(userSchema.POST), signup);
 authRouter.post("/signin", validateZod(signInSchema), signin);
-authRouter.post("/update-profile", verifyToken, validateZod(updateProfileSchema), updateProfile);
+authRouter.put("/update-profile", verifyToken, validateZod(updateProfileSchema), updateProfile);
 authRouter.post("/delete-account", verifyToken, validateZod(deleteAccountSchema), deleteAccount);
 authRouter.post("/signout", signout);
 authRouter.post("/forgot-password", validateZod(forgotPasswordSchema), forgotPassword);

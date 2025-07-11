@@ -20,7 +20,7 @@ const ThemeToggle = () => {
 
   return (
     <label className="swap swap-rotate">
-      <input type="checkbox" onChange={toggle} checked={isDark} />
+      <input id='swapper' type="checkbox" onChange={toggle} checked={isDark} />
       
       {/* ☀️ Light Theme Icon */}
       <svg className="swap-on fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

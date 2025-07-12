@@ -4,6 +4,7 @@ import sequelize from './db/index.js';
 import errorHandler from './middleware/errorHandler.js';
 import adminRouter from './routes/adminRouter.js';
 import authRouter from './routes/authRouter.js';
+import dutyRouter from './routes/dutyRouter.js';
 import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/reservations', reservationRouter);
+app.use('/api/duty', dutyRouter);
 
 
 if (process.env.NODE_ENV === 'production') {

@@ -4,7 +4,7 @@ import ErrorResponse from '../utils/errorResponse.js';
 
 // GET /api/duty-hours — Public or Admin
 export const getAllDuties = asyncHandler(async (req, res) => {
-  const hours = await duty.findAll({ order: [['id', 'ASC']] });
+  const hours = await Duty.findAll({ order: [['id', 'ASC']] });
   res.json(hours);
 });
 
@@ -12,18 +12,18 @@ export const getAllDuties = asyncHandler(async (req, res) => {
 export const createDuty = asyncHandler(async (req, res) => {
   const { dayOfWeek, startTime, endTime } = req.body;
 
-  const exists = await duty.findOne({ where: { dayOfWeek } });
+  const exists = await Duty.findOne({ where: { dayOfWeek } });
   if (exists) {
     throw new ErrorResponse('Working hours for this day already exist', 400);
   }
 
-  const newEntry = await duty.create({ dayOfWeek, startTime, endTime });
+  const newEntry = await Duty.create({ dayOfWeek, startTime, endTime });
   res.status(201).json(newEntry);
 });
 
 // PUT /api/duty-hours/:id — Admin only
 export const updateDuty = asyncHandler(async (req, res) => {
-  const hours = await duty.findByPk(req.params.id);
+  const hours = await Duty.findByPk(req.params.id);
   if (!hours) {
     throw new ErrorResponse('Working hours not found', 404);
   }
@@ -34,7 +34,7 @@ export const updateDuty = asyncHandler(async (req, res) => {
 
 // DELETE /api/duty-hours/:id — Admin only
 export const deleteDuty = asyncHandler(async (req, res) => {
-  const hours = await duty.findByPk(req.params.id);
+  const hours = await Duty.findByPk(req.params.id);
   if (!hours) {
     throw new ErrorResponse('Working hours not found', 404);
   }

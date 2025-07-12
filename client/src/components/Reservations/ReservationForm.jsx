@@ -1,23 +1,86 @@
-import React, { useState } from 'react';
 
-// Demo tables: 20 tables with 2 seats each
-const tableOptions = Array.from({ length: 20 }, (_, i) => ({
-  id: i + 1,
-  seats: 2
-}));
+import React, { useState, useEffect } from 'react';
+import { createReservation, suggestTables } from '@/data';
+import axiosInstance from '@/config/axiosConfig';
+import { getAllDutyHours } from '@/data/duty';
+import { getAvailableTimeSlots } from '@/utils/getAvailableTimeSlots';
 
 const ReservationForm = ({ onSuccess }) => {
   const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
+    name: '',
     email: '',
-    tableId: '',
-    reservationTime: '',
+    phone: '',
     guests: '',
-    note: ''
+    date: '',              
+    time: '',            
+    reservationTime: '',
+    note: '',
+    tableId: '',
   });
+
   const [loading, setLoading] = useState(false);
+
+  const [dutyHours, setDutyHours] = useState([]);
+  const day = new Date(form.date).toLocaleDateString('en-US', { weekday: 'long' });
+  const timeOptions = getAvailableTimeSlots(day, dutyHours);
+
+  useEffect(() => {
+  const fetchDutyHours = async () => {
+    try {
+      const res = await getAllDutyHours();
+      setDutyHours(res.data);
+    } catch (err) {
+      console.error('Duty fetch error:', err);
+    }
+  };
+
+  fetchDutyHours();
+  }, []);
+  const handleDateChange = (e) => {
+    setForm(prev => ({
+      ...prev,
+      date: e.target.value,
+      reservationTime: e.target.value && form.time
+        ? `${e.target.value}T${form.time}`
+        : ''
+    }));
+  };
+
+  const handleTimeChange = (e) => {
+    setForm(prev => ({
+      ...prev,
+      time: e.target.value,
+      reservationTime: form.date && e.target.value
+        ? `${form.date}T${e.target.value}`
+        : ''
+    }));
+  };
+
+
+
+  useEffect(() => {
+    const fetchSuggestedTables = async () => {
+      if (!form.guests || !form.reservationTime) return;
+
+      try {
+        const data = await suggestTables({
+          guests: Number(form.guests),
+          reservationTime: form.reservationTime,
+        });
+
+        if (data.tables && Array.isArray(data.tables)) {
+          setForm((prev) => ({
+            ...prev,
+            tableId: data.tables[0], // or join multiple if needed
+          }));
+        }
+      } catch (err) {
+        console.error('Suggestion error:', err.message);
+      }
+    };
+
+    fetchSuggestedTables();
+  }, [form.guests, form.reservationTime]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,34 +90,40 @@ const ReservationForm = ({ onSuccess }) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const res = await fetch('/api/reservations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(form)
-      });
+    const payload = {
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      guests: Number(form.guests),
+      reservationTime: form.reservationTime,
+      note: form.note,
+      tableIds: Array.isArray(form.tableId) ? form.tableId : [form.tableId],
+    };
 
-      const data = await res.json();
-      if (res.ok) {
-        onSuccess(data);
-        setForm({
-          firstName: '',
-          lastName: '',
-          phone: '',
-          email: '',
-          tableId: '',
-          reservationTime: '',
-          guests: '',
-          note: ''
-        });
-      } else {
-        console.error('Reservation error:', data);
-      }
+    try {
+      const selectedDate = new Date(form.reservationTime);
+      const weekday = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+      const timeStr = selectedDate.toTimeString().slice(0, 5);
+
+      const duty = dutyHours.find(d => d.dayOfWeek === weekday);
+      if (!duty) throw new Error(`No working hours set for ${weekday}`);
+      if (timeStr < duty.startTime || timeStr > duty.endTime)
+        throw new Error(`Selected time ${timeStr} is outside working hours (${duty.startTime} – ${duty.endTime})`);
+
+      const data = await createReservation(payload);
+      onSuccess(data);
+
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        guests: '',
+        reservationTime: '',
+        note: '',
+        tableId: ''
+      });
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Error:', err.message);
     } finally {
       setLoading(false);
     }
@@ -67,25 +136,13 @@ const ReservationForm = ({ onSuccess }) => {
     >
       {/* Contact Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-4">
-        <div className="p-10">
-          <label className="label font-semibold p-10">First Name</label>
-          <input
-            type="text"
-            name="firstName"
-            className="input input-bordered p-10"
-            value={form.firstName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
         <div className="px-2">
-          <label className="label font-semibold ml-5">Last Name</label>
+          <label className="label font-semibold mb-1">Full Name</label>
           <input
             type="text"
-            name="lastName"
-            className="input input-bordered w-full font"
-            value={form.lastName}
+            name="name"
+            className="input input-bordered w-full"
+            value={form.name}
             onChange={handleChange}
             required
           />
@@ -118,23 +175,7 @@ const ReservationForm = ({ onSuccess }) => {
 
       {/* Reservation Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-4">
-        <div className="px-2">
-          <label className="label font-semibold mb-1">Table Number</label>
-          <select
-            name="tableId"
-            className="select select-bordered w-full text-center"
-            value={form.tableId}
-            onChange={handleChange}
-            required
-          >
-            <option value="" disabled>Select a table</option>
-            {tableOptions.map((table) => (
-              <option key={table.id} value={table.id}>
-                Table {table.id} (Seats: {table.seats})
-              </option>
-            ))}
-          </select>
-        </div>
+        
 
         <div className="px-2">
           <label className="label font-semibold mb-1">Number of Guests</label>
@@ -142,7 +183,6 @@ const ReservationForm = ({ onSuccess }) => {
             type="number"
             name="guests"
             min="1"
-            max="2"
             className="input input-bordered w-full"
             value={form.guests}
             onChange={handleChange}
@@ -153,13 +193,26 @@ const ReservationForm = ({ onSuccess }) => {
         <div className="px-2">
           <label className="label font-semibold mb-1">Reservation Time</label>
           <input
-            type="datetime-local"
-            name="reservationTime"
-            className="input input-bordered text-center w-full"
-            value={form.reservationTime}
-            onChange={handleChange}
+            type="date"
+            name="date"
+            className="input input-bordered w-full"
+            value={form.date}
+            onChange={handleDateChange}
             required
           />
+
+          <select
+            name="time"
+            className="select select-bordered w-full mt-2"
+            value={form.time}
+            onChange={handleTimeChange}
+            required
+          >
+            <option value="" disabled>Select Time</option>
+            {timeOptions.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
         </div>
 
         <div className="px-2">
@@ -179,17 +232,16 @@ const ReservationForm = ({ onSuccess }) => {
         <button
           type="submit"
           className="
-                                    /* same square footprint */
-                flex items-center justify-center
-                w-full
-                rounded-xl shadow-2xl
-                bg-amber-800                  /* default shade */
-                text-white text-lg font-bold
-                cursor-pointer
-                transition-all duration-300
-                hover:bg-amber-600            /* lighter on hover */
-                hover:-translate-y-1          /* subtle lift */
-              "
+            flex items-center justify-center
+            w-full
+            rounded-xl shadow-2xl
+            bg-amber-800
+            text-white text-lg font-bold
+            cursor-pointer
+            transition-all duration-300
+            hover:bg-amber-600
+            hover:-translate-y-1
+          "
           disabled={loading}
         >
           {loading ? 'Booking...' : 'Book Now'}

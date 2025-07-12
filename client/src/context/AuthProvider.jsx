@@ -23,7 +23,6 @@ const AuthContextProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const data = await profile();
-        console.log("message", data.user)
         setUser(data.user || null);
         setIsAdmin(data.user?.role === 'Admin');
       } catch {

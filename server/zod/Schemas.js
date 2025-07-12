@@ -57,13 +57,35 @@ export const userRoleSchema = z.object({
 
 
 // Reservation Schema
-export const reservationSchema = z.object({
-  tableId: z.number(),
-  reservationTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: 'Invalid reservation time',
-  }),
-  note: z.string().max(500).optional(),
-});
+export const reservationSchema = z
+  .object({
+    tableIds: z
+      .array(z.number().int().positive())
+      .nonempty({ message: 'At least one table must be selected' }),
+    reservationTime: z
+      .string()
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: 'Invalid reservation time',
+      }),
+    guests: z.number().int().positive().optional(),
+    note: z.string().max(500).optional(),
+
+    // Optional guest fields (used when admin or guest books)
+    name: z.string().min(2).max(100).optional(),
+    email: z.string().email().optional(),
+    phone: z.string().min(5).max(20).optional(),
+  })
+  .refine((data) => {
+    if ((data.email || data.phone) && !data.name) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Guest name is required when email or phone is provided',
+    path: ['name'],
+  });
+
+
 
 // Duty Hours Schema (for admin)
 export const dutySchema = z.object({
@@ -90,4 +112,15 @@ export const tableSchema = z.object({
   seats: z.number().int().positive(),
   location: z.enum(['inRestaurant', 'inHall']),
   isAvailable: z.boolean().optional(), // Optional: default handled by model
+});
+
+
+// Suggest Table Schema for Booking reservations logic
+export const suggestTablesSchema = z.object({
+  guests: z.number().int().positive(),
+  reservationTime: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: 'Invalid reservation time',
+    }),
 });

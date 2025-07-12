@@ -123,3 +123,25 @@ All backend endpoints used in the Belsy Restaurant system, including authenticat
 | GET    | `/api/admin/dashboard` | Admin dashboard overview | `verifyToken`, `isAdmin`     |
 
 
+
+### 📆 Duty (Working Hours) Routes
+
+| Method | Endpoint                   | Description                         | Middleware                      |
+|--------|----------------------------|-------------------------------------|---------------------------------|
+| GET    | `/api/working-hours`       | Get all duty hours                  | –                               |
+| POST   | `/api/working-hours`       | Create a new duty hour entry        | `verifyToken`, `isAdmin`        |
+| PUT    | `/api/working-hours/:id`   | Update an existing duty hour entry  | `verifyToken`, `isAdmin`        |
+| DELETE | `/api/working-hours/:id`   | Delete a duty hour entry            | `verifyToken`, `isAdmin`        |
+
+### 📅 Reservation Routes
+
+| Method | Endpoint                          | Description                                   | Middleware                              |
+|--------|-----------------------------------|-----------------------------------------------|------------------------------------------|
+| POST   | `/api/reservations`               | Create a new reservation (multi-table)        | `verifyToken`, `validateZod`             |
+| GET    | `/api/reservations/mine`          | View reservations for logged-in user          | `verifyToken`                            |
+| POST   | `/api/reservations/suggest-tables`| Suggest tables based on guest count & time    | `validateZod(suggestTablesSchema)`       |
+| GET    | `/api/reservations/admin`         | Admin views all reservations                  | `verifyToken`, `isAdmin`                 |
+| PATCH  | `/api/reservations/admin/:id/approve` | Admin approves a reservation              | `verifyToken`, `isAdmin`                 |
+| PATCH  | `/api/reservations/admin/:id/decline` | Admin declines a reservation              | `verifyToken`, `isAdmin`                 |
+
+

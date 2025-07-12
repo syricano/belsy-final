@@ -26,6 +26,18 @@ const Reservation = sequelize.define('Reservation', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  guestName: {
+    type: DataTypes.STRING,
+    allowNull: true
+    },
+    guestPhone: {
+    type: DataTypes.STRING,
+    allowNull: true
+    },
+    guestEmail: {
+    type: DataTypes.STRING,
+    allowNull: true
+    }
 });
 
 export default Reservation;

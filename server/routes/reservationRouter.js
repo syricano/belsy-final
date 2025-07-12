@@ -4,12 +4,16 @@ import {
   getMyReservations,
   getAllReservations,
   approveReservation,
-  declineReservation
+  declineReservation,
+  suggestTables
 } from '../controllers/reservationController.js';
 import  isAdmin from '../middleware/isAdmin.js';
 import  verifyToken from '../middleware/verifyToken.js';
 import validateZod from '../middleware/validateZod.js';
-import { reservationSchema } from '../zod/Schemas.js'; 
+import { 
+    reservationSchema,
+    suggestTablesSchema
+} from '../zod/Schemas.js'; 
 
 const reservationRouter = express.Router();
 
@@ -25,6 +29,15 @@ reservationRouter.post(
 
 // GET /api/reservations/mine — get current user's reservations
 reservationRouter.get('/mine', verifyToken, getMyReservations);
+
+// POST /api/reservations/suggest-tables — suggest tables by guest count
+
+reservationRouter.post(
+  '/suggest-tables',
+  validateZod(suggestTablesSchema), 
+  suggestTables
+);
+
 
 
 // ========== ADMIN ROUTES ==========

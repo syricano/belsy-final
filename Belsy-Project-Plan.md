@@ -10,16 +10,15 @@ Attributes:
 
 id: Primary key (integer)
 
-firstName: String (unique)
+firstName: String
 
-lastName: String (unique)
+lastName: String
 
 username: String (unique)
 
-
 email: String (unique)
 
-password: String (hashed password)
+password: String (hashed)
 
 role: Enum (User, Admin)
 
@@ -29,7 +28,7 @@ updatedAt: Timestamp
 
 Associations:
 
-One user can have many reservations.
+One user can have many reservations
 
 2. Tables Model
 Attributes:
@@ -38,11 +37,11 @@ id: Primary key (integer)
 
 number: Table number (unique)
 
-seats: Integer (fixed to 2 seats per table)
+seats: Integer (default = 2)
 
-isAvailable: Boolean (indicates if the table is available for booking)
+isAvailable: Boolean (available for booking)
 
-location: Enum (inRestaurant, inHall) - indicates whether the table is inside the restaurant or in the hallway.
+location: Enum (inRestaurant, inHall)
 
 createdAt: Timestamp
 
@@ -50,26 +49,30 @@ updatedAt: Timestamp
 
 Associations:
 
-A table can have many reservations.
-
-B Tables can be classified into inRestaurant or inHall based on their location.
+A table can have many reservations
 
 3. Reservations Model
 Attributes:
 
 id: Primary key (integer)
 
-userId: Foreign key (references Users model)
+userId: Nullable FK to Users
 
-tableId: Foreign key (references Tables model)
+tableId: FK to Tables
 
-reservationTime: Timestamp (when the reservation is made)
+reservationTime: Timestamp
 
 status: Enum (Pending, Approved, Declined)
 
-note: Text (user's request or comment during reservation)
+note: Text (user note)
 
-adminResponse: Text (admin’s reply upon approval or decline)
+adminResponse: Text (admin reply)
+
+guestName: Nullable string
+
+guestEmail: Nullable string
+
+guestPhone: Nullable string
 
 createdAt: Timestamp
 
@@ -77,30 +80,30 @@ updatedAt: Timestamp
 
 Associations:
 
-A reservation belongs to a user and a table.
+Belongs to a user (nullable)
 
-One table can have multiple reservations over time.
+Belongs to a table
 
-A user can have multiple reservations.
-
-4. WorkingHours Model
+4. Duty Model (Replaces WorkingHours)
 Attributes:
 
 id: Primary key (integer)
 
-dayOfWeek: Enum (Monday, Tuesday, etc.)
+dayOfWeek: Enum (Monday through Sunday)
 
-startTime: Time (working start time)
+startTime: Time (e.g., 17:00)
 
-endTime: Time (working end time)
+endTime: Time (e.g., 23:00)
 
 createdAt: Timestamp
 
 updatedAt: Timestamp
 
-Associations:
+Purpose:
 
-Admin can manage working hours (CRUD operations).
+Defines booking availability windows per weekday
+
+Used to validate reservation requests
 
 5. Menu Model
 Attributes:
@@ -142,140 +145,100 @@ Associations:
 
 Admin can manage contact information (update).
 
-Functionality Overview
-1. Reservation Flow
-User makes a reservation:
 
-Users can choose a table and a time slot during working hours (admin-defined).
+🔁 Reservation Functionality Overview
+1. Smart Booking & Protection Features
+✅ Users can book multiple tables at once
 
-Once a reservation is made, it is automatically set to Pending.
+✅ Admins can book for:
 
-Admin reviews reservations:
+Registered users (auto-detected by email/phone)
 
-Admin can see all pending reservations in the admin dashboard.
+Guests (no user account)
 
-Admin has the option to approve or decline a reservation:
+✅ Guests can book without signing in
 
-Approve: The reservation status changes to Approved.
+✅ System automatically suggests tables based on guest count (guests / 2)
 
-Decline: The reservation status changes to Declined.
+✅ Uses transactions to prevent partial booking
 
-Admin Response: The admin can add a response to the reservation explaining the decision (e.g., confirming, providing instructions, or explaining why the booking was declined).
+✅ Prevents:
 
-User views the reservation status:
+Overlapping reservations (double-booking)
 
-Users can view their reservation and any response from the admin (e.g., "Confirmed, please arrive at 6 PM" or "Declined, unfortunately, no tables are available").
+Spam (max 10 active reservations per user)
 
-2. Admin Dashboard
-The admin dashboard allows the admin to manage various aspects of the restaurant, including reservations, menus, working hours, and contact information. The dashboard includes:
+2. Reservation Flow
+For Users / Guests:
+Select guest count → system suggests tables
 
-Manage Reservations:
+Select reservation time
 
-Admin can view and manage bookings (approve, decline, or respond).
+Submit reservation
 
-Admin can filter reservations by status (Pending, Approved, Declined).
+Automatically set to Pending
 
-Manage Menu:
+Await admin approval or decline
 
-Admin can add, update, or delete menu items.
+For Admins:
+Book for guests or users by providing name/phone/email
 
-Admin can upload images for menu items.
+Approve or decline bookings
 
-Admin can organize menu items by categories (e.g., appetizers, mains, drinks).
+Add admin notes (adminResponse)
 
-Manage Working Hours:
+View all reservations and filter by status
 
-Admin can define the working hours for each day of the week.
+Use bulk reservation logic internally
 
-Admin can edit or delete working hours as needed.
+3. Smart Table Suggestion API
+Route: POST /api/reservations/suggest-tables
 
-Manage Contact Information:
+Input: { guests, reservationTime }
 
-Admin can update the restaurant’s contact information, including email, phone number, and address.
+Output: tables: [ids]
 
-3. Admin Response Feature
-When the admin approves or declines a reservation, the admin can provide a response in the adminResponse field. This feature allows communication between the admin and the user. The admin’s response is displayed to the user when they view their reservation status.
+Logic: Suggests ceil(guests / 2) available tables not already booked at that time
 
-4. Admin Interface for Frontend Management
-In addition to managing reservations, the admin can manage frontend elements such as:
+4. Reservation API Enhancements
+POST /api/reservations
 
-Menus:
+Accepts array of tableIds
 
-Admin can create, edit, or delete menu items.
+Validates guest info or logged-in user
 
-Admin can add images and descriptions for each menu item.
+Auto-fills userId or guestName/email/phone
 
-Working Hours:
+Checks before saving:
 
-Admin can define and manage the working hours for the restaurant, ensuring users can only book tables during open hours.
+Valid time window (via Duty model)
 
-Contact Information:
+Table availability
 
-Admin can update and manage the restaurant’s contact details to ensure users can reach out for inquiries or bookings.
+Max active reservations
 
-Additional Features
-Notes Field: Both users and admins can use the note field to provide or request additional details for the reservation (e.g., special requests, user preferences, etc.).
+Transactional insert to protect group booking
 
-Pending Status: Reservations remain in Pending status until the admin either approves or declines them. This feature allows the restaurant to review and validate reservations before confirming them.
+5. Admin Dashboard Supports:
+Table and reservation management
 
-Process Flow Summary
-User Flow:
+Booking for walk-in guests or phone reservations
 
-User books a table.
+Table grouping & selection by guest count
 
-Reservation is created and set to Pending.
+Smart validations based on duty hours
 
-Admin reviews the reservation, and either approves or declines it.
+Guest information storage for non-users
 
-Admin adds a response in adminResponse.
+Future Enhancements
+✅ Email notifications for approval/decline
 
-User is notified of the status (Approved/Declined) and any comments from the admin.
+🔄 Table proximity scoring (suggest best grouping)
 
-Admin Flow:
+🔐 Rate limiting or CAPTCHA for guest bookings
 
-Admin manages reservations via the admin dashboard.
+🧠 AI-based peak load prediction
 
-Admin can approve or decline reservations and leave notes for users.
+💰 Payment & deposit integration
 
-Admin can manage tables, working hours, and other frontend content.
-
-Future Considerations
-Email Notifications: Send email notifications for status updates (e.g., reservation approved or declined).
-
-Online Ordering: Future features may include allowing users to place orders online.
-
-Payment Integration: Add functionality to process payments with confirmed reservations.
-
-------------------------------
-1. Making Reservations (User Logic)
-Select a Table: The user chooses a table and time slot during the restaurant’s working hours.
-
-
-Create Reservation: The system creates a reservation entry with the user’s details, chosen table, and time.
-
-Status Set to Pending: Initially, the reservation is set to "Pending" until the admin reviews it.
-
-Add Notes: The user can add a note (e.g., special requests) during the reservation process.
-
-Wait for Admin Approval: The user waits for the admin to review and decide on the reservation.
-
-View Status: Once the admin approves or declines, the user is notified, and the reservation status is updated (Approved/Declined).
-
-Admin Response: If the reservation is approved or declined, the admin can leave a response explaining the decision, which the user can see.
-
-2. Admin Management (Admin Logic)
-View Pending Reservations: Admin sees all pending reservations in the dashboard.
-
-Approve or Decline: For each pending reservation, the admin can approve (set to Approved) or decline (set to Declined).
-
-Admin Response: The admin adds a response in the adminResponse field, explaining the decision or providing any other details (e.g., confirming the reservation or explaining why it was declined).
-
-Manage Tables: Admin can view and manage tables, marking them as available or unavailable for booking.
-
-Manage Menu Items: Admin can add, edit, or delete menu items, including uploading images and setting prices.
-
-Manage Working Hours: Admin sets and edits the working hours for each day of the week, ensuring users can only book tables during open hours.
-
-Manage Contact Information: Admin updates the restaurant’s contact details (email, phone, address) as needed.
-
-Notifications: Admin can potentially send email notifications to users for status changes (this can be part of future features).
+📱 Admin mobile booking interface

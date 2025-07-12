@@ -54,3 +54,40 @@ export const deleteAccountSchema = z.object({
 export const userRoleSchema = z.object({
   role: z.enum(['User', 'Admin']),
 });
+
+
+// Reservation Schema
+export const reservationSchema = z.object({
+  tableId: z.number(),
+  reservationTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'Invalid reservation time',
+  }),
+  note: z.string().max(500).optional(),
+});
+
+// Duty Hours Schema (for admin)
+export const dutySchema = z.object({
+  dayOfWeek: z.enum([
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ]),
+  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
+    message: 'Start time must be in HH:MM format',
+  }),
+  endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
+    message: 'End time must be in HH:MM format',
+  }),
+});
+
+// Table Schema (for admin)
+export const tableSchema = z.object({
+  number: z.number().int().positive(),
+  seats: z.number().int().positive(),
+  location: z.enum(['inRestaurant', 'inHall']),
+  isAvailable: z.boolean().optional(), // Optional: default handled by model
+});

@@ -99,18 +99,27 @@ Contributions are not possible since it's a task project, but ideas are welcome!
 
 ---
 
-**API Routes** — All backend endpoints used in the project, including authentication and admin features for the Belsy Restaurant system.
+## 📡 API Routes
 
-| Method | Endpoint                          | Description                              | Middleware                  |
-| ------ | --------------------------------- | ---------------------------------------- | --------------------------- |
-| GET    | `/api/auth/me`                    | Get current authenticated user info      | `verifyToken`               |
-| POST   | `/api/auth/signup`                | Register a new user                      | `validateZod(userSchema)`   |
-| POST   | `/api/auth/signin`                | Sign in and receive authentication token | `validateZod(signInSchema)` |
-| POST   | `/api/auth/signout`               | Sign out and clear session/token         | –                           |
-| POST   | `/api/auth/forgot-password`       | Request password reset email/link        | –                           |
-| POST   | `/api/auth/reset-password/:token` | Reset user password using token          | –                           |
+All backend endpoints used in the Belsy Restaurant system, including authentication and admin features.
 
-| Method | Endpoint               | Description              | Middleware                  |
-| ------ | ---------------------- | ------------------------ | --------------------------- |
-| GET    | `/api/admin/dashboard` | Admin dashboard overview | *(Middleware not shown yet)* |
+### 🔐 Authentication Routes
+
+| Method | Endpoint                          | Description                              | Middleware                                             |
+|--------|-----------------------------------|------------------------------------------|--------------------------------------------------------|
+| GET    | `/api/auth/me`                    | Get current authenticated user info      | `verifyToken`                                          |
+| POST   | `/api/auth/signup`                | Register a new user                      | `validateZod(userSchema.POST)`                         |
+| POST   | `/api/auth/signin`                | Sign in and receive authentication token | `validateZod(signInSchema)`                            |
+| PUT    | `/api/auth/update-profile`        | Update user profile                      | `verifyToken`, `validateZod(updateProfileSchema)`      |
+| POST   | `/api/auth/delete-account`        | Delete the authenticated user's account  | `verifyToken`, `validateZod(deleteAccountSchema)`      |
+| POST   | `/api/auth/signout`               | Sign out and clear session/token         | –                                                      |
+| POST   | `/api/auth/forgot-password`       | Request password reset email/link        | `validateZod(forgotPasswordSchema)`                    |
+| POST   | `/api/auth/reset-password/:token` | Reset user password using token          | `validateZod(resetPasswordSchema)`                     |
+
+### 🛠️ Admin Routes
+
+| Method | Endpoint               | Description              | Middleware                   |
+|--------|------------------------|--------------------------|------------------------------|
+| GET    | `/api/admin/dashboard` | Admin dashboard overview | `verifyToken`, `isAdmin`     |
+
 

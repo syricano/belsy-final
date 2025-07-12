@@ -9,6 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 import path from 'path';
 import { fileURLToPath } from 'url';
+import applyAssociations from './db/associations.js';
+import reservationRouter from './routes/reservationRouter.js';
 app.use(cookieParser());
 
 
@@ -17,6 +19,8 @@ app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/reservations', reservationRouter);
+
 
 if (process.env.NODE_ENV === 'production') {
   const __filename = fileURLToPath(import.meta.url);
@@ -39,6 +43,7 @@ app.use(errorHandler);
 
 const start = async () => {
   try {
+    applyAssociations(); 
     await sequelize.sync({ alter: true });
     app.listen(PORT, () => {
       console.log(`✅ Server is running on http://localhost:${PORT}`);

@@ -28,7 +28,7 @@ export const me = async (req, res) => {
 // POST /api/auth/signup
 export const signup = async (req, res) => {
   try {
-    const { firstName, lastName, username, email, password } = req.body;
+    const { firstName, lastName, username, email, phone, password } = req.body;
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
@@ -41,6 +41,7 @@ export const signup = async (req, res) => {
       firstName,
       lastName,
       username,
+      phone,
       email,
       password: hashedPassword,
     });
@@ -58,6 +59,7 @@ export const signup = async (req, res) => {
         lastName: user.lastName,
         username: user.username,
         email: user.email,
+        phone: user.phone,
         role: user.role,
       },
       token,
@@ -101,6 +103,7 @@ export const signin = async (req, res) => {
         lastName: user.lastName,
         username: user.username,
         email: user.email,
+        phone: user.phone,
         role: user.role,
       },
       token,

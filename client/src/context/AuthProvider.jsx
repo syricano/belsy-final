@@ -23,6 +23,7 @@ const AuthContextProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const data = await profile();
+        console.log("message", data.user)
         setUser(data.user || null);
         setIsAdmin(data.user?.role === 'Admin');
       } catch {
@@ -68,7 +69,7 @@ const AuthContextProvider = ({ children }) => {
 
   const updateProfile = async (updatedData) => {
     const data = await updateService(updatedData);
-    setUser(data.user || null);
+    //setUser(data.user || null);
     setCheckSession(prev => !prev); // ✅ optional session re-check
     return data;
   };

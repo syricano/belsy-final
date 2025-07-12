@@ -22,7 +22,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       await signup(form)
-      navigate('/signin');
+      navigate('/');
     } catch (err) {
       console.error(err);
     }
@@ -59,7 +59,7 @@ const Signup = () => {
           className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
           name="phone"
           placeholder="Phone"
-          type="tel"
+          type="text"
           onChange={handleChange}
         />
         <input

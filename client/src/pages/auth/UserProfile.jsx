@@ -3,7 +3,7 @@ import { useAuth } from '@/context';
 import { useNavigate, useLocation } from 'react-router';
 
 const UserProfile = () => {
-  const { user, loading, updateProfile, deleteAccount, signout } = useAuth();
+  const { user, loading, updateProfile, deleteAccount, signout, setCheckSession } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -51,7 +51,6 @@ const UserProfile = () => {
       await updateProfile(formData);
       alert('Profile updated successfully');
       setIsEditing(false);
-      navigate(location.state?.next || '/');
     } catch (err) {
       alert(err.message || 'Update failed');
     } finally {

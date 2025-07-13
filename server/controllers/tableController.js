@@ -1,6 +1,8 @@
 import Table from '../models/Table.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
+import { Op } from 'sequelize';
+
 
 // GET /api/tables — user-accessible
 export const getAllTables = asyncHandler(async (req, res) => {

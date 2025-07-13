@@ -8,7 +8,7 @@ import {
   ReservationsPage,
   MenuPage,
   NotFoundPage,
-  AdminPage,
+  AdminDashboard,
   About
 } from '@/pages';
 import './App.css';
@@ -30,7 +30,7 @@ const App = () => {
           {/* Protected Pages nested inside RootLayout */}
           <Route element={<ProtectedLayout />}>
             <Route path="profile" element={<UserProfile />} />
-            <Route path="admin" element={<AdminPage />} />
+            <Route path="admin" element={<AdminDashboard />} />
           </Route>
 
           {/* Catch-all for 404 (inside RootLayout to show Navbar/Footer) */}

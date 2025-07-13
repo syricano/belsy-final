@@ -1,6 +1,8 @@
 import ContactInfo from '../models/ContactInfo.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
+import { Op } from 'sequelize';
+
 
 // GET /api/contact — Public
 export const getContactInfo = asyncHandler(async (req, res) => {

@@ -1,6 +1,8 @@
 import Duty from '../models/Duty.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
+import { Op } from 'sequelize';
+
 
 // GET /api/duty-hours — Public or Admin
 export const getAllDuties = asyncHandler(async (req, res) => {

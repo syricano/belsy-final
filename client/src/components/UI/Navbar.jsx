@@ -7,6 +7,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signout } = useAuth();
   const isLoggedIn = Boolean(user);
+  const isAdmin = user?.role === 'Admin';
 
   const handleLogout = () => {
     signout();
@@ -46,6 +47,11 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-4">
           {isLoggedIn ? (
             <>
+              {isAdmin && (
+                <NavLink to="/admin" className={linkClass}>
+                  Admin
+                </NavLink>
+              )}
               <NavLink to="/profile" className={linkClass}>Profile</NavLink>
               <button onClick={handleLogout} className={`${linkClass} font-semibold`}>
                 Logout
@@ -85,6 +91,11 @@ const Navbar = () => {
 
           {isLoggedIn ? (
             <>
+              {isAdmin && (
+                <NavLink to="/admin" className={mobileLinkClass} onClick={() => setIsOpen(false)}>
+                  Admin
+                </NavLink>
+              )}
               <NavLink to="/profile" className={mobileLinkClass} onClick={() => setIsOpen(false)}>Profile</NavLink>
               <button onClick={() => { handleLogout(); setIsOpen(false); }} className={`${mobileLinkClass} font-semibold`}>
                 Logout

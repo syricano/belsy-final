@@ -12,7 +12,8 @@ import  verifyToken from '../middleware/verifyToken.js';
 import validateZod from '../middleware/validateZod.js';
 import { 
     reservationSchema,
-    suggestTablesSchema
+    suggestTablesSchema,
+    adminResponseSchema
 } from '../zod/Schemas.js'; 
 
 const reservationRouter = express.Router();
@@ -21,8 +22,7 @@ const reservationRouter = express.Router();
 
 // POST /api/reservations — create a new reservation
 reservationRouter.post(
-  '/',
-  verifyToken,
+  '/',  
   validateZod(reservationSchema),
   createReservation
 );
@@ -46,9 +46,9 @@ reservationRouter.post(
 reservationRouter.get('/admin', verifyToken, isAdmin, getAllReservations);
 
 // PATCH /api/reservations/admin/:id/approve — approve reservation
-reservationRouter.patch('/admin/:id/approve', verifyToken, isAdmin, approveReservation);
-
+reservationRouter.patch('/admin/:id/approve', verifyToken, isAdmin, validateZod(adminResponseSchema), approveReservation
+);
 // PATCH /api/reservations/admin/:id/decline — decline reservation
-reservationRouter.patch('/admin/:id/decline', verifyToken, isAdmin, declineReservation);
-
+reservationRouter.patch('/admin/:id/decline', verifyToken, isAdmin, validateZod(adminResponseSchema), declineReservation
+);
 export default reservationRouter;

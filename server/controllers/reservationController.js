@@ -4,6 +4,9 @@ import User from '../models/User.js';
 import Duty from '../models/Duty.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
+import sequelize from '../db/index.js';
+import { Op } from 'sequelize';
+
 
 // POST /api/reservations — user
 export const createReservation = asyncHandler(async (req, res) => {
@@ -49,20 +52,25 @@ export const createReservation = asyncHandler(async (req, res) => {
         guestName = name;
         guestEmail = email;
         guestPhone = phone;
+       
       }
     }
   }
 
   // Abuse protection — count total active reservations for the user
+  console.log('Resolved userId:', userId);
+ if (userId !== null && userId !== undefined) {
   const activeCount = await Reservation.count({
     where: {
-      userId: req.userId,
-      status: { [Op.in]: ['Pending', 'Approved'] }
-    }
+      userId,
+      status: { [Op.in]: ['Pending', 'Approved'] },
+    },
   });
+
   if (activeCount >= 10) {
     throw new ErrorResponse('Too many active reservations', 429);
   }
+}
 
   // Verify each table exists & is not already reserved
   const tables = await Table.findAll({
@@ -80,7 +88,9 @@ export const createReservation = asyncHandler(async (req, res) => {
   const conflicts = await Reservation.findAll({
     where: {
       tableId: tableIds,
-      reservationTime,
+      reservationTime: {
+        [Op.gt]: new Date() // Only consider future reservations
+      },
       status: { [Op.ne]: 'Declined' }
     }
   });
@@ -181,7 +191,9 @@ export const suggestTables = asyncHandler(async (req, res) => {
   // Step 1: Find reserved tables at that time
   const conflicts = await Reservation.findAll({
     where: {
-      reservationTime,
+      reservationTime: {
+        [Op.gt]: new Date() // exclude past reservations
+      },
       status: { [Op.ne]: 'Declined' }
     },
     attributes: ['tableId']

@@ -29,9 +29,15 @@ export const getAllReservations = () =>
   handleRequest(() => axiosInstance.get(`${baseURL}/admin`), 'Failed to fetch admin reservations');
 
 // Admin: approve reservation
-export const approveReservation = (id) =>
-  handleRequest(() => axiosInstance.patch(`${baseURL}/admin/${id}/approve`), 'Approval failed');
+export const approveReservation = (id, message = 'Approved by admin') =>
+  handleRequest(
+    () => axiosInstance.patch(`${baseURL}/admin/${id}/approve`, { adminResponse: message }),
+    'Approval failed'
+  );
 
 // Admin: decline reservation
-export const declineReservation = (id) =>
-  handleRequest(() => axiosInstance.patch(`${baseURL}/admin/${id}/decline`), 'Decline failed');
+export const declineReservation = (id, message = 'Declined by admin') =>
+  handleRequest(
+    () => axiosInstance.patch(`${baseURL}/admin/${id}/decline`, { adminResponse: message }),
+    'Decline failed'
+  );

@@ -1,6 +1,9 @@
 import { useContext } from 'react';
-import { AuthContext } from './AuthProvider'; 
+import { AuthContext } from './AuthProvider';
+import { AdminContext } from './AdminProvider';
+
 import AuthContextProvider from './AuthProvider';
+import AdminContextProvider from './AdminProvider';
 
 const useAuth = () => {
   const context = useContext(AuthContext);
@@ -8,4 +11,15 @@ const useAuth = () => {
   return context;
 };
 
-export { useAuth, AuthContextProvider };
+const useAdmin = () => {
+  const context = useContext(AdminContext);
+  if (!context) throw new Error('useAdmin must be used within an AdminContextProvider');
+  return context;
+};
+
+export {
+  useAuth,
+  AuthContextProvider,
+  useAdmin,
+  AdminContextProvider,
+};

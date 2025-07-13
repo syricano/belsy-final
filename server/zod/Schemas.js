@@ -85,6 +85,10 @@ export const reservationSchema = z
     path: ['name'],
   });
 
+  // admin response schema
+export const adminResponseSchema = z.object({
+  adminResponse: z.string().min(2, 'Response is required')
+});
 
 
 // Duty Hours Schema (for admin)
@@ -130,9 +134,9 @@ export const suggestTablesSchema = z.object({
 export const menuSchema = z.object({
   name: z.string().min(2).max(100),
   description: z.string().max(500).optional(),
-  price: z.number().positive(),
-  image: z.string().url().optional(),
-  categoryId: z.number().int().positive(),
+  price: z.coerce.number(), 
+  image: z.string().url().optional().or(z.literal('')), // can be empty string
+  categoryId: z.coerce.number(),
 });
 
 
@@ -142,3 +146,10 @@ export const contactInfoSchema = z.object({
   phone: z.string().min(5).max(20),
   address: z.string().min(5).max(200),
 });
+
+
+// Category Schema
+export const categorySchema = z.object({
+  name: z.string().min(2).max(100),
+});
+

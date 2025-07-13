@@ -171,7 +171,7 @@ const MenuManager = () => {
                 <td>{item.Category?.name || item.categoryId}</td>
                 <td>
                   {item.image && (
-                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" onError={(e) => (e.target.src = './src/assets/fallback.jpg')} />
                   )}
                 </td>
                 <td className="space-x-2">

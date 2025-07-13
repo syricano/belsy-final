@@ -21,7 +21,7 @@ import {
   // TABLES
   addTable,
   updateTable,
-  deleteTable,
+  deleteTable as removeTable,
   getTables,
 
   // RESERVATIONS
@@ -66,7 +66,7 @@ const AdminContextProvider = ({ children }) => {
   // ================== TABLE ==================
   const createTable = (data) => asyncHandler(() => addTable(data), 'Failed to create table');
   const updateTable = (id, data) => asyncHandler(() => updateTable(id, data), 'Failed to update table');
-  const deleteTable = (id) => asyncHandler(() => deleteTable(id), 'Failed to delete table');
+  const deleteTable = (id) => asyncHandler(() => removeTable(id), 'Failed to delete table');
   const getTables = () => asyncHandler(() => axiosInstance.get('/tables'), 'Failed to fetch tables');
 
   // ================== RESERVATIONS ==================

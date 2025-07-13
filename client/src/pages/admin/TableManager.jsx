@@ -1,136 +1,141 @@
 import React, { useEffect, useState } from 'react';
 import { useAdmin } from '@/context';
-import { errorHandler } from '@/utils/errorHandler';
-
-const defaultForm = { number: '', seats: 2, location: 'inRestaurant' };
+import { errorHandler, asyncHandler } from '@/utils';
 
 const TableManager = () => {
-  const { createTable, updateTable, deleteTable, getTables } = useAdmin();
+  const {
+    getTables,
+    createTable,
+    updateTable,
+    deleteTable
+  } = useAdmin();
 
   const [tables, setTables] = useState([]);
-  const [form, setForm] = useState(defaultForm);
+  const [form, setForm] = useState({ number: '', seats: '', location: 'inRestaurant' });
   const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const fetchTables = () => {
+    asyncHandler(getTables, 'Failed to fetch tables')
+      .then(data => setTables(data))
+      .catch(errorHandler);
+  };
 
   useEffect(() => {
-    loadTables();
+    fetchTables();
   }, []);
-
-  const loadTables = () =>
-    getTables()
-      .then(setTables)
-      .catch((err) => errorHandler(err, 'Failed to load tables'))
-      .finally(() => setLoading(false));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
-      [name]: name === 'seats' || name === 'number' ? parseInt(value) : value,
+      [name]: ['seats', 'number'].includes(name)
+        ? value === '' ? '' : Number(value)
+        : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const action = editingId ? updateTable(editingId, form) : createTable(form);
+    setLoading(true);
 
-    action
+    const handler = editingId ? updateTable : createTable;
+    const args = editingId ? [editingId, form] : [form];
+
+    asyncHandler(() => handler(...args), editingId ? 'Update failed' : 'Creation failed')
       .then(() => {
-        setForm(defaultForm);
+        fetchTables();
+        setForm({ number: '', seats: '', location: 'inRestaurant' });
         setEditingId(null);
-        loadTables();
       })
-      .catch((err) => errorHandler(err, 'Failed to save table'));
+      .catch(errorHandler)
+      .finally(() => setLoading(false));
   };
 
   const handleEdit = (table) => {
-    setForm({ ...table });
+    setForm({
+      number: table.number,
+      seats: table.seats,
+      location: table.location,
+    });
     setEditingId(table.id);
   };
 
   const handleDelete = (id) => {
-    if (!confirm('Are you sure you want to delete this table?')) return;
-
-    deleteTable(id)
-      .then(loadTables)
-      .catch((err) => errorHandler(err, 'Failed to delete table'));
+    asyncHandler(() => deleteTable(id), 'Failed to delete table')
+      .then(() => fetchTables())
+      .catch(errorHandler);
   };
 
-  if (loading) return <p className="text-center">Loading tables...</p>;
-
   return (
-    <section className="w-full">
-      <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 items-end mb-8">
+    <div className="space-y-10">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow-md grid grid-cols-1 md:grid-cols-3 gap-4"
+      >
         <input
           type="number"
           name="number"
+          placeholder="Table Number"
+          className="input input-bordered w-full"
           value={form.number}
           onChange={handleChange}
-          placeholder="Table #"
-          className="input input-bordered"
           required
         />
         <input
           type="number"
           name="seats"
+          placeholder="Seats"
+          className="input input-bordered w-full"
           value={form.seats}
           onChange={handleChange}
-          className="input input-bordered"
-          min={1}
           required
         />
         <select
           name="location"
+          className="select select-bordered w-full"
           value={form.location}
           onChange={handleChange}
-          className="select select-bordered"
-          required
         >
-          <option value="inRestaurant">In Restaurant</option>
+          <option value="inRestaurant">Inside Restaurant</option>
           <option value="inHall">In Hall</option>
         </select>
-        <button className="btn btn-primary">
-          {editingId ? 'Update' : 'Add'}
+        <button
+          type="submit"
+          className="btn btn-primary col-span-1 md:col-span-3"
+          disabled={loading}
+        >
+          {editingId ? 'Update Table' : 'Add Table'}
         </button>
-        {editingId && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              setForm(defaultForm);
-              setEditingId(null);
-            }}
-          >
-            Cancel
-          </button>
-        )}
       </form>
 
-      <div className="overflow-x-auto rounded-lg shadow">
-        <table className="table table-zebra w-full">
-          <thead className="bg-base-200 text-[var(--text-color)]">
+      <div className="overflow-x-auto">
+        <table className="table">
+          <thead>
             <tr>
-              <th>ID</th>
-              <th>Number</th>
+              <th>#</th>
               <th>Seats</th>
               <th>Location</th>
-              <th>Available</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {tables.map((table) => (
               <tr key={table.id}>
-                <td>{table.id}</td>
                 <td>{table.number}</td>
                 <td>{table.seats}</td>
                 <td>{table.location}</td>
-                <td>{table.isAvailable ? 'Yes' : 'No'}</td>
                 <td className="space-x-2">
-                  <button onClick={() => handleEdit(table)} className="btn btn-xs btn-info">
+                  <button
+                    onClick={() => handleEdit(table)}
+                    className="btn btn-sm btn-warning"
+                  >
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(table.id)} className="btn btn-xs btn-error">
+                  <button
+                    onClick={() => handleDelete(table.id)}
+                    className="btn btn-sm btn-error"
+                  >
                     Delete
                   </button>
                 </td>
@@ -139,7 +144,7 @@ const TableManager = () => {
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -7,7 +7,6 @@ import ErrorResponse from '../utils/errorResponse.js';
 import sequelize from '../db/index.js';
 import { Op } from 'sequelize';
 
-
 // POST /api/reservations — user
 export const createReservation = asyncHandler(async (req, res) => {
   const {
@@ -52,30 +51,28 @@ export const createReservation = asyncHandler(async (req, res) => {
         guestName = name;
         guestEmail = email;
         guestPhone = phone;
-       
       }
     }
   }
 
   // Abuse protection — count total active reservations for the user
-  console.log('Resolved userId:', userId);
- if (userId !== null && userId !== undefined) {
-  const activeCount = await Reservation.count({
-    where: {
-      userId,
-      status: { [Op.in]: ['Pending', 'Approved'] },
-    },
-  });
+  if (userId !== null && userId !== undefined) {
+    const activeCount = await Reservation.count({
+      where: {
+        userId,
+        status: { [Op.in]: ['Pending', 'Approved'] },
+      },
+    });
 
-  if (activeCount >= 10) {
-    throw new ErrorResponse('Too many active reservations', 429);
+    if (activeCount >= 10) {
+      throw new ErrorResponse('Too many active reservations', 429);
+    }
   }
-}
 
   // Verify each table exists & is not already reserved
   const tables = await Table.findAll({
     where: {
-      id: tableIds,
+      id: { [Op.in]: tableIds },
       isAvailable: true
     }
   });
@@ -84,12 +81,19 @@ export const createReservation = asyncHandler(async (req, res) => {
     throw new ErrorResponse('Some selected tables are unavailable or invalid', 400);
   }
 
-  // Check for conflicts for each table
+  // Check for conflicts for each table within a 1.5-hour range
+  const reservationDate = new Date(reservationTime);
+  if (reservationDate < new Date()) {
+  throw new ErrorResponse('Reservation time cannot be in the past', 400);
+}
+  const bufferStart = new Date(reservationDate.getTime() - 90 * 60 * 1000); // -1.5h
+  const bufferEnd = new Date(reservationDate.getTime() + 90 * 60 * 1000);  // +1.5h
+
   const conflicts = await Reservation.findAll({
     where: {
-      tableId: tableIds,
+      tableId: { [Op.in]: tableIds },
       reservationTime: {
-        [Op.gt]: new Date() // Only consider future reservations
+        [Op.between]: [bufferStart, bufferEnd]
       },
       status: { [Op.ne]: 'Declined' }
     }
@@ -99,26 +103,32 @@ export const createReservation = asyncHandler(async (req, res) => {
     throw new ErrorResponse('One or more selected tables are already reserved at this time', 409);
   }
 
-  // ✅ Create multiple reservations inside a transaction
+  // ✅ Create reservations inside a transaction
   const newReservations = await sequelize.transaction(async (t) => {
-    const entries = await Promise.all(
-      tableIds.map((tableId) =>
-        Reservation.create(
-          {
-            userId,
-            tableId,
-            reservationTime,
-            note,
-            guests,
-            guestName,
-            guestEmail,
-            guestPhone,
-            status: 'Pending'
-          },
-          { transaction: t }
-        )
-      )
-    );
+    const entries = [];
+    for (const tableId of tableIds) {
+      const entry = await Reservation.create(
+        {
+          userId,
+          tableId,
+          reservationTime,
+          note,
+          guests,
+          guestName,
+          guestEmail,
+          guestPhone,
+          status: 'Pending'
+        },
+        { transaction: t }
+      );
+      entries.push(entry);
+
+      // Mark the table unavailable
+      await Table.update({ isAvailable: false }, {
+        where: { id: tableId },
+        transaction: t
+      });
+    }
     return entries;
   });
 
@@ -128,9 +138,6 @@ export const createReservation = asyncHandler(async (req, res) => {
   });
 });
 
-
-
-  
 
 // GET /api/reservations/mine
 export const getMyReservations = asyncHandler(async (req, res) => {
@@ -174,25 +181,38 @@ export const declineReservation = asyncHandler(async (req, res) => {
     throw new ErrorResponse('Reservation not found', 404);
   }
 
+  const tableIdToFree = reservation.tableId;
+
   reservation.status = 'Declined';
   reservation.adminResponse = req.body.adminResponse || 'Declined';
+  reservation.tableId = null;
   await reservation.save();
+
+  if (tableIdToFree) {
+    const table = await Table.findByPk(tableIdToFree);
+    if (table) {
+      table.isAvailable = true;
+      await table.save();
+    }
+  }
 
   res.json({ message: 'Reservation declined', reservation });
 });
 
-
-// Suggest Table 
+// POST /api/reservations/suggest
 export const suggestTables = asyncHandler(async (req, res) => {
   const { guests, reservationTime } = req.body;
-
   const neededTables = Math.ceil(guests / 2);
+
+  const reservationDate = new Date(reservationTime);
+  const bufferStart = new Date(reservationDate.getTime() - 90 * 60 * 1000); // -1.5h
+  const bufferEnd = new Date(reservationDate.getTime() + 90 * 60 * 1000);  // +1.5h
 
   // Step 1: Find reserved tables at that time
   const conflicts = await Reservation.findAll({
     where: {
       reservationTime: {
-        [Op.gt]: new Date() // exclude past reservations
+        [Op.between]: [bufferStart, bufferEnd]
       },
       status: { [Op.ne]: 'Declined' }
     },

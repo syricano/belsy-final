@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createReservation, suggestTables } from '@/data';
 import { getAllDutyHours } from '@/data/duty';
-import { getAvailableTimeSlots } from '@/utils';
-import { asyncHandler, errorHandler } from '@/utils';
+import { getAvailableTimeSlots, asyncHandler, errorHandler } from '@/utils';
+import { toast } from 'react-hot-toast';
 
 const ReservationForm = ({ onSuccess }) => {
   const [form, setForm] = useState({
@@ -19,26 +19,25 @@ const ReservationForm = ({ onSuccess }) => {
 
   const [dutyHours, setDutyHours] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
+  const [suggestionAttempted, setSuggestionAttempted] = useState(false);
+  const [tablesCount, setTablesCount] = useState(null);
 
   const day = new Date(form.date).toLocaleDateString('en-US', { weekday: 'long' });
   const timeOptions = getAvailableTimeSlots(day, dutyHours);
 
-  // 🕐 Fetch duty hours once
   useEffect(() => {
     asyncHandler(getAllDutyHours, 'Failed to fetch working hours')
       .then(setDutyHours)
       .catch(errorHandler);
   }, []);
 
-  // 📅 Watch date/time changes to update reservationTime
   const handleDateChange = (e) => {
     const date = e.target.value;
     setForm(prev => ({
       ...prev,
       date,
-      reservationTime: date && form.time ? `${date}T${form.time}` : ''
+      reservationTime: date && prev.time ? `${date}T${prev.time}` : '',
+      tableId: ''
     }));
   };
 
@@ -47,47 +46,54 @@ const ReservationForm = ({ onSuccess }) => {
     setForm(prev => ({
       ...prev,
       time,
-      reservationTime: form.date && time ? `${form.date}T${time}` : ''
+      reservationTime: prev.date && time ? `${prev.date}T${time}` : '',
+      tableId: ''
     }));
   };
 
-  // 🪑 Suggest table when guests + time is selected
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!form.guests || !form.reservationTime) return;
 
-      asyncHandler(() => suggestTables({
-        guests: Number(form.guests),
-        reservationTime: form.reservationTime,
-      }), 'Table suggestion failed')
+      setSuggestionAttempted(true);
+
+      asyncHandler(() =>
+        suggestTables({
+          guests: Number(form.guests),
+          reservationTime: form.reservationTime,
+        }),
+        'Table suggestion failed'
+      )
         .then(data => {
           if (data?.tables?.length > 0) {
             setForm(prev => ({ ...prev, tableId: data.tables[0] }));
-            setMessage('');
+            setTablesCount(data.tablesCount);
           } else {
             setForm(prev => ({ ...prev, tableId: '' }));
-            setMessage('No available tables for the selected time.');
-            setMessageType('error');
+            setTablesCount(0);
           }
         })
-        .catch(errorHandler);
+        .catch(() => setTablesCount(null));
     }, 500);
 
     return () => clearTimeout(timeout);
   }, [form.guests, form.reservationTime]);
 
-  // ✏️ Input change
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+      tableId: name === 'guests' ? '' : prev.tableId,
+    }));
   };
 
-  // ✅ Submit
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setSuggestionAttempted(false);
 
-    try {
+    asyncHandler(async () => {
       const selectedDate = new Date(form.reservationTime);
       const weekday = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
       const timeStr = selectedDate.toTimeString().slice(0, 5);
@@ -112,9 +118,7 @@ const ReservationForm = ({ onSuccess }) => {
       const data = await createReservation(payload);
       onSuccess(data);
 
-      setMessage('🎉 Reservation successful!');
-      setMessageType('success');
-
+      toast.success('🎉 Reservation successful!');
       setForm({
         name: '',
         email: '',
@@ -126,22 +130,14 @@ const ReservationForm = ({ onSuccess }) => {
         note: '',
         tableId: ''
       });
-    } catch (err) {
-      setMessage(err.message || 'Booking failed. Please try again.');
-      setMessageType('error');
-    } finally {
-      setLoading(false);
-    }
+      setTablesCount(null);
+    }, 'Booking failed. Please try again.')
+      .catch((err) => toast.error(err.message))
+      .finally(() => setLoading(false));
   };
 
   return (
     <form onSubmit={handleSubmit} className="bg-base-100 shadow-xl rounded-xl p-10 max-w-5xl space-y-6">
-      {message && (
-        <div className={`alert ${messageType === 'success' ? 'alert-success' : 'alert-error'} shadow-lg mb-6`}>
-          <span>{message}</span>
-        </div>
-      )}
-
       {/* Contact Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-4">
         <div className="px-2">
@@ -178,6 +174,7 @@ const ReservationForm = ({ onSuccess }) => {
         </div>
       </div>
 
+      {/* Submit Button + Status */}
       <div className="p-10">
         <button
           type="submit"
@@ -186,6 +183,14 @@ const ReservationForm = ({ onSuccess }) => {
         >
           {loading ? 'Booking...' : 'Book Now'}
         </button>
+
+        {suggestionAttempted && !form.tableId && (
+          <p className="text-red-500 text-sm mt-2 text-center">
+            {tablesCount === 0
+              ? `No available tables for ${form.guests} guests.`
+              : `Only ${tablesCount} table(s) available — not enough for ${form.guests} guests.`}
+          </p>
+        )}
       </div>
     </form>
   );

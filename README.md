@@ -145,3 +145,25 @@ All backend endpoints used in the Belsy Restaurant system, including authenticat
 | PATCH  | `/api/reservations/admin/:id/decline` | Admin declines a reservation              | `verifyToken`, `isAdmin`                 |
 
 
+🍽 Table Management Routes (Admin)
+md
+Copy
+Edit
+| Method | Endpoint           | Description                  | Middleware                                               |
+|--------|--------------------|------------------------------|-----------------------------------------------------------|
+| GET    | `/api/tables`      | Get all tables               | _Public_ (used in reservation system)                     |
+| POST   | `/api/tables`      | Create new table             | `verifyToken`, `isAdmin`, `validateZod(tableSchema)`      |
+| PUT    | `/api/tables/:id`  | Update existing table        | `verifyToken`, `isAdmin`, `validateZod(tableSchema)`      |
+| DELETE | `/api/tables/:id`  | Delete table                 | `verifyToken`, `isAdmin`                                  |
+
+
+Menu Management Routes (Admin)
+md
+Copy
+Edit
+| Method | Endpoint           | Description                          | Middleware                                              |
+|--------|--------------------|--------------------------------------|----------------------------------------------------------|
+| GET    | `/api/menu`        | Get all menu items (with category)   | _Public_                                                 |
+| POST   | `/api/menu`        | Create new menu item                 | `verifyToken`, `isAdmin`, `validateZod(menuSchema)`      |
+| PUT    | `/api/menu/:id`    | Update existing menu item            | `verifyToken`, `isAdmin`, `validateZod(menuSchema)`      |
+| DELETE | `/api/menu/:id`    | Delete menu item                     | `verifyToken`, `isAdmin`            

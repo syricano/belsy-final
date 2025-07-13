@@ -124,3 +124,13 @@ export const suggestTablesSchema = z.object({
       message: 'Invalid reservation time',
     }),
 });
+
+
+// Menu Schema
+export const menuSchema = z.object({
+  name: z.string().min(2).max(100),
+  description: z.string().max(500).optional(),
+  price: z.number().positive(),
+  image: z.string().url().optional(),
+  categoryId: z.number().int().positive(),
+});

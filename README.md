@@ -167,3 +167,9 @@ Edit
 | POST   | `/api/menu`        | Create new menu item                 | `verifyToken`, `isAdmin`, `validateZod(menuSchema)`      |
 | PUT    | `/api/menu/:id`    | Update existing menu item            | `verifyToken`, `isAdmin`, `validateZod(menuSchema)`      |
 | DELETE | `/api/menu/:id`    | Delete menu item                     | `verifyToken`, `isAdmin`            
+
+
+| Method | Endpoint         | Description                          | Middleware                                              |
+|--------|------------------|--------------------------------------|----------------------------------------------------------|
+| GET    | `/api/contact`   | Get restaurant contact info          | _Public_                                                 |
+| PUT    | `/api/contact`   | Update or create contact info        | `verifyToken`, `isAdmin`, `validateZod(contactInfoSchema)` |

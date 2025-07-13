@@ -134,3 +134,11 @@ export const menuSchema = z.object({
   image: z.string().url().optional(),
   categoryId: z.number().int().positive(),
 });
+
+
+// Contact Info Schema
+export const contactInfoSchema = z.object({
+  email: z.string().email(),
+  phone: z.string().min(5).max(20),
+  address: z.string().min(5).max(200),
+});

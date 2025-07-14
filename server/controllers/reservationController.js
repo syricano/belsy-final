@@ -84,8 +84,8 @@ export const createReservation = asyncHandler(async (req, res) => {
   // Check for conflicts for each table within a 1.5-hour range
   const reservationDate = new Date(reservationTime);
   if (reservationDate < new Date()) {
-  throw new ErrorResponse('Reservation time cannot be in the past', 400);
-}
+    throw new ErrorResponse('Reservation time cannot be in the past', 400);
+  }
   const bufferStart = new Date(reservationDate.getTime() - 90 * 60 * 1000); // -1.5h
   const bufferEnd = new Date(reservationDate.getTime() + 90 * 60 * 1000);  // +1.5h
 

@@ -3,7 +3,7 @@ import axiosInstance from '@/config/axiosConfig';
 import { asyncHandler } from '@/utils';
 import {
   // MENU + CATEGORY
-  addMenuItem,
+  addMenuItem as menuAdder,
   updateMenuItem as menuUpdater,
   deleteMenuItem as menuDeleter,
   getMenu as fetchMenu,
@@ -46,7 +46,7 @@ const AdminContextProvider = ({ children }) => {
   }, [checkSession]);
 
   // ================== MENU ==================
-  const createMenuItem = (data) => asyncHandler(() => addMenuItem(data), 'Failed to create menu item');
+  const createMenuItem = (data) => asyncHandler(() => menuAdder(data), 'Failed to create menu item');
   const updateMenuItem = (id, data) => asyncHandler(() => menuUpdater(id, data), 'Failed to update menu item');
   const deleteMenuItem = (id) => asyncHandler(() => menuDeleter(id), 'Failed to delete menu item');
   const getMenu = () => asyncHandler(() => fetchMenu(), 'Failed to fetch menu');

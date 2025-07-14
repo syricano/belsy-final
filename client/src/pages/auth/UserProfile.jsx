@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '@/context';
 import { useNavigate, useLocation } from 'react-router';
+import { toast  } from 'react-hot-toast';
+
 
 const UserProfile = () => {
   const { user, loading, updateProfile, deleteAccount, signout, setCheckSession } = useAuth();
@@ -49,10 +51,10 @@ const UserProfile = () => {
     try {
       setSaving(true);
       await updateProfile(formData);
-      alert('Profile updated successfully');
+      toast.success('Profile updated successfully');
       setIsEditing(false);
     } catch (err) {
-      alert(err.message || 'Update failed');
+      toast.error('Update failed');
     } finally {
       setSaving(false);
     }
@@ -74,10 +76,10 @@ const UserProfile = () => {
 
     try {
       await deleteAccount({ password });
-      alert('Account deleted successfully');
+      toast.success('Account deleted successfully');
       navigate('/');
     } catch (err) {
-      alert(err.message || 'Failed to delete account');
+      toast.error('Failed to delete account');
     }
   };
 

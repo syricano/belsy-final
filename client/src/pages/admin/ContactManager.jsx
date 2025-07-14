@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAdmin } from '@/context';
 import { errorHandler } from '@/utils/errorHandler';
+import  Toast  from 'react-hot-toast';
 
 const defaultInfo = {
   phone: '',
@@ -34,7 +35,7 @@ const ContactManager = () => {
     setSubmitting(true);
 
     updateContactInfo(form)
-      .then(() => alert('Contact information updated successfully!'))
+      .then(() => toast.success('Contact information updated successfully!'))
       .catch((err) => errorHandler(err, 'Update failed'))
       .finally(() => setSubmitting(false));
   };

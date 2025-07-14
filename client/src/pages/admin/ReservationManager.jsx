@@ -1,113 +1,117 @@
 import React, { useEffect, useState } from 'react';
-import { useAdmin } from '@/context';
-import { errorHandler } from '@/utils/errorHandler';
+import { getAllReservations, approveReservation, declineReservation } from '@/data';
+import { asyncHandler, errorHandler } from '@/utils';
+import { toast } from 'react-hot-toast';
+import AdminResponseModal from './AdminResponseModal';
 
 const ReservationManager = () => {
-  const {
-    getAllReservations,
-    approveReservation,
-    declineReservation,
-  } = useAdmin();
-
   const [reservations, setReservations] = useState([]);
-  const [statusFilter, setStatusFilter] = useState('All');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadReservations();
-  }, []);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
-  const loadReservations = () => {
-    getAllReservations()
-      .then((res) => setReservations(res))
-      .catch((err) => errorHandler(err, 'Failed to fetch reservations'))
+  const fetchReservations = () => {
+    setLoading(true);
+    asyncHandler(getAllReservations, 'Failed to load reservations')
+      .then(setReservations)
+      .catch(errorHandler)
       .finally(() => setLoading(false));
   };
 
-  const handleStatusUpdate = async (id, action) => {
-    let adminResponse = prompt(`Enter a response to ${action} this reservation:`)?.trim();
-    if (!adminResponse) adminResponse = action === 'approve' ? 'Approved' : 'Declined';
+  useEffect(() => {
+    fetchReservations();
+  }, []);
 
-    const fn = action === 'approve' ? approveReservation : declineReservation;
-
-    fn(id, adminResponse)
-      .then((res) => {
-        setReservations((prev) =>
-          prev.map((r) => (r.id === id ? res.reservation : r))
-        );
-      })
-      .catch((err) => errorHandler(err, `Failed to ${action} reservation`));
+  const handleActionClick = (id, action) => {
+    setSelectedId(id);
+    setSelectedAction(action); // 'approve' or 'decline'
+    setModalOpen(true);
   };
 
-  const filtered = statusFilter === 'All'
-    ? reservations
-    : reservations.filter((r) => r.status === statusFilter);
+  const handleAdminSubmit = (responseText) => {
+    const service = selectedAction === 'approve' ? approveReservation : declineReservation;
 
-  if (loading) return <p className="text-center">Loading reservations...</p>;
+    asyncHandler(() => service(selectedId,  responseText ), `Failed to ${selectedAction}`)
+      .then(() => {
+        toast.success(`Reservation ${selectedAction}d`);
+        fetchReservations();
+      })
+      .catch(errorHandler);
+  };
 
   return (
-    <section className="w-full bg-white dark:bg-base-100 text-[var(--text-color)] p-4 rounded-xl shadow">
-      <div className="mb-6 flex flex-wrap gap-4 items-center">
-        <label className="font-semibold">Filter by Status:</label>
-        <select
-          className="select select-bordered max-w-xs"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option>All</option>
-          <option>Pending</option>
-          <option>Approved</option>
-          <option>Declined</option>
-        </select>
-      </div>
+    <section className="space-y-6 p-6">
+      <h2 className="text-2xl font-bold mb-4 text-primary">Reservations</h2>
 
-      <div className="overflow-x-auto rounded-lg shadow">
-        <table className="table table-zebra w-full text-sm bg-white dark:bg-base-200">
-          <thead className="bg-base-200 text-[var(--text-color)]">
-            <tr>
-              <th>ID</th>
-              <th>Guest</th>
-              <th>Time</th>
-              <th>Table</th>
-              <th>Status</th>
-              <th>Note</th>
-              <th>Response</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((res) => (
-              <tr key={res.id}>
-                <td>{res.id}</td>
-                <td>{res.guestName || res.User?.username}</td>
-                <td>{new Date(res.reservationTime).toLocaleString()}</td>
-                <td>{res.Table?.number}</td>
-                <td>{res.status}</td>
-                <td>{res.note}</td>
-                <td>{res.adminResponse}</td>
-                <td>
-                  {res.status === 'Pending' && (
-                    <div className="flex flex-col md:flex-row gap-2">
-                      <button
-                        className="btn btn-sm md:btn-md btn-success"
-                        onClick={() => handleStatusUpdate(res.id, 'approve')}
-                      >
-                        ✅ Approve
-                      </button>
-                      <button
-                        className="btn btn-sm md:btn-md btn-error"
-                        onClick={() => handleStatusUpdate(res.id, 'decline')}
-                      >
-                        ❌ Decline
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {loading ? (
+        <p className="text-gray-500">Loading...</p>
+      ) : reservations.length === 0 ? (
+        <p className="text-gray-500">No reservations found.</p>
+      ) : (
+        reservations.map((res) => (
+          <div
+            key={res.id}
+            className="bg-white dark:bg-base-100 p-4 rounded-xl shadow border space-y-2"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <div className="font-semibold text-lg text-amber-900">
+                {new Date(res.reservationTime).toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-500">Reservation ID: #{res.id}</div>
+            </div>
+
+            <div className="text-gray-700 dark:text-gray-300 space-y-1">
+              <p><span className="font-medium">Guests:</span> {res.guests}</p>
+              <p><span className="font-medium">Table:</span> {res.Table?.number || 'Not assigned'}</p>
+              <p><span className="font-medium">Note:</span> {res.note || '—'}</p>
+              <p>
+                <span className="font-medium">Status:</span>{' '}
+                <span className={`font-bold ${
+                  res.status === 'Approved' ? 'text-green-600' :
+                  res.status === 'Declined' ? 'text-red-600' :
+                  'text-yellow-600'
+                }`}>
+                  {res.status}
+                </span>
+              </p>
+              {res.adminResponse && (
+                <p className="italic text-sm text-gray-500">“{res.adminResponse}”</p>
+              )}
+            </div>
+
+            <div className="text-sm text-gray-600 pt-2 border-t">
+              <p><span className="font-medium">Name:</span> {res.guestName || res.User?.username || 'Anonymous'}</p>
+              <p><span className="font-medium">Email:</span> {res.guestEmail || res.User?.email || '—'}</p>
+              <p><span className="font-medium">Phone:</span> {res.guestPhone || res.User?.phone || '—'}</p>
+            </div>
+
+            {res.status === 'Pending' && (
+              <div className="flex gap-4 mt-4">
+                <button
+                  className="btn btn-success btn-sm"
+                  onClick={() => handleActionClick(res.id, 'approve')}
+                >
+                  Approve
+                </button>
+                <button
+                  className="btn btn-error btn-sm"
+                  onClick={() => handleActionClick(res.id, 'decline')}
+                >
+                  Decline
+                </button>
+              </div>
+            )}
+          </div>
+        ))
+      )}
+
+      <AdminResponseModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleAdminSubmit}
+      />
     </section>
   );
 };

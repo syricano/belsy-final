@@ -132,7 +132,7 @@ const ReservationForm = ({ onSuccess }) => {
       });
       setTablesCount(null);
     }, 'Booking failed. Please try again.')
-      .catch((err) => toast.error(err.message))
+      .catch(errorHandler)
       .finally(() => setLoading(false));
   };
 

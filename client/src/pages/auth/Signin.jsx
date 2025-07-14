@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '@/context';
 import { useLocation } from 'react-router';
+import { asyncHandler } from '@/utils';
 
 const Signin = () => {
   const [form, setForm] = useState({ identifier: '', password: '' });
@@ -18,15 +19,10 @@ const Signin = () => {
     setError('');
     setLoading(true);
 
-    try {
-      await signin(form);
-      navigate(location.state?.next || '/profile');
-    } catch (err) {
-      console.error(err);
-      setError(err?.response?.data?.error || 'Signin failed');
-    } finally {
-      setLoading(false);
-    }
+    asyncHandler(() => signin(form), 'Signin failed')
+      .then(() => navigate(location.state?.next || '/profile'))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   };
 
   return (

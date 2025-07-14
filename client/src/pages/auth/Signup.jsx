@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '@/context';
+import { asyncHandler } from '@/utils';
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -20,12 +21,10 @@ const Signup = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    try {
-      await signup(form)
-      navigate('/');
-    } catch (err) {
-      console.error(err);
-    }
+
+    asyncHandler(() => signup(form), 'Signup failed')
+      .then(() => navigate('/'))
+      .catch((err) => console.error(err.message));
   };
 
   return (

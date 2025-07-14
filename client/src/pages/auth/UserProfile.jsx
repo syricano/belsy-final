@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context';
 import { useNavigate, useLocation } from 'react-router';
 import { toast  } from 'react-hot-toast';
+import { asyncHandler } from '@/utils';
 
 
 const UserProfile = () => {
@@ -42,22 +43,17 @@ const UserProfile = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleUpdate = async () => {
-    if (!isEditing) {
-      setIsEditing(true);
-      return;
-    }
+  const handleUpdate = () => {
+    if (!isEditing) return setIsEditing(true);
 
-    try {
-      setSaving(true);
-      await updateProfile(formData);
-      toast.success('Profile updated successfully');
-      setIsEditing(false);
-    } catch (err) {
-      toast.error('Update failed');
-    } finally {
-      setSaving(false);
-    }
+    setSaving(true);
+    asyncHandler(() => updateProfile(formData), 'Update failed')
+      .then(() => {
+        toast.success('Profile updated successfully');
+        setIsEditing(false);
+      })
+      .catch(errorHandler)
+      .finally(() => setSaving(false));
   };
 
   const handleAccountCloser = async () => {
@@ -68,19 +64,18 @@ const UserProfile = () => {
     
   };
 
-  const handleFinalDelete = async () => {
+  const handleFinalDelete = () => {
     if (!password) {
       alert('Please enter your password to confirm account deletion.');
       return;
     }
 
-    try {
-      await deleteAccount({ password });
-      toast.success('Account deleted successfully');
-      navigate('/');
-    } catch (err) {
-      toast.error('Failed to delete account');
-    }
+    asyncHandler(() => deleteAccount({ password }), 'Delete failed')
+      .then(() => {
+        toast.success('Account deleted successfully');
+        navigate('/');
+      })
+      .catch(errorHandler)
   };
 
   return (

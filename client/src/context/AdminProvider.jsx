@@ -4,25 +4,25 @@ import { asyncHandler } from '@/utils';
 import {
   // MENU + CATEGORY
   addMenuItem,
-  updateMenuItem,
-  deleteMenuItem,
+  updateMenuItem as menuUpdater,
+  deleteMenuItem as menuDeleter,
   getMenu as fetchMenu,
   getCategories as fetchCategories,
-  addCategory,
-  updateCategory,
-  deleteCategory,
+  addCategory as categoryAdder,
+  updateCategory as categoryUpdater,
+  deleteCategory as categoryDeleter,
 
   // DUTY
   getAllDutyHours as fetchDutyHours,
-  addDutyHour,
-  updateDutyHour,
-  deleteDutyHour,
+  addDutyHour as addWorkingHour,
+  updateDutyHour as updateWorkingHour,
+  deleteDutyHour as deleteWorkingHour,
 
   // TABLES
-  addTable,
-  updateTable,
+  addTable as tableAdder,
+  updateTable as tableUpdater,
   deleteTable as removeTable,
-  getTables,
+  getTables as fetchTable,
 
   // RESERVATIONS
   getAllReservations as getAdminReservations,
@@ -47,27 +47,27 @@ const AdminContextProvider = ({ children }) => {
 
   // ================== MENU ==================
   const createMenuItem = (data) => asyncHandler(() => addMenuItem(data), 'Failed to create menu item');
-  const updateMenuItem = (id, data) => asyncHandler(() => updateMenuItem(id, data), 'Failed to update menu item');
-  const deleteMenuItem = (id) => asyncHandler(() => deleteMenuItem(id), 'Failed to delete menu item');
+  const updateMenuItem = (id, data) => asyncHandler(() => menuUpdater(id, data), 'Failed to update menu item');
+  const deleteMenuItem = (id) => asyncHandler(() => menuDeleter(id), 'Failed to delete menu item');
   const getMenu = () => asyncHandler(() => fetchMenu(), 'Failed to fetch menu');
   const getCategories = () => asyncHandler(() => fetchCategories(), 'Failed to fetch categories');
 
   // ================== CATEGORY ==================
-  const createCategory = (data) => asyncHandler(() => addCategory(data), 'Failed to create category');
-  const updateCategory = (id, data) => asyncHandler(() => updateCategory(id, data), 'Failed to update category');
-  const deleteCategory = (id) => asyncHandler(() => deleteCategory(id), 'Failed to delete category');
+  const createCategory = (data) => asyncHandler(() => categoryAdder(data), 'Failed to create category');
+  const updateCategory = (id, data) => asyncHandler(() => categoryUpdater(id, data), 'Failed to update category');
+  const deleteCategory = (id) => asyncHandler(() => categoryDeleter(id), 'Failed to delete category');
 
   // ================== DUTY ==================
   const getAllDutyHours = () => asyncHandler(() => fetchDutyHours(), 'Failed to fetch duty hours');
-  const createDuty = (data) => asyncHandler(() => addDutyHour(data), 'Failed to create duty');
-  const updateDuty = (id, data) => asyncHandler(() => updateDutyHour(id, data), 'Failed to update duty');
-  const deleteDuty = (id) => asyncHandler(() => deleteDutyHour(id), 'Failed to delete duty');
+  const createDuty = (data) => asyncHandler(() => addWorkingHour(data), 'Failed to create duty');
+  const updateDuty = (id, data) => asyncHandler(() => updateWorkingHour(id, data), 'Failed to update duty');
+  const deleteDuty = (id) => asyncHandler(() => deleteWorkingHour(id), 'Failed to delete duty');
 
   // ================== TABLE ==================
-  const createTable = (data) => asyncHandler(() => addTable(data), 'Failed to create table');
-  const updateTable = (id, data) => asyncHandler(() => updateTable(id, data), 'Failed to update table');
+  const createTable = (data) => asyncHandler(() => tableAdder(data), 'Failed to create table');
+  const updateTable = (id, data) => asyncHandler(() => tableUpdater(id, data), 'Failed to update table');
   const deleteTable = (id) => asyncHandler(() => removeTable(id), 'Failed to delete table');
-  const getTables = () => asyncHandler(() => axiosInstance.get('/tables'), 'Failed to fetch tables');
+  const getTables = () => asyncHandler(() => fetchTable(), 'Failed to fetch tables');
 
   // ================== RESERVATIONS ==================
   const getAllReservations = () => asyncHandler(() => getAdminReservations(), 'Failed to fetch reservations');

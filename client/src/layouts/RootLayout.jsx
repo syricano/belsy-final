@@ -14,9 +14,7 @@ const RootLayout = () => {
                 <Outlet />
             </main>
 
-            <div className="bg-dynamic-footer text-[var(--text-color)]">
-                <Footer />
-            </div>
+            <Footer />
         </>
     )
 }

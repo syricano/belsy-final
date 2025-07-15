@@ -1,25 +1,18 @@
-// Exporting all pages
+import About from "./About";
+import HomePage from "./HomePage";
+import ReservationsPage from "./ReservationsPage";
+import MenuPage from "./MenuPage";
+import NotFoundPage from "./NotFoundPage";
+import AdminPage from "./AdminPage";
+import UserPage from "./UserPage";
 
-// Auth Pages
-import Signin from './auth/Signin';
-import Signup from './auth/Signup';
-import UserProfile from './auth/UserProfile';
-import AdminDashboard from './admin/AdminDashboard';
 
-// Other Pages
-import HomePage from './HomePage';
-import ReservationsPage from './ReservationsPage';
-import MenuPage from './MenuPage';
-import NotFoundPage from './NotFoundPage';
-import About from './About';
-export {
+export {  
   HomePage,
   ReservationsPage,
   MenuPage,
-  AdminDashboard,
   NotFoundPage,
-  Signin,
-  Signup,
-  UserProfile,
-  About
+  AdminPage,
+  UserPage,
+    About
 };

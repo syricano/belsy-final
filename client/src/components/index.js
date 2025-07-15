@@ -2,34 +2,47 @@
 import Navbar from './UI/Navbar';
 import Footer from './UI/Footer';
 import ThemeToggle from './UI/ThemeToggle';
-import Button from './UI/Button';  // Example of a generic button component
+import Button from './UI/Button';  
+import Card from './UI/Card';
+import Modal from './UI/Modal';
+import HeroSection from './UI/HeroSection';
+import ImageSlider from './UI/ImageSlider';
+
+
+// user interface components
+
+// Exporting Auth components
+import Signin from './auth/Signin';
+import Signup from './auth/Signup';
+
 
 // Exporting all Reservations components
 import ReservationForm from './Reservations/ReservationForm';
 import ReservationCard from './Reservations/ReservationCard';
 import ReservationStatus from './Reservations/ReservationStatus';
 
-// Exporting all Tables components
-import TableList from './Tables/TableList';
-import TableCard from './Tables/TableCard';
-import TableAvailability from './Tables/TableAvailability';
-import TableLocationFilter from './Tables/TableLocationFilter'; 
-
 // Exporting all Menus components
 import MenuCard from './Menus/MenuCard';
 import MenuItem from './Menus/MenuItem';
 import MenuCategory from './Menus/MenuCategory';
 
+// admin interface components
+
 // Exporting all Admin components
 import AdminDashboard from './Admin/AdminDashboard';
-import BookingManagement from './Admin/BookingManagement';
-import MenuManagement from './Admin/MenuManagement';
-import WorkingHoursManagement from './Admin/WorkingHoursManagement';
-import ContactInfoManagement from './Admin/ContactInfoManagement';
-import TableManagement from './Admin/TableManagement'; // New component for managing tables
+import ReservationManager from './Admin/ReservationManager';
+import MenuManager from './Admin/MenuManager';
+import DutyManager from './Admin/DutyManager';
+import ContactManager from './Admin/ContactManager';
+import TableManager from './Admin/TableManager'; 
+import ReservationModal from './Reservations/ReservationModal';
+//import BookReservationButton from './Reservations/BookReservationButton';
 
 // Exporting Notifications component
 import NotificationModal from './Notifications/NotificationModal';
+
+
+
 
 // Export all components together for easy import
 export {
@@ -38,17 +51,21 @@ export {
   Footer,
   ThemeToggle,
   Button,
+  Card,
+  Modal,
+  HeroSection,
+  ImageSlider,
+
+  // Auth components
+  Signin,
+  Signup,
 
   // Reservations components
   ReservationForm,
   ReservationCard,
   ReservationStatus,
-
-  // Tables components
-  TableList,
-  TableCard,
-  TableAvailability,
-  TableLocationFilter,
+  ReservationModal,
+//  BookReservationButton,
 
   // Menus components
   MenuCard,
@@ -57,11 +74,11 @@ export {
 
   // Admin components
   AdminDashboard,
-  BookingManagement,
-  MenuManagement,
-  WorkingHoursManagement,
-  ContactInfoManagement,
-  TableManagement,
+  ReservationManager,
+  MenuManager,
+  DutyManager,
+  ContactManager,
+  TableManager,
 
   // Notifications component
   NotificationModal

@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import ReservationCard from '../components/Reservations/ReservationCard';
-import ReservationForm from '../components/Reservations/ReservationForm';
-import ReservationStatus from '../components/Reservations/ReservationStatus';
+import { useState } from 'react';
+import ReservationModal from '@/components/Reservations/ReservationModal';
 
 const ReservationsPage = () => {
-  const handleNewReservation = (newRes) => {
-    // Optional: show toast or confirmation
-    console.log('Reservation success:', newRes);
-  }
+  const [showModal, setShowModal] = useState(false);
+  const handleSuccess = (data) => {
+    console.log('Reservation created:', data);
+    // Optionally show toast or refresh UI
+  };
 
   return (
-    <section className="min-h-screen max-w-full flex justify-center">
-      <div className="px-6 py-16 max-w-7xl mx-auto ">
-        {/* Heading */}
-        <div className="mb-10 text-center">
-          <h1 className="text-4xl font-serif text-center text-primary font-semibold bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
-            Reserve Your Table
-          </h1>
-        </div>
+    <section className="min-h-screen py-16 max-w-4xl mx-auto">
+      <h1 className="text-4xl font-bold text-center mb-8">Reserve Your Table</h1>
 
-        {/* Form */}
-        <div className='mb-10 text-center mx-auto'>
-          <ReservationForm onSuccess={handleNewReservation}  />
-        </div>
-
-       
-      
+      <div className="text-center">
+        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+          Book Now
+        </button>
       </div>
+
+      {showModal && (
+        <ReservationModal onClose={() => setShowModal(false)} onSuccess={handleSuccess} />
+      )}
     </section>
   );
 };

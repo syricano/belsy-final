@@ -1,6 +1,6 @@
 import React from 'react';
-import HeroSection from '../components/UI/Hero/HeroSection';
-import ImageSlider from '../components/UI/Hero/ImageSlider';
+import HeroSection from '../components/UI/HeroSection';
+import ImageSlider from '../components/UI/ImageSlider';
 
 const HomePage = () => {
   return (

@@ -3,9 +3,10 @@ import { useAuth } from '@/context';
 import { useNavigate, useLocation } from 'react-router';
 import { toast  } from 'react-hot-toast';
 import { asyncHandler } from '@/utils';
+import { errorHandler } from '@/utils';
 
 
-const UserProfile = () => {
+const UserPage = () => {
   const { user, loading, updateProfile, deleteAccount, signout, setCheckSession } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -160,4 +161,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserPage;

@@ -1,16 +1,18 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { RootLayout, ProtectedLayout } from '@/layouts';
 import {
-  HomePage,
-  Signin,
-  Signup,
-  UserProfile,
+  AdminPage,
+  UserPage,
+  HomePage,  
   ReservationsPage,
   MenuPage,
   NotFoundPage,
-  AdminDashboard,
-  About
+  About,
 } from '@/pages';
+import {
+  Signin,
+  Signup
+} from '@/components'
 import './App.css';
 
 const App = () => {
@@ -29,8 +31,8 @@ const App = () => {
 
           {/* Protected Pages nested inside RootLayout */}
           <Route element={<ProtectedLayout />}>
-            <Route path="profile" element={<UserProfile />} />
-            <Route path="admin" element={<AdminDashboard />} />
+            <Route path="profile" element={<UserPage />} />
+            <Route path="admin" element={<AdminPage />} />
           </Route>
 
           {/* Catch-all for 404 (inside RootLayout to show Navbar/Footer) */}

@@ -31,29 +31,53 @@ export const createReservation = asyncHandler(async (req, res) => {
 
   const duty = await Duty.findOne({ where: { dayOfWeek } });
   if (!duty) throw new ErrorResponse(`No working hours set for ${dayOfWeek}`, 400);
-  if (time < duty.startTime || time > duty.endTime) {
-    throw new ErrorResponse('Reservation time is outside of working hours', 400);
+
+  const timeToMinutes = (str) => {
+    const [h, m] = str.split(':').map(Number);
+    return h * 60 + m;
+  };
+
+  const timeMinutes = timeToMinutes(time);
+  const startMinutes = timeToMinutes(duty.startTime);
+  const endMinutes = timeToMinutes(duty.endTime);
+
+  if (timeMinutes < startMinutes || timeMinutes >= endMinutes) {
+    throw new ErrorResponse('Reservation time is outside working hours', 400);
   }
 
   // Admin booking for user or guest
-  if (req.user?.role === 'Admin') {
-    if (email || phone) {
-      const existingUser = await User.findOne({
-        where: {
-          [Op.or]: [{ email }, { phone }]
-        }
-      });
+  
+  // 🧠 CASE 1: Logged-in user (User or Admin) booking for themselves
+  if (req.userId && (!email || email === req.user?.email)) {
+    userId = req.userId;
+  } 
 
-      if (existingUser) {
-        userId = existingUser.id;
-      } else {
-        userId = null;
-        guestName = name;
-        guestEmail = email;
-        guestPhone = phone;
+  // 🧠 CASE 2: Admin booking for someone else (user or guest)
+  else if (req.user?.role === 'Admin' && (email || phone)) {
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email }, { phone }]
       }
+    });
+
+    if (existingUser) {
+      userId = existingUser.id;
+    } else {
+      userId = null;
+      guestName = name;
+      guestEmail = email;
+      guestPhone = phone;
     }
   }
+
+  // 🧠 CASE 3: Guest user (no token at all)
+  else {
+    userId = null;
+    guestName = name;
+    guestEmail = email;
+    guestPhone = phone;
+  }
+  
 
   // Abuse protection — count total active reservations for the user
   if (userId !== null && userId !== undefined) {
@@ -81,13 +105,13 @@ export const createReservation = asyncHandler(async (req, res) => {
     throw new ErrorResponse('Some selected tables are unavailable or invalid', 400);
   }
 
-  // Check for conflicts for each table within a 1.5-hour range
   const reservationDate = new Date(reservationTime);
   if (reservationDate < new Date()) {
     throw new ErrorResponse('Reservation time cannot be in the past', 400);
   }
-  const bufferStart = new Date(reservationDate.getTime() - 90 * 60 * 1000); // -1.5h
-  const bufferEnd = new Date(reservationDate.getTime() + 90 * 60 * 1000);  // +1.5h
+
+  const bufferStart = new Date(reservationDate.getTime() - 90 * 60 * 1000);
+  const bufferEnd = new Date(reservationDate.getTime() + 90 * 60 * 1000);
 
   const conflicts = await Reservation.findAll({
     where: {
@@ -103,7 +127,6 @@ export const createReservation = asyncHandler(async (req, res) => {
     throw new ErrorResponse('One or more selected tables are already reserved at this time', 409);
   }
 
-  // ✅ Create reservations inside a transaction
   const newReservations = await sequelize.transaction(async (t) => {
     const entries = [];
     for (const tableId of tableIds) {
@@ -123,7 +146,6 @@ export const createReservation = asyncHandler(async (req, res) => {
       );
       entries.push(entry);
 
-      // Mark the table unavailable
       await Table.update({ isAvailable: false }, {
         where: { id: tableId },
         transaction: t
@@ -137,7 +159,6 @@ export const createReservation = asyncHandler(async (req, res) => {
     reservations: newReservations
   });
 });
-
 
 // GET /api/reservations/mine
 export const getMyReservations = asyncHandler(async (req, res) => {
@@ -205,10 +226,9 @@ export const suggestTables = asyncHandler(async (req, res) => {
   const neededTables = Math.ceil(guests / 2);
 
   const reservationDate = new Date(reservationTime);
-  const bufferStart = new Date(reservationDate.getTime() - 90 * 60 * 1000); // -1.5h
-  const bufferEnd = new Date(reservationDate.getTime() + 90 * 60 * 1000);  // +1.5h
+  const bufferStart = new Date(reservationDate.getTime() - 90 * 60 * 1000);
+  const bufferEnd = new Date(reservationDate.getTime() + 90 * 60 * 1000);
 
-  // Step 1: Find reserved tables at that time
   const conflicts = await Reservation.findAll({
     where: {
       reservationTime: {
@@ -221,7 +241,6 @@ export const suggestTables = asyncHandler(async (req, res) => {
 
   const reservedIds = conflicts.map((r) => r.tableId);
 
-  // Step 2: Find available tables
   const availableTables = await Table.findAll({
     where: {
       isAvailable: true,

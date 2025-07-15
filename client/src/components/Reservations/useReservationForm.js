@@ -1,10 +1,14 @@
-// useReservationForm.js
 import { useEffect, useState } from 'react';
 import { createReservation, suggestTables } from '@/data';
 import { getAllDutyHours } from '@/data/duty';
 import { getAvailableTimeSlots, asyncHandler, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context';
+
+const toMinutes = (str) => {
+  const [h, m] = str.split(':').map(Number);
+  return h * 60 + (isNaN(m) ? 0 : m);
+};
 
 const useReservationForm = ({ onSuccess, onClose }) => {
   const { user } = useAuth();
@@ -64,7 +68,6 @@ const useReservationForm = ({ onSuccess, onClose }) => {
     }));
   };
 
-  // 🔍 Auto-check availability when form is ready
   useEffect(() => {
     const shouldCheck = form.guests && form.date && form.time;
     if (!shouldCheck) return;
@@ -91,19 +94,27 @@ const useReservationForm = ({ onSuccess, onClose }) => {
       return;
     }
 
-    setLoading(true);
-    setErrorMsg(null);
-
     const selectedDate = new Date(form.reservationTime);
     const weekday = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
-    const timeStr = selectedDate.toTimeString().slice(0, 5);
-
     const duty = dutyHours.find(d => d.dayOfWeek === weekday);
-    if (!duty) throw new Error('No working hours set for this day');
 
-    if (timeStr < duty.startTime || timeStr > duty.endTime)
-    throw new Error(`Selected time ${timeStr} is outside working hours (${duty.startTime} – ${duty.endTime})`);
+    if (!duty) {
+      setErrorMsg(`No working hours set for ${weekday}`);
+      return;
+    }
 
+    const selectedTime = form.time;
+    const timeMinutes = toMinutes(selectedTime);
+    const startMinutes = toMinutes(duty.startTime);
+    const endMinutes = toMinutes(duty.endTime);
+
+    if (timeMinutes < startMinutes || timeMinutes >= endMinutes) {
+      setErrorMsg(`Selected time ${selectedTime} is outside working hours (${duty.startTime} – ${duty.endTime})`);
+      return;
+    }
+
+    setLoading(true);
+    setErrorMsg(null);
 
     asyncHandler(async () => {
       const suggestion = await suggestTables({

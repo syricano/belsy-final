@@ -30,6 +30,7 @@ import DutyManager from './Admin/DutyManager';
 import ContactManager from './Admin/ContactManager';
 import TableManager from './Admin/TableManager'; 
 import ReservationModal from './Reservations/ReservationModal';
+import OverviewCards from './Admin/OverviewCards';
 //import BookReservationButton from './Reservations/BookReservationButton';
 
 // Exporting Notifications component
@@ -68,6 +69,7 @@ export {
   DutyManager,
   ContactManager,
   TableManager,
+  OverviewCards,
 
   // Notifications component
   NotificationModal

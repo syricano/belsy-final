@@ -1,22 +1,161 @@
-/* ======================================
-   Global Styles
-====================================== */
-* {
-  margin: 0;
-  padding: 0;
+/* ================================
+   THEME: Light / Dark + Brand Colors
+================================= */
+:root {
+  --bg-page: #FFF9E5;
+  --bg-card: #DCD0A8;
+  --primary-color: #004030;
+  --accent-color: #4A9782;
+  --text-color: #004030;
+  --hover-color: #4A9782;
+  --border-color: #DCD0A8;
+}
+
+[data-theme='dark'] {
+  --bg-page: #004030;
+  --bg-card: #4A9782;
+  --primary-color: #DCD0A8;
+  --accent-color: #FFF9E5;
+  --text-color: #FFF9E5;
+  --hover-color: #DCD0A8;
+  --border-color: #4A9782;
+}
+
+/* ================================
+   BASE: Resets + Typography
+================================= */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  transition: all 0.3s ease;
 }
 
-html, body {
-  height: 100%;
-  font-family: 'Lato', sans-serif;
-  line-height: 1.6;
-  overflow-x: hidden;
+html {
+  scroll-behavior: smooth;
 }
 
-main {
-  min-height: 100vh;
-  background-color: var(--main-bg-color);
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  color: var(--text-color);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--hover-color);
+}
+
+/* ================================
+   LAYOUT UTILITIES
+================================= */
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.bg-dynamic-main {
+  background-color: var(--bg-page);
+  color: var(--text-color);
+}
+
+.text-dynamic {
+  color: var(--text-color);
+}
+
+.card-bg {
+  background-color: var(--bg-card);
+}
+
+.border-dynamic {
+  border-color: var(--border-color);
+}
+
+.shadow-soft {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.rounded-xl {
+  border-radius: 1rem;
+}
+
+/* ================================
+   BUTTONS
+================================= */
+.btn-custom {
+  background-color: var(--accent-color);
+  color: #fff;
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-custom:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
+}
+
+/* ================================
+   INPUTS / FORMS
+================================= */
+input, textarea, select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-color);
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* ================================
+   MODALS (Optional Defaults)
+================================= */
+.modal-bg {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+/* ================================
+   FOOTER + NAV (Recommended styling areas)
+================================= */
+.footer-section {
+  background-color: var(--primary-color);
+  color: var(--accent-color);
+  padding: 2rem;
+  text-align: center;
+}
+
+.navbar-section {
+  background-color: var(--bg-page);
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(6px);
+}

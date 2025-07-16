@@ -1,17 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css'
-import App from './App.jsx'
-import { AuthContextProvider } from '@/context'; 
-import  AdminContextProvider  from './context/AdminProvider';
+import './index.css';
+import App from './App.jsx';
 
+import { AuthContextProvider } from '@/context';
+import AdminContextProvider from './context/AdminProvider';
+import { ModalProvider } from '@/context/ModalContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AdminContextProvider>
       <AuthContextProvider>
-        <App />
+        <ModalProvider>
+          <App />
+        </ModalProvider>
       </AuthContextProvider>
-    </AdminContextProvider>    
+    </AdminContextProvider>
   </React.StrictMode>
 );

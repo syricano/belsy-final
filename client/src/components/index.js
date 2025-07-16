@@ -11,11 +11,6 @@ import ImageSlider from './UI/ImageSlider';
 
 // user interface components
 
-// Exporting Auth components
-import Signin from './auth/Signin';
-import Signup from './auth/Signup';
-
-
 // Exporting all Reservations components
 import ReservationForm from './Reservations/ReservationForm';
 import ReservationStatus from './Reservations/ReservationStatus';
@@ -53,11 +48,7 @@ export {
   Card,
   Modal,
   HeroSection,
-  ImageSlider,
-
-  // Auth components
-  Signin,
-  Signup,
+  ImageSlider, 
 
   // Reservations components
   ReservationForm,  

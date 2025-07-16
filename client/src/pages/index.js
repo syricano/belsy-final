@@ -5,7 +5,8 @@ import MenuPage from "./MenuPage";
 import NotFoundPage from "./NotFoundPage";
 import AdminPage from "./AdminPage";
 import UserPage from "./UserPage";
-
+import Signin from "./Signin";
+import Signup from "./Signup";
 
 export {  
   HomePage,
@@ -14,5 +15,7 @@ export {
   NotFoundPage,
   AdminPage,
   UserPage,
+  Signin,
+  Signup,
     About
 };

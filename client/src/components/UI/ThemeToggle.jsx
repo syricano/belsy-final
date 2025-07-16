@@ -17,6 +17,7 @@ const ThemeToggle = () => {
     document.documentElement.setAttribute('data-theme', newTheme)
     localStorage.setItem('theme', newTheme)
   }
+  
 
   return (
     <label className="swap swap-rotate">

@@ -4,15 +4,13 @@ import {
   AdminPage,
   UserPage,
   HomePage,  
-  ReservationsPage,
   MenuPage,
   NotFoundPage,
+  Signin,
+  Signup,
   About,
 } from '@/pages';
-import {
-  Signin,
-  Signup
-} from '@/components'
+
 import './App.css';
 
 const App = () => {
@@ -26,7 +24,6 @@ const App = () => {
           <Route path="signin" element={<Signin />} />
           <Route path="signup" element={<Signup />} />
           <Route path="menu" element={<MenuPage />} />
-          <Route path="reservations" element={<ReservationsPage />} />
           <Route path="about" element={<About />} />
 
           {/* Protected Pages nested inside RootLayout */}

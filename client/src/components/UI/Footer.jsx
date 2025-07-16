@@ -1,18 +1,43 @@
-import { Link } from 'react-router'; // Ensure you're using 'react-router-dom' for navigation
+import { Link } from 'react-router'; 
 
 const Footer = () => {
   return (
-    <footer className='footer-section' >
-      <div className="px-4">
-        <aside className="text-center sm:text-left">
-          <p className='text-center '>
-            Copyright © {new Date().getFullYear()} Belsy Restaurant – All rights reserved
-          </p>
-        </aside>
-      </div>
+    <footer className="footer belsy-footer sm:footer-horizontal bg-[#004030] text-[#FFF9E5] px-6 py-12">
+      {/* Left/Logo */}
+      <aside className="space-y-2">
+        <div className="flex items-center gap-3">
+          <img src="/images/belsy-logo.jpg" alt="Belsy Logo" className="w-12 h-12 object-cover rounded-full border border-[#DCD0A8]" />
+          <span className="text-xl font-serif tracking-wide">Belsy Restaurant</span>
+        </div>
+        <p className="max-w-xs text-sm opacity-80">
+          Exquisite oriental cuisine served in a luxury ambiance. Your table is always waiting.
+        </p>
+        <p className="text-xs opacity-70 mt-2">
+          © {new Date().getFullYear()} Belsy – All rights reserved
+        </p>
+      </aside>
+
+      {/* Center - Links */}
+      <nav>
+        <h6 className="footer-title text-[#DCD0A8]">Company</h6>
+        <Link to="/about" className="link link-hover">About</Link>
+        <Link to="/contact" className="link link-hover">Contact</Link>
+      </nav>
+
+      <nav>
+        <h6 className="footer-title text-[#DCD0A8]">Menu</h6>
+        <Link to="/menu" className="link link-hover">View Menu</Link>
+        <Link to="/reservations" className="link link-hover">Book a Table</Link>
+      </nav>
+
+      {/* Right - Social */}
+      <nav>
+        <h6 className="footer-title text-[#DCD0A8]">Social</h6>
+        <div className="grid grid-flow-col gap-4">
+        </div>
+      </nav>
     </footer>
   );
 };
 
 export default Footer;
-

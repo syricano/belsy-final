@@ -7,7 +7,6 @@ const Signup = () => {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
     phone: '',
     password: ''
@@ -47,12 +46,7 @@ const Signup = () => {
           placeholder="Last Name"
           onChange={handleChange}
         />
-        <input
-          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="username"
-          placeholder="Username"
-          onChange={handleChange}
-        />
+       
         <label>Phone</label>
         <input
           className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"

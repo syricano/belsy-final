@@ -1,16 +1,18 @@
 import axiosInstance from '@/config/axiosConfig';
 
 const baseURL = '/reservations';
+
 const handleRequest = async (callback, errorMsg) => {
   try {
     const res = await callback();
     return res.data;
   } catch (error) {
     const msg =
-    error.response?.data?.error ||
-    error.response?.data?.message ||
-    error.message ||
-    errorMsg;
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      error.message ||
+      errorMsg;
+    throw new Error(msg);
   }
 };
 
@@ -22,10 +24,9 @@ export const createReservation = (payload) =>
 export const getMyReservations = () =>
   handleRequest(() => axiosInstance.get(`${baseURL}/mine`), 'Failed to fetch reservations');
 
-// Suggest tables (optional feature)
-export const suggestTables = async (payload) =>
-  handleRequest(() => axiosInstance.post('/reservations/suggest-tables', payload));
-
+// Suggest tables
+export const suggestTables = (payload) =>
+  handleRequest(() => axiosInstance.post(`${baseURL}/suggest-tables`, payload), 'Suggestion failed');
 
 // Admin: get all reservations
 export const getAllReservations = () =>

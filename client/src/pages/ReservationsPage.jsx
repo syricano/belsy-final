@@ -5,7 +5,6 @@ const ReservationsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const handleSuccess = (data) => {
     console.log('Reservation created:', data);
-    // Optionally show toast or refresh UI
   };
 
   return (

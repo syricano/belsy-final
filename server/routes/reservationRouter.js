@@ -14,7 +14,8 @@ import {
     reservationSchema,
     suggestTablesSchema,
     adminResponseSchema
-} from '../zod/Schemas.js'; 
+} from '../zod/Schemas.js';
+import optionalAuth from '../middleware/optionalAuth.js'; 
 
 const reservationRouter = express.Router();
 
@@ -22,7 +23,9 @@ const reservationRouter = express.Router();
 
 // POST /api/reservations — create a new reservation
 reservationRouter.post(
-  '/',  
+  '/',
+  verifyToken,
+  optionalAuth, // Allow unauthenticated users to create reservations  
   validateZod(reservationSchema),
   createReservation
 );
@@ -34,6 +37,7 @@ reservationRouter.get('/mine', verifyToken, getMyReservations);
 
 reservationRouter.post(
   '/suggest-tables',
+  optionalAuth,
   validateZod(suggestTablesSchema), 
   suggestTables
 );

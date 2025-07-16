@@ -4,7 +4,6 @@ export const userSchema = {
   POST: z.object({
     firstName: z.string().min(2).max(100),
     lastName: z.string().min(2).max(100),
-    username: z.string().min(2).max(100),
     phone: z.string().optional(), // optional field
     email: z.string().email(),
     password: z.string().min(6).max(100),
@@ -12,7 +11,6 @@ export const userSchema = {
   PUT: z.object({
     firstName: z.string().min(2).max(100).trim(),
     lastName: z.string().min(2).max(100).optional(),
-    username: z.string().min(2).max(100).optional(),
     phone: z.string().optional(),
     email: z.string().email().optional(),
     password: z.string().min(6).max(100).optional(),
@@ -20,7 +18,7 @@ export const userSchema = {
 };
 
 export const signInSchema = z.object({
-  identifier: z.string().min(2),  // username or email
+  email: z.string().min(2),  // email
   password: z.string().min(6).max(100),
 });
 export const forgotPasswordSchema = z.object({
@@ -36,7 +34,6 @@ export const resetPasswordSchema = z.object({
 export const updateProfileSchema = z.object({
   firstName: z.string().min(2).max(100).optional(),
   lastName: z.string().min(2).max(100).optional(),
-  username: z.string().min(2).max(100).optional(),
   phone: z.string().optional(),
   email: z.string().email().optional(),
 });
@@ -70,24 +67,25 @@ export const reservationSchema = z
     guests: z.number().int().positive().optional(),
     note: z.string().max(500).optional(),
 
-    // Optional guest fields (used when admin or guest books)
-    name: z.string().min(2).max(100).optional(),
-    email: z.string().email().optional(),
-    phone: z.string().min(5).max(20).optional(),
+    // Guest info
+    name: z.string().max(100).optional().or(z.literal('')),
+    email: z.string().email().optional().or(z.literal('')),
+    phone: z.string().max(20).optional().or(z.literal('')),
   })
   .refine((data) => {
-    if ((data.email || data.phone) && !data.name) {
+    // If name is missing, phone must be provided
+    if (!data.name && !data.phone) {
       return false;
     }
     return true;
   }, {
-    message: 'Guest name is required when email or phone is provided',
-    path: ['name'],
+    message: 'Phone is required when name is not provided',
+    path: ['phone'],
   });
 
   // admin response schema
 export const adminResponseSchema = z.object({
-  adminResponse: z.string().min(2, 'Response is required')
+  adminResponse: z.string().min(2, 'Response is required, Please write a friendly response to customer')
 });
 
 

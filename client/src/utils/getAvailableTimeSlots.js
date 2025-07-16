@@ -1,23 +1,21 @@
-// utils/getAvailableTimeSlots.js
-export const getAvailableTimeSlots = (day, dutyHours) => {
+export const getAvailableTimeSlots = (date, day, dutyHours) => {
+  if (!Array.isArray(dutyHours)) return [];
   const duty = dutyHours.find(d => d.dayOfWeek === day);
   if (!duty) return [];
 
-  const [startHour, startMinute] = duty.startTime.split(':').map(Number);
-  const [endHour, endMinute] = duty.endTime.split(':').map(Number);
-
-  const start = new Date();
-  start.setHours(startHour, startMinute, 0, 0);
-
-  const end = new Date();
-  end.setHours(endHour, endMinute, 0, 0);
+  const start = new Date(`${date}T${duty.startTime}`);
+  const end = new Date(`${date}T${duty.endTime}`);
 
   const slots = [];
   const temp = new Date(start);
+  const now = new Date();
 
   while (temp <= end) {
-    slots.push(temp.toTimeString().slice(0, 5));
-    temp.setMinutes(temp.getMinutes() + 15);
+    const slotTime = new Date(temp);
+    if (slotTime > now) {
+      slots.push(slotTime.toTimeString().slice(0, 5));
+    }
+    temp.setMinutes(temp.getMinutes() + 60);
   }
 
   return slots;

@@ -14,8 +14,6 @@ firstName: String
 
 lastName: String
 
-username: String (unique)
-
 email: String (unique)
 
 password: String (hashed)

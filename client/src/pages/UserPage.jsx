@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router';
 import { toast  } from 'react-hot-toast';
 import { asyncHandler } from '@/utils';
 import { errorHandler } from '@/utils';
+import UserReservations from '@/components/Reservations/UserReservations';
 
 
 const UserPage = () => {
@@ -156,6 +157,9 @@ const UserPage = () => {
           </div>
         )}
         
+      </div>
+      <div>
+        <UserReservations />
       </div>
     </section>
   );

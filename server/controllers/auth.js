@@ -28,7 +28,7 @@ export const me = async (req, res) => {
 // POST /api/auth/signup
 export const signup = async (req, res) => {
   try {
-    const { firstName, lastName, username, email, phone, password } = req.body;
+    const { firstName, lastName, email, phone, password } = req.body;
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
@@ -39,8 +39,7 @@ export const signup = async (req, res) => {
 
     const user = await User.create({
       firstName,
-      lastName,
-      username,
+      lastName,      
       phone,
       email,
       password: hashedPassword,
@@ -52,12 +51,11 @@ export const signup = async (req, res) => {
     const isAdmin = user.role === 'Admin';
 
     res.status(201).json({
-      success: `Welcome ${user.username} to Belsy`,
+      success: `Welcome ${user.firstName} to Belsy`,
       user: {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
-        username: user.username,
         email: user.email,
         phone: user.phone,
         role: user.role,
@@ -74,11 +72,11 @@ export const signup = async (req, res) => {
 // POST /api/auth/signin
 export const signin = async (req, res) => {
   try {
-    const { identifier, password } = req.body;
+    const { email, password } = req.body;
 
     const user = await User.findOne({
       where: {
-        [Op.or]: [{ email: identifier }, { username: identifier }],
+        email
       },
       attributes: { include: ['password'] },
     });
@@ -96,12 +94,11 @@ export const signin = async (req, res) => {
     res.cookie('token', token, cookieOptions);
 
     res.status(200).json({
-      success: `Welcome ${user.username} to Belsy`,
+      success: `Welcome ${user.firstName} to Belsy`,
       user: {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
-        username: user.username,
         email: user.email,
         phone: user.phone,
         role: user.role,
@@ -181,14 +178,13 @@ export const resetPassword = async (req, res) => {
 // PUT /api/auth/update-profile
 export const updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, username, email, phone } = req.body;
+    const { firstName, lastName, email, phone } = req.body;
     const user = await User.findByPk(req.userId);
 
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
-    user.username = username || user.username;
     user.email = email || user.email;
     user.phone = phone || user.phone;
     await user.save();

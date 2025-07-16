@@ -4,6 +4,7 @@ import { getAllDutyHours } from '@/data/duty';
 import { getAvailableTimeSlots, asyncHandler, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context';
+import { useMemo } from 'react';
 
 const toMinutes = (str) => {
   const [h, m] = str.split(':').map(Number);
@@ -28,14 +29,35 @@ const useReservationForm = ({ onSuccess, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  const upcomingDates = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-    return d.toISOString().slice(0, 10);
-  });
+  const now = new Date();
+  const upcomingDates = [];
 
-  const day = new Date(form.date).toLocaleDateString('en-US', { weekday: 'long' });
-  const timeOptions = getAvailableTimeSlots(day, dutyHours).filter(t => t.endsWith(':00'));
+  for (let i = 0; i < 90; i++) {
+    const d = new Date();
+    d.setDate(now.getDate() + i);
+    upcomingDates.push(d.toISOString().slice(0, 10));
+  }
+
+  // Prevent late hour same day reservations
+  const validDates = useMemo(() => {
+    return upcomingDates.filter(dateStr => {
+      const date = new Date(dateStr + 'T00:00');
+      if (date < new Date().setHours(0, 0, 0, 0)) return false; // 👈 exclude past dates
+      const weekday = date.toLocaleString('en-US', { weekday: 'long' });
+      return getAvailableTimeSlots(dateStr, weekday, dutyHours).length > 0;
+    });
+  }, [upcomingDates, dutyHours]);
+
+
+  const day = form.date
+    ? new Date(form.date + 'T00:00').toLocaleDateString('en-US', { weekday: 'long' })
+    : null;
+
+  const timeOptions = useMemo(() => {
+    if (!form.date || !dutyHours.length || !day) return [];
+    return getAvailableTimeSlots(form.date, day, dutyHours).filter(t => t.endsWith(':00'));
+  }, [form.date, day, dutyHours]);
+ 
 
   useEffect(() => {
     asyncHandler(getAllDutyHours, 'Failed to fetch working hours')
@@ -89,12 +111,8 @@ const useReservationForm = ({ onSuccess, onClose }) => {
   }, [form.guests, form.date, form.time]);
 
   const handleSubmit = () => {
-    if (!form.reservationTime || !form.guests) {
-      setErrorMsg('Please complete all fields');
-      return;
-    }
-
-    const selectedDate = new Date(form.reservationTime);
+    const reservationTime = `${form.date}T${form.time}`;
+    const selectedDate = new Date(reservationTime);
     const weekday = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
     const duty = dutyHours.find(d => d.dayOfWeek === weekday);
 
@@ -107,6 +125,11 @@ const useReservationForm = ({ onSuccess, onClose }) => {
     const timeMinutes = toMinutes(selectedTime);
     const startMinutes = toMinutes(duty.startTime);
     const endMinutes = toMinutes(duty.endTime);
+
+    if (!selectedTime.endsWith(':00')) {
+      setErrorMsg(`Time must be in full-hour blocks (e.g. 13:00)`);
+      return;
+    }
 
     if (timeMinutes < startMinutes || timeMinutes >= endMinutes) {
       setErrorMsg(`Selected time ${selectedTime} is outside working hours (${duty.startTime} – ${duty.endTime})`);
@@ -145,6 +168,7 @@ const useReservationForm = ({ onSuccess, onClose }) => {
     form,
     loading,
     upcomingDates,
+    validDates,
     timeOptions,
     handleChange,
     handleDateChange,

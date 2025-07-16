@@ -17,9 +17,9 @@ export const createReservation = asyncHandler(async (req, res) => {
     name,
     email,
     phone
-  } = req.body;
+  } = req.body; 
 
-  let userId = req.userId;
+  let userId = req.user?.id || req.userId || null;
   let guestName = null;
   let guestEmail = null;
   let guestPhone = null;
@@ -45,41 +45,67 @@ export const createReservation = asyncHandler(async (req, res) => {
     throw new ErrorResponse('Reservation time is outside working hours', 400);
   }
 
-  // Admin booking for user or guest
+  if (!time.endsWith(':00')) {
+    throw new ErrorResponse('Reservation time must be in full-hour blocks (e.g., 13:00)', 400);
+  }
   
-  // 🧠 CASE 1: Logged-in user (User or Admin) booking for themselves
-  if (req.userId && (!email || email === req.user?.email)) {
-    userId = req.userId;
-  } 
+  // Determine who is booking
+  
+  // 🟢 Case 1: Normal authenticated user (not admin) booking for themselves
+  if (req.user && req.user.role !== 'Admin') {
+    userId = req.user.id;
 
-  // 🧠 CASE 2: Admin booking for someone else (user or guest)
-  else if (req.user?.role === 'Admin' && (email || phone)) {
+  // 🟢 Case 2: Admin booking for guest or registered user
+  } else if (req.user?.role === 'Admin') {
+    if (!phone && !name) {
+      throw new ErrorResponse('Admin must provide at least a phone number or name to make a booking.', 400);
+    }
+
+    // Try to match with an existing user by phone or email
     const existingUser = await User.findOne({
       where: {
-        [Op.or]: [{ email }, { phone }]
-      }
+        [Op.or]: [
+          ...(phone ? [{ phone }] : []),
+          ...(email ? [{ email }] : []),
+        ],
+      },
     });
 
     if (existingUser) {
-      userId = existingUser.id;
+      userId = existingUser.id; // Admin books on behalf of existing user
     } else {
-      userId = null;
       guestName = name;
       guestEmail = email;
       guestPhone = phone;
     }
-  }
 
-  // 🧠 CASE 3: Guest user (no token at all)
-  else {
-    userId = null;
+  // 🟢 Case 3: Guest (not authenticated)
+  } else {
     guestName = name;
     guestEmail = email;
     guestPhone = phone;
   }
-  
 
-  // Abuse protection — count total active reservations for the user
+
+
+  // Avoid duplicate reservation for same time/user/guest
+  const existingReservation = await Reservation.findOne({
+    where: {
+      reservationTime,
+      status: { [Op.in]: ['Pending', 'Approved'] },
+      ...(userId
+        ? { userId }
+        : {
+            guestEmail,
+            guestPhone,
+          }),
+    },
+  });
+
+  if (existingReservation) {
+    throw new ErrorResponse('You already have a reservation at this time.', 409);
+  }
+
   if (userId !== null && userId !== undefined) {
     const activeCount = await Reservation.count({
       where: {
@@ -93,11 +119,10 @@ export const createReservation = asyncHandler(async (req, res) => {
     }
   }
 
-  // Verify each table exists & is not already reserved
+  // Verify table IDs 
   const tables = await Table.findAll({
     where: {
       id: { [Op.in]: tableIds },
-      isAvailable: true
     }
   });
 
@@ -145,11 +170,6 @@ export const createReservation = asyncHandler(async (req, res) => {
         { transaction: t }
       );
       entries.push(entry);
-
-      await Table.update({ isAvailable: false }, {
-        where: { id: tableId },
-        transaction: t
-      });
     }
     return entries;
   });
@@ -160,33 +180,34 @@ export const createReservation = asyncHandler(async (req, res) => {
   });
 });
 
-// GET /api/reservations/mine
 export const getMyReservations = asyncHandler(async (req, res) => {
+  const userId = req.user?.id || req.userId;
+  const where = userId
+    ? { userId }
+    : { guestEmail: req.query.email, guestPhone: req.query.phone };
+    include: [User, { model: Table }];
+    
+
   const reservations = await Reservation.findAll({
-    where: { userId: req.userId },
-    include: [Table],
+    where,
+    include: [User, { model: Table }],
     order: [['reservationTime', 'DESC']],
   });
 
   res.json(reservations);
 });
 
-// GET /api/reservations/admin
 export const getAllReservations = asyncHandler(async (req, res) => {
   const reservations = await Reservation.findAll({
     include: [User, Table],
     order: [['reservationTime', 'DESC']],
   });
-
   res.json(reservations);
 });
 
-// PATCH /api/reservations/admin/:id/approve
 export const approveReservation = asyncHandler(async (req, res) => {
   const reservation = await Reservation.findByPk(req.params.id);
-  if (!reservation) {
-    throw new ErrorResponse('Reservation not found', 404);
-  }
+  if (!reservation) throw new ErrorResponse('Reservation not found', 404);
 
   reservation.status = 'Approved';
   reservation.adminResponse = req.body.adminResponse || 'Approved';
@@ -195,32 +216,35 @@ export const approveReservation = asyncHandler(async (req, res) => {
   res.json({ message: 'Reservation approved', reservation });
 });
 
-// PATCH /api/reservations/admin/:id/decline
 export const declineReservation = asyncHandler(async (req, res) => {
-  const reservation = await Reservation.findByPk(req.params.id);
-  if (!reservation) {
-    throw new ErrorResponse('Reservation not found', 404);
-  }
+  const target = await Reservation.findByPk(req.params.id);
+  if (!target) throw new ErrorResponse('Reservation not found', 404);
 
-  const tableIdToFree = reservation.tableId;
+  const { reservationTime, userId, guestEmail, guestPhone } = target;
+  const isGuest = !userId;
 
-  reservation.status = 'Declined';
-  reservation.adminResponse = req.body.adminResponse || 'Declined';
-  reservation.tableId = null;
-  await reservation.save();
+  const relatedReservations = await Reservation.findAll({
+    where: {
+      reservationTime,
+      status: { [Op.in]: ['Pending', 'Approved'] },
+      ...(isGuest
+        ? { guestEmail, guestPhone }
+        : { userId }),
+    },
+  });
 
-  if (tableIdToFree) {
-    const table = await Table.findByPk(tableIdToFree);
-    if (table) {
-      table.isAvailable = true;
-      await table.save();
+  await sequelize.transaction(async (t) => {
+    for (const r of relatedReservations) {
+      r.status = 'Declined';
+      r.adminResponse = req.body.adminResponse || 'Declined';
+      r.tableId = null;
+      await r.save({ transaction: t });
     }
-  }
+  });
 
-  res.json({ message: 'Reservation declined', reservation });
+  res.json({ message: 'Reservation declined for all related tables.' });
 });
 
-// POST /api/reservations/suggest
 export const suggestTables = asyncHandler(async (req, res) => {
   const { guests, reservationTime } = req.body;
   const neededTables = Math.ceil(guests / 2);

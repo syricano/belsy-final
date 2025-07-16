@@ -33,7 +33,7 @@ const ReservationManager = () => {
   const handleAdminSubmit = (responseText) => {
     const service = selectedAction === 'approve' ? approveReservation : declineReservation;
 
-    asyncHandler(() => service(selectedId,  responseText ), `Failed to ${selectedAction}`)
+    asyncHandler(() => service(selectedId, responseText), `Failed to ${selectedAction}`)
       .then(() => {
         toast.success(`Reservation ${selectedAction}d`);
         fetchReservations();
@@ -81,10 +81,12 @@ const ReservationManager = () => {
               )}
             </div>
 
-            <div className="text-sm text-gray-600 pt-2 border-t">
-              <p><span className="font-medium">Name:</span> {res.guestName || res.User?.username || 'Anonymous'}</p>
+            <div className="text-sm text-gray-600 pt-2 border-t space-y-1">
+              <p><span className="font-medium">Name:</span> {res.guestName || res.User?.firstName || 'Anonymous'}</p>
               <p><span className="font-medium">Email:</span> {res.guestEmail || res.User?.email || '—'}</p>
               <p><span className="font-medium">Phone:</span> {res.guestPhone || res.User?.phone || '—'}</p>
+              <p><span className="font-medium">Created:</span> {new Date(res.createdAt).toLocaleString()}</p>
+              <p><span className="font-medium">Updated:</span> {new Date(res.updatedAt).toLocaleString()}</p>
             </div>
 
             {res.status === 'Pending' && (

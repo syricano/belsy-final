@@ -5,7 +5,7 @@ import { useLocation } from 'react-router';
 import { asyncHandler } from '@/utils';
 
 const Signin = () => {
-  const [form, setForm] = useState({ identifier: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { signin } = useAuth();
@@ -34,7 +34,7 @@ const Signin = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="identifier"
+          name="email"
           placeholder="Email"
           type="email"
           onChange={handleChange}

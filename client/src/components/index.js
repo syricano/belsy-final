@@ -18,7 +18,6 @@ import Signup from './auth/Signup';
 
 // Exporting all Reservations components
 import ReservationForm from './Reservations/ReservationForm';
-import ReservationCard from './Reservations/ReservationCard';
 import ReservationStatus from './Reservations/ReservationStatus';
 
 // Exporting all Menus components
@@ -61,8 +60,7 @@ export {
   Signup,
 
   // Reservations components
-  ReservationForm,
-  ReservationCard,
+  ReservationForm,  
   ReservationStatus,
   ReservationModal,
 //  BookReservationButton,

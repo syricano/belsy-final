@@ -8,9 +8,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
 
-  // Clean up stale auth headers
-  delete config.headers.Authorization;
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

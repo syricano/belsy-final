@@ -181,21 +181,20 @@ export const createReservation = asyncHandler(async (req, res) => {
 });
 
 export const getMyReservations = asyncHandler(async (req, res) => {
-  const userId = req.user?.id || req.userId;
-  const where = userId
-    ? { userId }
-    : { guestEmail: req.query.email, guestPhone: req.query.phone };
-    include: [User, { model: Table }];
-    
+  const userId = req.userId || req.user?.id 
 
   const reservations = await Reservation.findAll({
-    where,
-    include: [User, { model: Table }],
+    where: { userId },
+    include: [
+      { model: User },
+      { model: Table }
+    ],
     order: [['reservationTime', 'DESC']],
   });
 
   res.json(reservations);
 });
+
 
 export const getAllReservations = asyncHandler(async (req, res) => {
   const reservations = await Reservation.findAll({

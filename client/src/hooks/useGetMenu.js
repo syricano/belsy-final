@@ -8,7 +8,9 @@ const useGetMenu = () => {
 
   const fetchMenuData = async () => {
     try {
-      const [items, categories] = await Promise.all([getMenu(), getCategories()]);
+      const [items, rawCategories] = await Promise.all([getMenu(), getCategories()]);
+
+      const categories = Array.isArray(rawCategories) ? rawCategories : [];
 
       const grouped = categories.map((cat) => ({
         title: cat.name,
@@ -18,6 +20,7 @@ const useGetMenu = () => {
       setGroupedMenu(grouped);
     } catch (err) {
       errorHandler(err, 'Failed to load menu');
+      setGroupedMenu([]); // optional: fallback to empty state
     } finally {
       setLoading(false);
     }

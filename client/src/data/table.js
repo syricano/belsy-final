@@ -2,7 +2,7 @@
 import axiosInstance from '@/config/axiosConfig';
 import { asyncHandler } from '@/utils';
 
-const baseURL = '/api/tables';
+const baseURL = '/tables';
 
 export const addTable = (data) =>
   asyncHandler(() => axiosInstance.post(baseURL, data), 'Create table failed');

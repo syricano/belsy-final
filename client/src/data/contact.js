@@ -2,7 +2,7 @@
 import axiosInstance from '@/config/axiosConfig';
 import { asyncHandler } from '@/utils';
 
-const baseURL = '/api/contact';
+const baseURL = '/contact';
 
 export const getAllContacts = () =>
   asyncHandler(() => axiosInstance.get(baseURL), 'Fetch contact messages failed');

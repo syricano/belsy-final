@@ -1,7 +1,7 @@
 // data/auth.js
 import axiosInstance from '@/config/axiosConfig';
 
-const baseURL = '/api/auth';
+const baseURL = '/auth';
 const handleRequest = async (callback, errorMsg) => {
   try {
     const res = await callback();

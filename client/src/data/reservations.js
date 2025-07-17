@@ -1,7 +1,7 @@
 // data/reservation.js
 import axiosInstance from '@/config/axiosConfig';
 
-const baseURL = '/api/reservations';
+const baseURL = '/reservations';
 
 const handleRequest = async (callback, errorMsg) => {
   try {

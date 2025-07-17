@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ,
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
 
-  // Clear any stale or empty auth headers first
+  // Clean up stale auth headers
   delete config.headers.Authorization;
 
   if (token) {

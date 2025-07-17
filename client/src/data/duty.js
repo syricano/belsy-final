@@ -2,7 +2,7 @@
 import axiosInstance from '@/config/axiosConfig';
 import { asyncHandler } from '@/utils';
 
-const baseURL = '/api/duty';
+const baseURL = '/duty';
 
 // ========== GET all duties ==========
 export const getAllDutyHours = () =>

@@ -2,7 +2,7 @@
 import axiosInstance from '@/config/axiosConfig';
 import { asyncHandler } from '@/utils';
 
-const baseURL = '/api/menu';
+const baseURL = '/menu';
 
 // ========== MENU ITEMS ==========
 export const addMenuItem = (data) =>

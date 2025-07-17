@@ -85,7 +85,16 @@ h1, h2, h3, h4, h5 {
   transition: background-color 0.2s ease;
 }
 
+/* Settings to hide time input spinner */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
 
+input[type="time"] {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
 
 .btn-primary:hover {
   background-color: #b45309 !important;

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { getAllReservations, approveReservation, declineReservation } from '@/data';
+import { 
+  getAllReservations,
+  approveReservation, 
+  declineReservation, 
+  updateReservation, 
+  cancelReservation
+} from '@/data';
+import EditReservationModal from '../Reservations/EditReservationModal';
 import { asyncHandler, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 import AdminResponseModal from './AdminResponseModal';
@@ -11,6 +18,10 @@ const ReservationManager = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
+
+  const [editingReservation, setEditingReservation] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
 
   const fetchReservations = () => {
     setLoading(true);
@@ -39,6 +50,28 @@ const ReservationManager = () => {
         fetchReservations();
       })
       .catch(errorHandler);
+  };
+
+  const handleUpdate = (reservation) => {
+    setEditingReservation(reservation);
+    setShowEditModal(true);
+
+  };
+
+  const handleCancelation = (id) => {
+    if(!confirm('Are you sure you want to cancel this reservation?'))
+      return
+    asyncHandler(()=> cancelReservation(id),'Cancelation failed')
+    .then(()=>{
+      toast.success('Reservation canceller');
+      fetchReservations();
+    })
+    .catch(errorHandler);
+  };
+
+  const handleUpdateSuccess = ()=>{
+    setShowEditModal(false);
+    fetchReservations();
   };
 
   return (
@@ -89,23 +122,49 @@ const ReservationManager = () => {
                 <p><span className="font-medium">Created:</span> {new Date(res.createdAt).toLocaleString()}</p>
                 <p><span className="font-medium">Updated:</span> {new Date(res.updatedAt).toLocaleString()}</p>
               </div>
+     
+              <div className="flex gap-4 mt-6 flex-wrap">
+                {res.status === 'Pending' && (
+                  <>
+                    <button className="btn btn-success btn-sm" onClick={() => handleActionClick(res.id, 'approve')}>
+                      Approve
+                    </button>
+                    <button className="btn btn-error btn-sm" onClick={() => handleActionClick(res.id, 'decline')}>
+                      Decline
+                    </button>
+                  </>
+                )}
 
-              {res.status === 'Pending' && (
-                <div className="flex gap-4 mt-6">
-                  <button
-                    className="btn btn-success btn-sm"
-                    onClick={() => handleActionClick(res.id, 'approve')}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    className="btn btn-error btn-sm"
-                    onClick={() => handleActionClick(res.id, 'decline')}
-                  >
-                    Decline
-                  </button>
-                </div>
-              )}
+                {res.status === 'Cancelled' ? (
+                  <>
+                    <button
+                      className="btn btn-disabled btn-sm opacity-50 cursor-not-allowed"
+                      title="Reservation is cancelled and cannot be updated"
+                      disabled
+                    >
+                      Update
+                    </button>
+                    <button
+                      className="btn btn-disabled btn-sm opacity-50 cursor-not-allowed"
+                      title="Reservation is already cancelled"
+                      disabled
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button className="btn btn-outline btn-sm" onClick={() => handleUpdate(res)}>
+                      Update
+                    </button>
+                    <button className="btn btn-outline btn-error btn-sm" onClick={() => handleCancelation(res.id)}>
+                      Cancel
+                    </button>
+                  </>
+                )}
+              </div>
+
+
             </div>
           ))}
         </div>
@@ -116,6 +175,13 @@ const ReservationManager = () => {
         onClose={() => setModalOpen(false)}
         onSubmit={handleAdminSubmit}
       />
+      <EditReservationModal
+        reservation={editingReservation}
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSuccess={handleUpdateSuccess}
+      />
+
     </section>
   );
 };

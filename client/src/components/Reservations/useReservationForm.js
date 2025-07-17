@@ -163,7 +163,7 @@ const useReservationForm = ({ onSuccess, onClose, initialData = null }) => {
             tableIds: [suggestion.tables[0]]
           };
 
-          return createReservation(payload);
+          return createReservation(payload, !user);
         };
 
     asyncHandler(action, initialData?.id ? 'Update failed' : 'Reservation failed')

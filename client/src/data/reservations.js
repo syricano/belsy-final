@@ -17,8 +17,11 @@ const handleRequest = async (callback, errorMsg) => {
 };
 
 // Create a reservation
-export const createReservation = (payload) =>
-  handleRequest(() => axiosInstance.post(`${baseURL}`, payload), 'Reservation failed');
+export const createReservation = (payload, isGuest = false) =>
+  handleRequest(() => axiosInstance.post('/reservations', payload, isGuest
+      ? { headers: { Authorization: undefined } } // ensures guest request
+      : undefined
+    ), 'Reservation failed');
 
 // Get current user's reservations
 export const getMyReservations = () =>

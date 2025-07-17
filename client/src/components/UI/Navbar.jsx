@@ -42,7 +42,11 @@ const Navbar = () => {
               <>
                 {isAdmin && <li><NavLink to="/admin" className={linkClass}>Admin</NavLink></li>}
                 <li><NavLink to="/profile" className={linkClass}>Profile</NavLink></li>
-                <li><button onClick={handleLogout} className={linkClass}>Logout</button></li>
+                <li>
+                  <button onClick={handleLogout} className={linkClass({ isActive: false })}>
+                    Logout
+                  </button>
+                </li>
               </>
             )}
             {!isLoggedIn && (

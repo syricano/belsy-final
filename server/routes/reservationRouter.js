@@ -9,25 +9,24 @@ import {
   declineReservation,
   suggestTables
 } from '../controllers/reservationController.js';
-import  isAdmin from '../middleware/isAdmin.js';
-import  verifyToken from '../middleware/verifyToken.js';
+import isAdmin from '../middleware/isAdmin.js';
+import verifyToken from '../middleware/verifyToken.js';
 import validateZod from '../middleware/validateZod.js';
-import { 
-    reservationSchema,
-    suggestTablesSchema,
-    adminResponseSchema
+import {
+  reservationSchema,
+  suggestTablesSchema,
+  adminResponseSchema
 } from '../zod/Schemas.js';
-import optionalAuth from '../middleware/optionalAuth.js'; 
+import optionalAuth from '../middleware/optionalAuth.js';
 
 const reservationRouter = express.Router();
 
 // ========== USER ROUTES ==========
 
-// POST /api/reservations — create a new reservation
+// POST /api/reservations — create a new reservation (guests + users)
 reservationRouter.post(
   '/',
-  verifyToken,
-  optionalAuth, // Allow unauthenticated users to create reservations  
+  optionalAuth, // ✅ allows both guests and authenticated users
   validateZod(reservationSchema),
   createReservation
 );
@@ -38,19 +37,16 @@ reservationRouter.get('/mine', verifyToken, getMyReservations);
 // PATCH /api/reservations/:id — user can update own reservation
 reservationRouter.patch('/:id', verifyToken, updateReservation);
 
-// PATCH /api/reservations/:id/cancel — cancel reservation (optional alternative)
+// PATCH /api/reservations/:id/cancel — cancel reservation
 reservationRouter.patch('/:id/cancel', verifyToken, cancelReservation);
 
 // POST /api/reservations/suggest-tables — suggest tables by guest count
-
 reservationRouter.post(
   '/suggest-tables',
   optionalAuth,
-  validateZod(suggestTablesSchema), 
+  validateZod(suggestTablesSchema),
   suggestTables
 );
-
-
 
 // ========== ADMIN ROUTES ==========
 
@@ -58,9 +54,21 @@ reservationRouter.post(
 reservationRouter.get('/admin', verifyToken, isAdmin, getAllReservations);
 
 // PATCH /api/reservations/admin/:id/approve — approve reservation
-reservationRouter.patch('/admin/:id/approve', verifyToken, isAdmin, validateZod(adminResponseSchema), approveReservation
+reservationRouter.patch(
+  '/admin/:id/approve',
+  verifyToken,
+  isAdmin,
+  validateZod(adminResponseSchema),
+  approveReservation
 );
+
 // PATCH /api/reservations/admin/:id/decline — decline reservation
-reservationRouter.patch('/admin/:id/decline', verifyToken, isAdmin, validateZod(adminResponseSchema), declineReservation
+reservationRouter.patch(
+  '/admin/:id/decline',
+  verifyToken,
+  isAdmin,
+  validateZod(adminResponseSchema),
+  declineReservation
 );
+
 export default reservationRouter;

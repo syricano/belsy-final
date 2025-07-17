@@ -35,9 +35,9 @@ export const suggestTables = (payload) =>
 export const getAllReservations = () =>
   handleRequest(() => axiosInstance.get(`${baseURL}/admin`), 'Failed to fetch admin reservations');
 
-// Cancel reservation (sets status to "Canceled")
+// Cancel reservation (sets status to "Cancelled")
 export const cancelReservation = (id) =>
-  handleRequest(() => axiosInstance.patch(`/reservations/${id}`, { status: 'Canceled' }), 'Cancel failed');
+  handleRequest(() => axiosInstance.patch(`/reservations/${id}/cancel`, { status: 'Canceled' }), 'Cancel failed');
 
 // Update reservation (guest/date/time/note)
 export const updateReservation = (id, data) =>

@@ -349,20 +349,27 @@ export const updateReservation = asyncHandler(async (req, res) => {
   res.json({ message: 'Reservation updated successfully', reservation });
 });
 
-
 export const cancelReservation = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const reservation = await Reservation.findByPk(id);
   if (!reservation) throw new ErrorResponse('Reservation not found', 404);
 
-  // Check if user is allowed to cancel this reservation
-  if (reservation.userId !== req.user?.id && req.user?.role !== 'Admin') {
+  const isAdmin = req.user?.role === 'Admin';
+  const isOwner = reservation.userId && reservation.userId === req.user?.id;
+  const isGuestOwner =
+    !reservation.userId &&
+    req.user?.email &&
+    req.user?.phone &&
+    reservation.guestEmail === req.user.email &&
+    reservation.guestPhone === req.user.phone;
+
+  if (!isAdmin && !isOwner && !isGuestOwner) {
     throw new ErrorResponse('You are not authorized to cancel this reservation', 403);
   }
 
-  reservation.status = 'Canceled';
+  reservation.status = 'Cancelled';
   await reservation.save();
 
-  res.json({ message: 'Reservation canceled successfully' });
-}); 
+  res.json({ message: 'Reservation cancelled successfully' });
+});

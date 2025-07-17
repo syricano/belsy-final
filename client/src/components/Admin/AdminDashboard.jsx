@@ -20,16 +20,17 @@ const AdminDashboard = () => {
     switch (activeTab) {
       case 'reservations': return <ReservationManager />;
       case 'tables': return <TableManager />;
-      case 'menu': return <MenuManager  />;
+      case 'menu': return <MenuManager />;
       case 'duty': return <DutyManager />;
-      case 'contact': return <ContactManager />; 
+      case 'contact': return <ContactManager />;
       default: return null;
     }
   };
 
   return (
-    <section className="min-h-screen bg-[var(--main-bg-color)] text-[var(--text-color)] py-16 px-4">
+    <>
       <div className="max-w-7xl mx-auto w-full space-y-12">
+        
         {/* Title */}
         <div className="text-center">
           <h1 className="text-4xl font-serif font-semibold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
@@ -42,8 +43,10 @@ const AdminDashboard = () => {
           {sections.map((section) => (
             <button
               key={section.id}
-              className={`tab tab-lg rounded-lg font-semibold transition-all px-6 py-2 shadow 
-                ${activeTab === section.id ? 'bg-amber-600 text-white' : 'bg-white text-gray-700 hover:bg-amber-100'}`}
+              className={`rounded-full px-6 py-2 text-sm font-semibold shadow-md transition-all duration-300 border
+                ${activeTab === section.id
+                  ? 'bg-[var(--p)] text-white border-[var(--p)]'
+                  : 'bg-[var(--b1)] text-[var(--bc)] hover:bg-[var(--accent-color)] hover:text-white'}`}
               onClick={() => setActiveTab(section.id)}
             >
               {section.label}
@@ -52,11 +55,11 @@ const AdminDashboard = () => {
         </div>
 
         {/* Section Content */}
-        <div className="bg-white dark:bg-neutral rounded-2xl shadow-xl p-8">
+        <div className="bg-[var(--n)] text-[var(--nc)] rounded-2xl shadow-xl p-8 border border-[var(--border-color)]">
           {renderSection()}
         </div>
       </div>
-    </section>
+    </>
   );
 };
 

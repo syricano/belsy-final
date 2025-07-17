@@ -32,10 +32,7 @@ const MenuManager = () => {
   }, []);
 
   const fetchAll = () => {
-    Promise.all([
-      getMenu(),
-      getCategories(),
-    ])
+    Promise.all([getMenu(), getCategories()])
       .then(([menuData, categoryData]) => {
         setMenu(menuData);
         setCategories(categoryData);
@@ -67,7 +64,7 @@ const MenuManager = () => {
         setEditingId(null);
         fetchAll();
       })
-      .catch(err => errorHandler(err, 'Failed to save menu item'));
+      .catch((err) => errorHandler(err, 'Failed to save menu item'));
   };
 
   const handleEdit = (item) => {
@@ -86,12 +83,17 @@ const MenuManager = () => {
 
     deleteMenuItem(id)
       .then(fetchAll)
-      .catch(err => errorHandler(err, 'Failed to delete item'));
+      .catch((err) => errorHandler(err, 'Failed to delete item'));
   };
 
   return (
-    <section className="w-full bg-white dark:bg-base-100 p-6 rounded-xl shadow">
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+    <section className="w-full space-y-8">
+      <h2 className="text-3xl font-serif font-semibold text-[var(--bc)] text-center">
+        Menu Management
+      </h2>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[var(--b1)] text-[var(--bc)] p-6 rounded-xl shadow border border-[var(--border-color)]">
         <input
           type="text"
           name="name"
@@ -130,6 +132,7 @@ const MenuManager = () => {
             <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
+
         <textarea
           name="description"
           className="textarea textarea-bordered md:col-span-2"
@@ -137,6 +140,7 @@ const MenuManager = () => {
           value={form.description || ''}
           onChange={handleChange}
         />
+
         <div className="md:col-span-2 flex flex-wrap gap-4">
           <button className="btn btn-primary" type="submit">
             {editingId ? 'Update' : 'Add'}
@@ -152,10 +156,11 @@ const MenuManager = () => {
         </div>
       </form>
 
-      <div className="overflow-x-auto rounded-lg shadow">
+      {/* Table */}
+      <div className="overflow-x-auto rounded-xl shadow border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)]">
         <table className="table table-zebra w-full text-sm">
           <thead>
-            <tr>
+            <tr className="text-left">
               <th>Name</th>
               <th>Price</th>
               <th>Category</th>
@@ -167,11 +172,16 @@ const MenuManager = () => {
             {menu.map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
-                <td>{item.price}</td>
+                <td>${parseFloat(item.price).toFixed(2)}</td>
                 <td>{item.Category?.name || item.categoryId}</td>
                 <td>
                   {item.image && (
-                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" onError={(e) => (e.target.src = './src/assets/fallback.jpg')} />
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover rounded"
+                      onError={(e) => (e.target.src = '/images/fallback.jpg')}
+                    />
                   )}
                 </td>
                 <td className="space-x-2">

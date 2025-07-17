@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 import useReservationForm from './useReservationForm';
 
-
-const ReservationModal = ({ onClose, onSuccess }) => {
+const CreateReservationModal = ({ onClose, onSuccess }) => {
   const {
     form,
     loading,
@@ -16,26 +15,58 @@ const ReservationModal = ({ onClose, onSuccess }) => {
   } = useReservationForm({ onSuccess, onClose });
 
   const dialogRef = useRef(null);
-
   const isContactMissing = !form.name && !form.phone;
 
   return (
     <dialog ref={dialogRef} open className="modal">
-      <form method="dialog" className="modal-box bg-[#FFF9E5] text-[#004030]">
-        <button type="button" onClick={onClose} className="btn btn-sm btn-circle absolute right-2 top-2">
+      <form method="dialog" className="modal-box bg-[var(--b1)] text-[var(--bc)] border border-[var(--border-color)]">
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="btn btn-sm btn-circle absolute right-2 top-2"
+        >
           ✕
         </button>
 
-        <h3 className="font-bold text-xl mb-4 text-center">Book a Reservation</h3>
+        {/* Title */}
+        <h3 className="font-bold text-xl mb-4 text-center font-serif">
+          Book a Reservation
+        </h3>
 
+        {/* Inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <p className="md:col-span-2 text-sm text-gray-600">
+          <p className="md:col-span-2 text-sm opacity-70">
             Please provide at least your <strong>name</strong> or <strong>phone</strong>
           </p>
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Full Name" className="input input-bordered" />
-          <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" className="input input-bordered" />
-          <input name="email" value={form.email} onChange={handleChange} placeholder="Email (Optional)" className="input input-bordered" />
-          <select name="guests" value={form.guests} onChange={handleChange} className="select select-bordered">
+
+          <input
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Full Name"
+            className="input input-bordered"
+          />
+          <input
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="Phone"
+            className="input input-bordered"
+          />
+          <input
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Email (Optional)"
+            className="input input-bordered"
+          />
+          <select
+            name="guests"
+            value={form.guests}
+            onChange={handleChange}
+            className="select select-bordered"
+          >
             <option value="">Guests</option>
             {[...Array(9)].map((_, i) => (
               <option key={i + 1} value={i + 1}>{i + 1}</option>
@@ -43,15 +74,26 @@ const ReservationModal = ({ onClose, onSuccess }) => {
           </select>
         </div>
 
+        {/* Date/Time Selection */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <select name="date" value={form.date} onChange={handleDateChange} className="select select-bordered">
+          <select
+            name="date"
+            value={form.date}
+            onChange={handleDateChange}
+            className="select select-bordered"
+          >
             <option value="">Select Date</option>
             {validDates.map((date) => (
               <option key={date} value={date}>{date}</option>
             ))}
           </select>
 
-          <select name="time" value={form.time} onChange={handleTimeChange} className="select select-bordered">
+          <select
+            name="time"
+            value={form.time}
+            onChange={handleTimeChange}
+            className="select select-bordered"
+          >
             <option value="">Select Time</option>
             {timeOptions.map((t) => (
               <option key={t} value={t}>{t}</option>
@@ -65,6 +107,7 @@ const ReservationModal = ({ onClose, onSuccess }) => {
           )}
         </div>
 
+        {/* Note */}
         <textarea
           name="note"
           value={form.note}
@@ -73,14 +116,19 @@ const ReservationModal = ({ onClose, onSuccess }) => {
           placeholder="Optional Note"
         />
 
-        {errorMsg && <p className="text-red-600 text-sm mt-2 text-center">{errorMsg}</p>}
-
+        {/* Errors */}
+        {errorMsg && (
+          <p className="text-red-600 text-sm mt-2 text-center">
+            {errorMsg}
+          </p>
+        )}
         {isContactMissing && (
           <p className="text-error text-sm text-center mt-2">
             Please provide at least your name or phone number.
           </p>
         )}
 
+        {/* Submit */}
         <div className="modal-action">
           <button
             type="button"
@@ -96,4 +144,4 @@ const ReservationModal = ({ onClose, onSuccess }) => {
   );
 };
 
-export default ReservationModal;
+export default CreateReservationModal;

@@ -3,7 +3,7 @@ import {Navbar} from '@/components'
 import {Footer} from '@/components/'
 import { Toaster } from "react-hot-toast";
 import { useModal } from '@/context/ModalContext';
-import ReservationModal from '@/components/Reservations/ReservationModal';
+import CreateReservationModal from '@/components/Reservations/CreateReservationModal';
 
 
 
@@ -23,7 +23,7 @@ const RootLayout = () => {
 
             <Footer />
             {open && (
-            <ReservationModal
+            <CreateReservationModal
                 onClose={() => setOpen(false)}
                 onSuccess={(data) => console.log('Reservation created:', data)}
             />

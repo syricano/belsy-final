@@ -4,7 +4,7 @@ import ImageSlider from '../components/UI/ImageSlider';
 
 const HomePage = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-12">
+    <div className="main-section min-h-screen flex flex-col items-center justify-center gap-12 py-12 px-4">
       <HeroSection />
       <ImageSlider />
     </div>

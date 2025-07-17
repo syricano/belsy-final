@@ -1,28 +1,5 @@
 /* ================================
-   THEME: Light / Dark + Brand Colors
-================================= */
-:root {
-  --bg-page: #FFF9E5;
-  --bg-card: #DCD0A8;
-  --primary-color: #004030;
-  --accent-color: #4A9782;
-  --text-color: #004030;
-  --hover-color: #4A9782;
-  --border-color: #DCD0A8;
-}
-
-[data-theme='dark'] {
-  --bg-page: #004030;
-  --bg-card: #4A9782;
-  --primary-color: #DCD0A8;
-  --accent-color: #FFF9E5;
-  --text-color: #FFF9E5;
-  --hover-color: #DCD0A8;
-  --border-color: #4A9782;
-}
-
-/* ================================
-   BASE: Resets + Typography
+   UNIVERSAL RESET & BASE
 ================================= */
 *,
 *::before,
@@ -37,29 +14,86 @@ html {
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg-page);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h1, h2, h3, h4, h5, h6 {
+/* ================================
+   LIGHT THEME COLORS
+================================= */
+[data-theme="light"] {
+  --p: #d97706;
+  --pc: #ffffff;
+
+  --b1: #FFF9E5;          /* Main background */
+  --bc: #004030;          /* Main text */
+
+  --n: #DCD0A8;           /* Navbar background */
+  --nc: #004030;          /* Navbar text */
+
+  --a: #4A9782;           /* Footer background */
+  --ac: #FFF9E5;          /* Footer text */
+}
+/* ================================
+   DARK THEME COLORS
+================================= */
+[data-theme="dark"] {
+  --p: #d97706;           /* Button primary */
+  --pc: #ffffff;
+
+  --b1: #000000;          /* Main gray background */
+  --bc: #FFF9E5;          /* Main text */
+
+  --n: #004030;           /* Navbar */
+  --nc: #FFF9E5;
+
+  --a: #DCD0A8;           /* Footer */
+  --ac: #004030;
+}
+
+/* ================================
+   SECTION HELPERS (Optional)
+================================= */
+.navbar-section {
+  background-color: var(--n);
+  color: var(--nc);
+}
+
+.main-section {
+  background-color: var(--b1);
+  color: var(--bc);
+}
+
+.footer-section {
+  background-color: var(--a);
+  color: var(--ac);
+}
+
+h1, h2, h3, h4, h5 {
   font-family: 'Playfair Display', serif;
-  color: var(--text-color);
   font-weight: 700;
-  margin-bottom: 0.75rem;
 }
 
-p {
-  margin-bottom: 1rem;
-  color: var(--text-color);
+/* ================================
+   BUTTON STYLE
+================================= */
+.btn-primary {
+  background-color: var(--p) !important;
+  color: var(--pc) !important;
+  border: none;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
 }
 
-a {
-  color: var(--accent-color);
-  text-decoration: none;
+
+
+.btn-primary:hover {
+  background-color: #b45309 !important;
 }
-a:hover {
-  color: var(--hover-color);
+
+/* Optional DaisyUI override */
+.btn {
+  font-weight: 500;
 }
 
 /* ================================
@@ -71,91 +105,16 @@ a:hover {
   padding: 1rem;
 }
 
-.bg-dynamic-main {
-  background-color: var(--bg-page);
-  color: var(--text-color);
-}
-
-.text-dynamic {
-  color: var(--text-color);
-}
-
-.card-bg {
-  background-color: var(--bg-card);
-}
-
-.border-dynamic {
-  border-color: var(--border-color);
-}
-
-.shadow-soft {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
 .rounded-xl {
   border-radius: 1rem;
 }
 
-/* ================================
-   BUTTONS
-================================= */
-.btn-custom {
-  background-color: var(--accent-color);
-  color: #fff;
-  padding: 0.6rem 1.25rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-custom:hover {
-  background-color: var(--hover-color);
-  transform: translateY(-2px);
-}
-
-/* ================================
-   INPUTS / FORMS
-================================= */
-input, textarea, select {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-card);
-  color: var(--text-color);
-  border-radius: 0.375rem;
-  font-size: 1rem;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--accent-color);
-}
-
-/* ================================
-   MODALS (Optional Defaults)
-================================= */
-.modal-bg {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
+.card {
   border-radius: 1rem;
-  padding: 2rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
 }
 
-/* ================================
-   FOOTER + NAV (Recommended styling areas)
-================================= */
-.footer-section {
-  background-color: var(--primary-color);
-  color: var(--accent-color);
-  padding: 2rem;
-  text-align: center;
-}
-
-.navbar-section {
-  background-color: var(--bg-page);
-  color: var(--text-color);
-  border-bottom: 1px solid var(--border-color);
-  backdrop-filter: blur(6px);
+.card:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
 }

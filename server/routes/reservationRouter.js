@@ -3,6 +3,8 @@ import {
   createReservation,
   getMyReservations,
   getAllReservations,
+  updateReservation,
+  cancelReservation,
   approveReservation,
   declineReservation,
   suggestTables
@@ -32,6 +34,12 @@ reservationRouter.post(
 
 // GET /api/reservations/mine — get current user's reservations
 reservationRouter.get('/mine', verifyToken, getMyReservations);
+
+// PATCH /api/reservations/:id — user can update own reservation
+reservationRouter.patch('/:id', verifyToken, updateReservation);
+
+// PATCH /api/reservations/:id/cancel — cancel reservation (optional alternative)
+reservationRouter.patch('/:id/cancel', verifyToken, cancelReservation);
 
 // POST /api/reservations/suggest-tables — suggest tables by guest count
 

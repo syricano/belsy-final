@@ -287,3 +287,82 @@ export const suggestTables = asyncHandler(async (req, res) => {
     tablesCount: suggested.length
   });
 });
+export const updateReservation = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { guests, reservationTime, note, adminNote } = req.body;
+
+  const reservation = await Reservation.findByPk(id);
+  if (!reservation) throw new ErrorResponse('Reservation not found', 404);
+
+  // Authorization check: check if the user is the owner or an admin
+  const isAdmin = req.user?.role === 'Admin';
+  const isOwner = reservation.userId === req.user?.id;
+
+  if (!isAdmin && !isOwner) {
+    throw new ErrorResponse('You are not authorized to update this reservation', 403);
+  }
+  const isGuestOwner =
+    !reservation.userId &&
+    reservation.guestEmail === req.user?.email &&
+    reservation.guestPhone === req.user?.phone;
+
+  if (!isAdmin && !isOwner && !isGuestOwner) {
+    throw new ErrorResponse('You are not authorized to update this reservation', 403);
+  }
+
+  // Validate reservation time is within working hours (this is already in place)
+  const date = new Date(reservationTime);
+  const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' });
+  const time = date.toTimeString().slice(0, 5);
+  const duty = await Duty.findOne({ where: { dayOfWeek } });
+
+  if (!duty) throw new ErrorResponse(`No working hours set for ${dayOfWeek}`, 422);
+
+  const timeToMinutes = (str) => {
+    const [h, m] = str.split(':').map(Number);
+    return h * 60 + m;
+  };
+
+  const timeMinutes = timeToMinutes(time);
+  const startMinutes = timeToMinutes(duty.startTime);
+  const endMinutes = timeToMinutes(duty.endTime);
+
+  if (timeMinutes < startMinutes || timeMinutes >= endMinutes) {
+    throw new ErrorResponse('Reservation time is outside working hours', 422);
+  }
+
+  if (!time.endsWith(':00')) {
+    throw new ErrorResponse('Reservation time must be in full-hour blocks (e.g., 13:00)', 422);
+  }
+
+  // Update the reservation fields
+  reservation.guests = guests;
+  reservation.reservationTime = reservationTime;
+  reservation.note = note;
+
+  if (isAdmin && adminNote) {
+    reservation.adminResponse = adminNote;
+  }
+
+  await reservation.save();
+
+  res.json({ message: 'Reservation updated successfully', reservation });
+});
+
+
+export const cancelReservation = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const reservation = await Reservation.findByPk(id);
+  if (!reservation) throw new ErrorResponse('Reservation not found', 404);
+
+  // Check if user is allowed to cancel this reservation
+  if (reservation.userId !== req.user?.id && req.user?.role !== 'Admin') {
+    throw new ErrorResponse('You are not authorized to cancel this reservation', 403);
+  }
+
+  reservation.status = 'Canceled';
+  await reservation.save();
+
+  res.json({ message: 'Reservation canceled successfully' });
+}); 

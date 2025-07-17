@@ -1,92 +1,92 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { createReservation, suggestTables } from '@/data';
+import { useEffect, useState } from 'react';
+import { updateReservation, suggestTables } from '@/data';
 import { getAllDutyHours } from '@/data/duty';
 import { getAvailableTimeSlots, asyncHandler, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 
-const ReservationForm = ({ onSuccess }) => {
+const toMinutes = (str) => {
+  const [h, m] = str.split(':').map(Number);
+  return h * 60 + (isNaN(m) ? 0 : m);
+};
+
+const ReservationForm = ({ reservation, onSuccess, onClose }) => {
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
     guests: '',
     date: '',
     time: '',
     note: '',
-    tableId: ''
+    reservationTime: '',
+    tableId: '',
   });
-
   const [dutyHours, setDutyHours] = useState([]);
-  const [tablesCount, setTablesCount] = useState(null);
+  const [timeOptions, setTimeOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const dialogRef = useRef(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
-  const day = form.date
-  ? new Date(form.date + 'T00:00').toLocaleString('en-US', { weekday: 'long' })
-  : null;
-
-  const timeOptions = form.date && dutyHours.length && day
-    ? getAvailableTimeSlots(form.date, day, dutyHours)
-    : [];
+  useEffect(() => {
+    if (reservation) {
+      const date = reservation.reservationTime.slice(0, 10);
+      const time = reservation.reservationTime.slice(11, 16);
+      setForm({
+        guests: reservation.guests,
+        date,
+        time,
+        note: reservation.note || '',
+        reservationTime: `${date}T${time}`,
+        tableId: reservation.tableId,
+      });
+    }
+  }, [reservation]);
 
   useEffect(() => {
     asyncHandler(getAllDutyHours, 'Failed to fetch working hours')
       .then(setDutyHours)
-      .catch(errorHandler);
+      .catch(() => setDutyHours([]));
   }, []);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!form.guests || !form.date || !form.time) return;
+    if (!form.date) return;
+    const day = new Date(form.date).toLocaleString('en-US', { weekday: 'long' });
+    const slots = getAvailableTimeSlots(form.date, day, dutyHours);
+    setTimeOptions(slots);
+  }, [form.date, dutyHours]);
 
-      asyncHandler(() =>
-        suggestTables({ guests: Number(form.guests), reservationTime: `${form.date}T${form.time}` }),
-        'Table suggestion failed'
-      )
-        .then(data => {
-          setForm(prev => ({ ...prev, tableId: data.tables?.[0] || '' }));
-          setTablesCount(data.tablesCount);
-        })
-        .catch(() => setTablesCount(null));
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [form.guests, form.date, form.time]);
-
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value, ...(name === 'guests' ? { tableId: '' } : {}) }));
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = async () => {
+    const { guests, date, time, note } = form;
+    const reservationTime = `${date}T${time}`;
+    const weekday = new Date(reservationTime).toLocaleDateString('en-US', { weekday: 'long' });
+    const duty = dutyHours.find(d => d.dayOfWeek === weekday);
+
+    if (!duty) return setErrorMsg(`No working hours set for ${weekday}`);
+    if (!time.endsWith(':00')) return setErrorMsg('Time must be in full-hour format');
+
+    const timeMinutes = toMinutes(time);
+    const startMinutes = toMinutes(duty.startTime);
+    const endMinutes = toMinutes(duty.endTime);
+    if (timeMinutes < startMinutes || timeMinutes >= endMinutes) {
+      return setErrorMsg(`Selected time is outside working hours (${duty.startTime}–${duty.endTime})`);
+    }
 
     try {
-      const reservationTime = `${form.date}T${form.time}`;
-      const selectedDate = new Date(reservationTime);
-      const weekday = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
-      const timeStr = selectedDate.toTimeString().slice(0, 5);
-      const duty = dutyHours.find(d => d.dayOfWeek === weekday);
-
-      if (!duty) throw new Error('No working hours set for selected day');
-      if (!timeStr.endsWith(':00')) throw new Error('Time must be in full-hour format (e.g., 14:00)');
-      if (timeStr < duty.startTime || timeStr >= duty.endTime) throw new Error('Selected time is outside working hours');
-      if (!form.tableId) throw new Error('No available table for selected time');
+      setLoading(true);
+      const suggested = await suggestTables({ guests: Number(guests), reservationTime });
+      if (!suggested.tables.length) throw new Error('No available tables for that time');
 
       const payload = {
-        ...form,
-        guests: Number(form.guests),
+        guests: Number(guests),
         reservationTime,
-        tableIds: [Number(form.tableId)]
+        note,
       };
 
-      const data = await createReservation(payload);
-      onSuccess(data);
-      toast.success('🎉 Reservation successful!');
-      dialogRef.current.close();
-      setForm({ name: '', email: '', phone: '', guests: '', date: '', time: '', note: '', tableId: '' });
-      setTablesCount(null);
+      await updateReservation(reservation.id, payload);
+      toast.success('Reservation updated');
+      onSuccess();
+      onClose();
     } catch (err) {
       errorHandler(err);
     } finally {
@@ -95,51 +95,50 @@ const ReservationForm = ({ onSuccess }) => {
   };
 
   return (
-    <>
-      <button className="btn btn-primary" onClick={() => dialogRef.current.showModal()}>
-        Book Now
-      </button>
-
-      <dialog ref={dialogRef} className="modal">
-        <form method="dialog" className="modal-box" onSubmit={handleSubmit}>
-          <button type="button" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => dialogRef.current.close()}>
-            ✕
-          </button>
-          <h3 className="text-lg font-bold mb-4">Reserve a Table</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {['name','phone','email','guests','date','time'].map(name => (
-              <div key={name}>
-                <label className="label"><span className="label-text capitalize">{name.replace(/([A-Z])/g, ' $1')}</span></label>
-                <input
-                  type={name === 'guests' ? 'number' : name}
-                  name={name}
-                  min={name === 'guests' ? 1 : undefined}
-                  className="input input-bordered w-full"
-                  value={form[name]}
-                  onChange={handleChange}
-                  required
-                />
-                {name === 'time' && tablesCount !== null && !form.tableId && (
-                  <p className="text-sm text-error mt-1">
-                    {tablesCount === 0 ? 'No tables' : `Only ${tablesCount} table(s)`} available
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <label className="label mt-4"><span className="label-text">Note (optional)</span></label>
-          <textarea name="note" className="textarea textarea-bordered w-full" rows={3} value={form.note} onChange={handleChange} />
-
-          <div className="modal-action">
-            <button type="submit" className={`btn btn-primary ${loading && 'loading'}`} disabled={loading}>
-              {loading ? 'Booking...' : 'Submit'}
-            </button>
-          </div>
-        </form>
-      </dialog>
-    </>
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input
+          type="number"
+          name="guests"
+          className="input input-bordered"
+          value={form.guests}
+          onChange={handleChange}
+          placeholder="Guests"
+        />
+        <input
+          type="date"
+          name="date"
+          className="input input-bordered"
+          value={form.date}
+          onChange={handleChange}
+        />
+        <select
+          name="time"
+          className="select select-bordered"
+          value={form.time}
+          onChange={handleChange}
+        >
+          <option value="">Select Time</option>
+          {timeOptions.map((t) => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+        <input
+          type="text"
+          name="note"
+          className="input input-bordered"
+          value={form.note}
+          onChange={handleChange}
+          placeholder="Optional Note"
+        />
+      </div>
+      {errorMsg && <p className="text-error text-sm text-center">{errorMsg}</p>}
+      <div className="text-center">
+        <button className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
+          {loading ? 'Updating...' : 'Update Reservation'}
+        </button>
+      </div>
+    </div>
   );
 };
 

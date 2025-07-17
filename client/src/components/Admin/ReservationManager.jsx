@@ -26,7 +26,7 @@ const ReservationManager = () => {
 
   const handleActionClick = (id, action) => {
     setSelectedId(id);
-    setSelectedAction(action); // 'approve' or 'decline'
+    setSelectedAction(action);
     setModalOpen(true);
   };
 
@@ -42,71 +42,73 @@ const ReservationManager = () => {
   };
 
   return (
-    <section className="space-y-6 p-6">
-      <h2 className="text-2xl font-bold mb-4 text-primary">Reservations</h2>
+    <section className="space-y-8">
+      <h2 className="text-3xl font-serif font-semibold text-[var(--bc)] text-center">Reservations</h2>
 
       {loading ? (
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-center text-[var(--bc)] opacity-60">Loading...</p>
       ) : reservations.length === 0 ? (
-        <p className="text-gray-500">No reservations found.</p>
+        <p className="text-center text-[var(--bc)] opacity-60">No reservations found.</p>
       ) : (
-        reservations.map((res) => (
-          <div
-            key={res.id}
-            className="bg-white dark:bg-base-100 p-4 rounded-xl shadow border space-y-2"
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-              <div className="font-semibold text-lg text-amber-900">
-                {new Date(res.reservationTime).toLocaleString()}
+        <div className="space-y-6">
+          {reservations.map((res) => (
+            <div
+              key={res.id}
+              className="bg-[var(--b1)] text-[var(--bc)] p-6 rounded-xl shadow-md border border-[var(--border-color)] transition hover:shadow-lg"
+            >
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <div className="font-semibold text-lg">
+                  {new Date(res.reservationTime).toLocaleString()}
+                </div>
+                <div className="text-sm opacity-70">Reservation ID: #{res.id}</div>
               </div>
-              <div className="text-sm text-gray-500">Reservation ID: #{res.id}</div>
-            </div>
 
-            <div className="text-gray-700 dark:text-gray-300 space-y-1">
-              <p><span className="font-medium">Guests:</span> {res.guests}</p>
-              <p><span className="font-medium">Table:</span> {res.Table?.number || 'Not assigned'}</p>
-              <p><span className="font-medium">Note:</span> {res.note || '—'}</p>
-              <p>
-                <span className="font-medium">Status:</span>{' '}
-                <span className={`font-bold ${
-                  res.status === 'Approved' ? 'text-green-600' :
-                  res.status === 'Declined' ? 'text-red-600' :
-                  'text-yellow-600'
-                }`}>
-                  {res.status}
-                </span>
-              </p>
-              {res.adminResponse && (
-                <p className="italic text-sm text-gray-500">“{res.adminResponse}”</p>
+              <div className="mt-4 space-y-1">
+                <p><span className="font-medium">Guests:</span> {res.guests}</p>
+                <p><span className="font-medium">Table:</span> {res.Table?.number || 'Not assigned'}</p>
+                <p><span className="font-medium">Note:</span> {res.note || '—'}</p>
+                <p>
+                  <span className="font-medium">Status:</span>{' '}
+                  <span className={`font-bold ${
+                    res.status === 'Approved' ? 'text-green-600' :
+                    res.status === 'Declined' ? 'text-red-600' :
+                    'text-yellow-600'
+                  }`}>
+                    {res.status}
+                  </span>
+                </p>
+                {res.adminResponse && (
+                  <p className="italic text-sm text-[var(--bc)] opacity-60">“{res.adminResponse}”</p>
+                )}
+              </div>
+
+              <div className="text-sm pt-4 mt-4 border-t border-[var(--border-color)] space-y-1">
+                <p><span className="font-medium">Name:</span> {res.guestName || res.User?.firstName || 'Anonymous'}</p>
+                <p><span className="font-medium">Email:</span> {res.guestEmail || res.User?.email || '—'}</p>
+                <p><span className="font-medium">Phone:</span> {res.guestPhone || res.User?.phone || '—'}</p>
+                <p><span className="font-medium">Created:</span> {new Date(res.createdAt).toLocaleString()}</p>
+                <p><span className="font-medium">Updated:</span> {new Date(res.updatedAt).toLocaleString()}</p>
+              </div>
+
+              {res.status === 'Pending' && (
+                <div className="flex gap-4 mt-6">
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={() => handleActionClick(res.id, 'approve')}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="btn btn-error btn-sm"
+                    onClick={() => handleActionClick(res.id, 'decline')}
+                  >
+                    Decline
+                  </button>
+                </div>
               )}
             </div>
-
-            <div className="text-sm text-gray-600 pt-2 border-t space-y-1">
-              <p><span className="font-medium">Name:</span> {res.guestName || res.User?.firstName || 'Anonymous'}</p>
-              <p><span className="font-medium">Email:</span> {res.guestEmail || res.User?.email || '—'}</p>
-              <p><span className="font-medium">Phone:</span> {res.guestPhone || res.User?.phone || '—'}</p>
-              <p><span className="font-medium">Created:</span> {new Date(res.createdAt).toLocaleString()}</p>
-              <p><span className="font-medium">Updated:</span> {new Date(res.updatedAt).toLocaleString()}</p>
-            </div>
-
-            {res.status === 'Pending' && (
-              <div className="flex gap-4 mt-4">
-                <button
-                  className="btn btn-success btn-sm"
-                  onClick={() => handleActionClick(res.id, 'approve')}
-                >
-                  Approve
-                </button>
-                <button
-                  className="btn btn-error btn-sm"
-                  onClick={() => handleActionClick(res.id, 'decline')}
-                >
-                  Decline
-                </button>
-              </div>
-            )}
-          </div>
-        ))
+          ))}
+        </div>
       )}
 
       <AdminResponseModal

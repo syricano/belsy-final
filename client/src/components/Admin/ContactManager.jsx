@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAdmin } from '@/context';
 import { errorHandler } from '@/utils/errorHandler';
-import  Toast  from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const defaultInfo = {
   phone: '',
@@ -40,50 +40,66 @@ const ContactManager = () => {
       .finally(() => setSubmitting(false));
   };
 
-  if (loading) return <p className="text-center">Loading contact info...</p>;
+  if (loading) return <p className="text-center text-[var(--bc)]">Loading contact info...</p>;
 
   return (
-    <section className="w-full bg-white dark:bg-base-100 p-6 rounded-xl shadow space-y-6">
-      <h2 className="text-2xl font-bold text-center text-amber-900">Public Contact Information</h2>
+    <section className="w-full bg-[var(--b1)] text-[var(--bc)] p-8 rounded-2xl shadow-lg border border-[var(--border-color)] max-w-4xl mx-auto">
+      <h2 className="text-3xl font-serif font-semibold text-center mb-8">
+        Public Contact Information
+      </h2>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        <input
-          type="text"
-          name="phone"
-          className="input input-bordered"
-          placeholder="Phone Number"
-          value={form.phone}
-          onChange={handleChange}
-          required
-        />
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label htmlFor="phone" className="text-sm font-medium">Phone Number</label>
+          <input
+            id="phone"
+            type="text"
+            name="phone"
+            className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
+            placeholder="Phone Number"
+            value={form.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          className="input input-bordered"
-          placeholder="Email Address"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
+        <div className="space-y-2">
+          <label htmlFor="email" className="text-sm font-medium">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <textarea
-          name="address"
-          className="textarea textarea-bordered md:col-span-2"
-          placeholder="Restaurant Address"
-          rows={3}
-          value={form.address}
-          onChange={handleChange}
-          required
-        />
+        <div className="space-y-2 md:col-span-2">
+          <label htmlFor="address" className="text-sm font-medium">Restaurant Address</label>
+          <textarea
+            id="address"
+            name="address"
+            className="textarea textarea-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
+            placeholder="Restaurant Address"
+            rows={4}
+            value={form.address}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <button
-          type="submit"
-          className="btn btn-primary md:col-span-2"
-          disabled={submitting}
-        >
-          {submitting ? 'Saving...' : 'Save Changes'}
-        </button>
+        <div className="md:col-span-2">
+          <button
+            type="submit"
+            className="btn btn-primary w-full"
+            disabled={submitting}
+          >
+            {submitting ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
       </form>
     </section>
   );

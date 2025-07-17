@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ReservationModal from '@/components/Reservations/ReservationModal';
+import CreateReservationModal from '@/components/Reservations/CreateReservationModal';
 
 const ReservationsPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -18,7 +18,7 @@ const ReservationsPage = () => {
       </div>
 
       {showModal && (
-        <ReservationModal onClose={() => setShowModal(false)} onSuccess={handleSuccess} />
+        <CreateReservationModal onClose={() => setShowModal(false)} onSuccess={handleSuccess} />
       )}
     </section>
   );

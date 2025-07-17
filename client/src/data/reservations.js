@@ -32,6 +32,15 @@ export const suggestTables = (payload) =>
 export const getAllReservations = () =>
   handleRequest(() => axiosInstance.get(`${baseURL}/admin`), 'Failed to fetch admin reservations');
 
+// Cancel reservation (sets status to "Canceled")
+export const cancelReservation = (id) =>
+  handleRequest(() => axiosInstance.patch(`/reservations/${id}`, { status: 'Canceled' }), 'Cancel failed');
+
+// Update reservation (guest/date/time/note)
+export const updateReservation = (id, data) =>
+  handleRequest(() => axiosInstance.patch(`/reservations/${id}`, data), 'Update failed');
+
+
 // Admin: approve reservation
 export const approveReservation = (id, message = 'Approved by admin') =>
   handleRequest(
@@ -45,3 +54,5 @@ export const declineReservation = (id, message = 'Declined by admin') =>
     () => axiosInstance.patch(`${baseURL}/admin/${id}/decline`, { adminResponse: message }),
     'Decline failed'
   );
+
+  

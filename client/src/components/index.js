@@ -29,7 +29,7 @@ import MenuManager from './Admin/MenuManager';
 import DutyManager from './Admin/DutyManager';
 import ContactManager from './Admin/ContactManager';
 import TableManager from './Admin/TableManager'; 
-import ReservationModal from './Reservations/ReservationModal';
+import CreateReservationModal from './Reservations/CreateReservationModal';
 import OverviewCards from './Admin/OverviewCards';
 //import BookReservationButton from './Reservations/BookReservationButton';
 
@@ -54,7 +54,7 @@ export {
   // Reservations components
   ReservationForm,  
   ReservationStatus,
-  ReservationModal,
+  CreateReservationModal,
 //  BookReservationButton,
 
   // Menus components

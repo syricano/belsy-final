@@ -3,7 +3,7 @@ import { AdminDashboard } from '@/components'
 import OverviewCards from '@/components/admin/OverviewCards'
 const AdminPage = () => {
   return (
-    <div>
+    <div className="min-h-screen main-section py-16 px-4">
         <OverviewCards />
         <AdminDashboard />       
 

@@ -7,7 +7,7 @@ const TableManager = () => {
     getTables,
     createTable,
     updateTable,
-    deleteTable
+    deleteTable,
   } = useAdmin();
 
   const [tables, setTables] = useState([]);
@@ -68,16 +68,17 @@ const TableManager = () => {
   };
 
   return (
-    <div className="space-y-10">
+    <section className="space-y-10">
+      {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow-md grid grid-cols-1 md:grid-cols-3 gap-4"
+        className="bg-[var(--b1)] text-[var(--bc)] p-6 rounded-xl shadow-md border border-[var(--border-color)] grid grid-cols-1 md:grid-cols-3 gap-4"
       >
         <input
           type="number"
           name="number"
           placeholder="Table Number"
-          className="input input-bordered w-full"
+          className="input input-bordered"
           value={form.number}
           onChange={handleChange}
           required
@@ -86,20 +87,21 @@ const TableManager = () => {
           type="number"
           name="seats"
           placeholder="Seats"
-          className="input input-bordered w-full"
+          className="input input-bordered"
           value={form.seats}
           onChange={handleChange}
           required
         />
         <select
           name="location"
-          className="select select-bordered w-full"
+          className="select select-bordered"
           value={form.location}
           onChange={handleChange}
         >
           <option value="inRestaurant">Inside Restaurant</option>
           <option value="inHall">In Hall</option>
         </select>
+
         <button
           type="submit"
           className="btn btn-primary col-span-1 md:col-span-3"
@@ -109,10 +111,11 @@ const TableManager = () => {
         </button>
       </form>
 
-      <div className="overflow-x-auto">
-        <table className="table">
+      {/* Table List */}
+      <div className="overflow-x-auto rounded-xl border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)]">
+        <table className="table w-full">
           <thead>
-            <tr>
+            <tr className="text-left text-sm border-b border-[var(--border-color)]">
               <th>#</th>
               <th>Seats</th>
               <th>Location</th>
@@ -121,20 +124,20 @@ const TableManager = () => {
           </thead>
           <tbody>
             {tables.map((table) => (
-              <tr key={table.id}>
+              <tr key={table.id} className="hover:bg-[var(--card-bg)] transition">
                 <td>{table.number}</td>
                 <td>{table.seats}</td>
                 <td>{table.location}</td>
                 <td className="space-x-2">
                   <button
                     onClick={() => handleEdit(table)}
-                    className="btn btn-sm btn-warning"
+                    className="btn btn-xs btn-warning"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(table.id)}
-                    className="btn btn-sm btn-error"
+                    className="btn btn-xs btn-error"
                   >
                     Delete
                   </button>
@@ -144,7 +147,7 @@ const TableManager = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 };
 

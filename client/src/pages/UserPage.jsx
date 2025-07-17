@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { useAuth } from '@/context';
-import { useNavigate, useLocation } from 'react-router';
-import { toast  } from 'react-hot-toast';
+import { useNavigate } from 'react-router';
+import { toast } from 'react-hot-toast';
 import { asyncHandler } from '@/utils';
 import { errorHandler } from '@/utils';
-import UserReservations from '@/components/Reservations/UserReservations';
-
+import FetchUserReservations from '@/components/Reservations/FetchUserReservations';
 
 const UserPage = () => {
-  const { user, loading, updateProfile, deleteAccount, signout, setCheckSession } = useAuth();
+  const { user, loading, updateProfile, deleteAccount } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
@@ -26,16 +24,16 @@ const UserPage = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-md">
-        <p className="text-gray-500">Loading profile...</p>
+      <div className="container mx-auto p-6 max-w-md text-center text-gray-500">
+        Loading profile...
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="container mx-auto p-6 max-w-md">
-        <p className="text-red-500">User not found. Please sign in again.</p>
+      <div className="container mx-auto p-6 max-w-md text-center text-red-500">
+        User not found. Please sign in again.
       </div>
     );
   }
@@ -60,10 +58,7 @@ const UserPage = () => {
 
   const handleAccountCloser = async () => {
     const confirmed = window.confirm('Are you sure you want to delete your account? This action is irreversible.');
-    if (confirmed) {
-      setShowDeleteInput(true); // Reveal password input
-    }
-    
+    if (confirmed) setShowDeleteInput(true);
   };
 
   const handleFinalDelete = () => {
@@ -77,89 +72,84 @@ const UserPage = () => {
         toast.success('Account deleted successfully');
         navigate('/');
       })
-      .catch(errorHandler)
+      .catch(errorHandler);
   };
 
   return (
-    <section className="min-h-screen flex justify-center items-center bg-[var(--bg-color)] text-[var(--text-color)] px-4">
-      <div className="card shadow-xl bg-white dark:bg-neutral-900 p-8 w-full max-w-xl rounded-2xl border border-[var(--border-color)]">
-        <h2 className="text-3xl font-extrabold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
-          My Profile
-        </h2>
+    <section className="main-section min-h-screen py-12 px-4">
+      <div className="max-w-3xl mx-auto space-y-12">
+        
+        {/* Profile Info */}
+        <div className="p-8 rounded-2xl border border-[var(--border-color)] bg-[var(--n)] text-[var(--nc)] shadow-xl space-y-6">
+          <h2 className="text-xl font-serif font-semibold text-center mb-4">
+            My Profile
+          </h2>
 
-        <div className="grid gap-4">
-          <input
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="input input-bordered w-full"
-            placeholder="First Name"
-          />
-          <input
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="input input-bordered w-full"
-            placeholder="Last Name"
-          />
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="input input-bordered w-full"
-            placeholder="Email"
-          />
-          <input
-            name="phone"
-            value={formData.phone || ''}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="input input-bordered w-full"
-            placeholder="Phone"
-          />
-        </div>
+          <form className="space-y-5">
+            {['firstName', 'lastName', 'email', 'phone'].map((field) => (
+              <div key={field} className="space-y-2">
+                <label htmlFor={field} className="block text-sm font-medium opacity-90 capitalize">
+                  {field.replace('Name', ' Name')}
+                </label>
+                <input
+                  type={field === 'email' ? 'email' : 'text'}
+                  name={field}
+                  id={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className="w-full input input-bordered rounded-lg bg-[var(--b1)] text-[var(--bc)] placeholder-opacity-60"
+                  placeholder={field.replace('Name', ' Name')}
+                />
+              </div>
+            ))}
+          </form>
 
-        <div className="flex justify-between gap-4 mt-6">
-          <button
-            onClick={handleUpdate}
-            disabled={saving}
-            className="flex-1 py-2 px-4 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-semibold shadow-md transition-all"
-          >
-            {isEditing ? (saving ? 'Saving...' : 'Save') : 'Update'}
-          </button>
-
-          <button
-            onClick={handleAccountCloser}
-            className="flex-1 py-2 px-4 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold shadow-md transition-all"
-          >
-            Delete
-          </button>
-        </div>
-
-        {showDeleteInput && (
-          <div className="mt-6 space-y-3 animate-fade-in">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input input-bordered w-full"
-              placeholder="Confirm your password"
-            />
+          <div className="flex justify-between gap-4 pt-2">
             <button
-              onClick={handleFinalDelete}
-              className="w-full py-2 px-4 rounded-lg bg-red-700 hover:bg-red-600 text-white font-semibold shadow"
+              onClick={handleUpdate}
+              disabled={saving}
+              className="flex-1 btn btn-primary"
             >
-              Confirm Delete
+              {isEditing ? (saving ? 'Saving...' : 'Save') : 'Update'}
+            </button>
+
+            <button
+              onClick={handleAccountCloser}
+              className="flex-1 py-2 px-4 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold shadow-md transition-all"
+            >
+              Delete
             </button>
           </div>
-        )}
-        
-      </div>
-      <div>
-        <UserReservations />
+
+          {showDeleteInput && (
+            <div className="mt-6 space-y-3 animate-fade-in">
+              <label className="block text-sm font-medium opacity-90">
+                Confirm Deletion (Password)
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
+                placeholder="Enter your password"
+              />
+              <button
+                onClick={handleFinalDelete}
+                className="w-full py-2 px-4 rounded-lg bg-red-700 hover:bg-red-600 text-white font-semibold shadow"
+              >
+                Confirm Delete
+              </button>
+            </div>
+          )}
+        </div>
+
+
+        {/* Reservation History */}
+        <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] shadow-lg p-6">
+          <h3 className="text-2xl font-bold mb-4 text-[var(--bc)] text-center">My Reservations</h3>
+          <FetchUserReservations />
+        </div>
       </div>
     </section>
   );

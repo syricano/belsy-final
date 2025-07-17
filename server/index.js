@@ -7,6 +7,7 @@ import { routeMap } from './routes/index.js';
 import applyAssociations from './db/associations.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import uploadRouter from './routes/uploadRouter.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;

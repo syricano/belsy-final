@@ -4,3 +4,4 @@ export * from './duty';
 export * from './table';
 export * from './contact';
 export * from './reservations';
+export * from './upload';

@@ -1,6 +1,7 @@
+// data/reservation.js
 import axiosInstance from '@/config/axiosConfig';
 
-const baseURL = '/reservations';
+const baseURL = '/api/reservations';
 
 const handleRequest = async (callback, errorMsg) => {
   try {
@@ -18,10 +19,12 @@ const handleRequest = async (callback, errorMsg) => {
 
 // Create a reservation
 export const createReservation = (payload, isGuest = false) =>
-  handleRequest(() => axiosInstance.post('/reservations', payload, isGuest
-      ? { headers: { Authorization: undefined } } // ensures guest request
+  handleRequest(() =>
+    axiosInstance.post(baseURL, payload, isGuest
+      ? { headers: { Authorization: undefined } }
       : undefined
-    ), 'Reservation failed');
+    ), 'Reservation failed'
+  );
 
 // Get current user's reservations
 export const getMyReservations = () =>
@@ -37,12 +40,12 @@ export const getAllReservations = () =>
 
 // Cancel reservation (sets status to "Cancelled")
 export const cancelReservation = (id) =>
-  handleRequest(() => axiosInstance.patch(`/reservations/${id}/cancel`, { status: 'Canceled' }), 'Cancel failed');
+  handleRequest(() =>
+    axiosInstance.patch(`${baseURL}/${id}/cancel`, { status: 'Canceled' }), 'Cancel failed');
 
 // Update reservation (guest/date/time/note)
 export const updateReservation = (id, data) =>
-  handleRequest(() => axiosInstance.patch(`/reservations/${id}`, data), 'Update failed');
-
+  handleRequest(() => axiosInstance.patch(`${baseURL}/${id}`, data), 'Update failed');
 
 // Admin: approve reservation
 export const approveReservation = (id, message = 'Approved by admin') =>
@@ -57,5 +60,3 @@ export const declineReservation = (id, message = 'Declined by admin') =>
     () => axiosInstance.patch(`${baseURL}/admin/${id}/decline`, { adminResponse: message }),
     'Decline failed'
   );
-
-  

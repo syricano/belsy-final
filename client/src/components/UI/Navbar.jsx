@@ -11,7 +11,7 @@ const Navbar = () => {
   const handleLogout = () => signout();
 
   const linkClass = ({ isActive }) =>
-    `px-4 py-2 font-medium transition text-2xl ${
+    `px-4 py-2 font-medium transition text-xl ${
       isActive
         ? 'underline text-[var(--p)]'
         : 'hover:text-[var(--accent-color)] hover:underline'
@@ -35,13 +35,13 @@ const Navbar = () => {
             </svg>
           </div>
           <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow bg-[var(--n)] text-[var(--nc)] rounded-box w-56 space-y-2">
-            <li><NavLink to="/" className={linkClass}>Home</NavLink></li>
-            <li><NavLink to="/menu" className={linkClass}>Menu</NavLink></li>
-            <li><NavLink to="/about" className={linkClass}>About</NavLink></li>
+            <li><NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Home</NavLink></li>
+            <li><NavLink to="/menu" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Menu</NavLink></li>
+            <li><NavLink to="/about" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>About</NavLink></li>
             {isLoggedIn && (
               <>
-                {isAdmin && <li><NavLink to="/admin" className={linkClass}>Admin</NavLink></li>}
-                <li><NavLink to="/profile" className={linkClass}>Profile</NavLink></li>
+                {isAdmin && <li><NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Admin</NavLink></li>}
+                <li><NavLink to="/profile" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Profile</NavLink></li>
                 <li>
                   <button onClick={handleLogout} className={linkClass({ isActive: false })}>
                     Logout
@@ -51,8 +51,8 @@ const Navbar = () => {
             )}
             {!isLoggedIn && (
               <>
-                <li><NavLink to="/signin" className={linkClass}>Signin</NavLink></li>
-                <li><NavLink to="/signup" className={linkClass}>Signup</NavLink></li>
+                <li><NavLink to="/signin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signin</NavLink></li>
+                <li><NavLink to="/signup" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signup</NavLink></li>
               </>
             )}
           </ul>
@@ -66,9 +66,9 @@ const Navbar = () => {
       {/* Navbar Center (Desktop Links) */}
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 gap-2">
-          <li><NavLink to="/" className={linkClass}>Home</NavLink></li>
-          <li><NavLink to="/menu" className={linkClass}>Menu</NavLink></li>
-          <li><NavLink to="/about" className={linkClass}>About</NavLink></li>
+          <li><NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Home</NavLink></li>
+          <li><NavLink to="/menu" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Menu</NavLink></li>
+          <li><NavLink to="/about" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>About</NavLink></li>
         </ul>
       </div>
 
@@ -78,14 +78,14 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-2">
           {isLoggedIn ? (
             <>
-              {isAdmin && <NavLink to="/admin" className={linkClass}>Admin</NavLink>}
-              <NavLink to="/profile" className={linkClass}>Profile</NavLink>
-              <NavLink onClick={handleLogout} className={linkClass}>Logout</NavLink>
+              {isAdmin && <NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Admin</NavLink>}
+              <NavLink to="/profile" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Profile</NavLink>
+              <NavLink onClick={handleLogout} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Logout</NavLink>
             </>
           ) : (
             <>
-              <NavLink to="/signin" className={linkClass}>Signin</NavLink>
-              <NavLink to="/signup" className={linkClass}>Signup</NavLink>
+              <NavLink to="/signin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signin</NavLink>
+              <NavLink to="/signup" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signup</NavLink>
             </>
           )}
         </div>

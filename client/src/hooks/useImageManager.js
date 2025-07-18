@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '@/config/axiosConfig';
 
+// ✅ Separate base for API and file URLs
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const FILES_BASE = import.meta.env.VITE_FILES_BASE_URL || 'http://localhost:3000';
+
 const useImageManager = () => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -8,7 +12,8 @@ const useImageManager = () => {
 
   const fetchImages = async () => {
     const res = await axiosInstance.get('/upload/list');
-    setUploadedImages(res.data);
+    const fullUrls = res.data.map((name) => `${FILES_BASE}${name}`); 
+    setUploadedImages(fullUrls);
   };
 
   const uploadImage = async (file) => {
@@ -19,8 +24,8 @@ const useImageManager = () => {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     setUploading(false);
-    await fetchImages(); // refresh list
-    return res.data.fileUrl;
+    await fetchImages(); // refresh gallery
+    return `${FILES_BASE}${res.data.fileUrl}`; 
   };
 
   useEffect(() => {

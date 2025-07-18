@@ -9,6 +9,7 @@ import uploadRouter from './uploadRouter.js';
 import express from 'express';
 import path from 'path';
 
+
 export const routeMap = [
   { path: '/api/auth', handler: authRouter },
   { path: '/api/admin', handler: adminRouter },

@@ -3,7 +3,7 @@ import axiosInstance from '@/config/axiosConfig';
 
 // ✅ Separate base for API and file URLs
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
-const FILES_BASE = import.meta.env.VITE_FILES_BASE_URL || 'http://localhost:3000';
+const FILES_BASE = import.meta.env.VITE_FILES_BASE_URL ;
 
 const useImageManager = () => {
   const [uploadedImages, setUploadedImages] = useState([]);

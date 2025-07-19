@@ -26,7 +26,6 @@ const reservationRouter = express.Router();
 // POST /api/reservations — create a new reservation (guests + users)
 reservationRouter.post(
   '/',
-  verifyToken, // ✅ requires authentication for users
   optionalAuth, // ✅ allows both guests and authenticated users
   validateZod(reservationSchema),
   createReservation

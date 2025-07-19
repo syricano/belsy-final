@@ -32,7 +32,7 @@ const Reservation = sequelize.define('Reservation', {
       model: User,
       key: 'id',
     },
-    allowNull: false,
+    allowNull: true,
   },
   guestName: {
     type: DataTypes.STRING,

@@ -162,9 +162,11 @@ const useReservationForm = ({ onSuccess, onClose, initialData = null }) => {
             tableIds: [suggestion.tables[0]],
             reservationTime: form.reservationTime,
             note: form.note,
-            name: form.name || user?.firstName || '',
-            email: form.email || user?.email || '',
-            phone: form.phone || user?.phone || '',
+
+            // Prevent admin info from leaking into guest reservations
+            name: user?.role === 'Admin' ? form.name : (form.name || user?.firstName || ''),
+            email: user?.role === 'Admin' ? form.email : (form.email || user?.email || ''),
+            phone: user?.role === 'Admin' ? form.phone : (form.phone || user?.phone || ''),
           };
 
           return createReservation(payload, !user);

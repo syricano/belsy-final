@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '@/context';
-import { asyncHandler } from '@/utils';
+import { asyncHandler, errorHandler } from '@/utils';
+import { toast } from 'react-hot-toast';
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -9,10 +10,12 @@ const Signup = () => {
     lastName: '',
     email: '',
     phone: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
-  const {signup} = useAuth()
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = e =>
@@ -20,60 +23,71 @@ const Signup = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
 
-    asyncHandler(() => signup(form), 'Signup failed')
-      .then(() => navigate('/'))
-      .catch((err) => console.error(err.message));
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    const { confirmPassword, ...formData } = form;
+
+    asyncHandler(() => signup(formData), 'Signup failed')
+      .then(() => {
+        toast.success('Account created');
+        navigate('/');
+      })
+      .catch(errorHandler)
+      .finally(() => setLoading(false));
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
-        Create Account
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label>First Name</label>
-        <input
-          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="firstName"
-          placeholder="First Name"
-          onChange={handleChange}
-        />
-        <label>Last Name</label>
-        <input
-          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="lastName"
-          placeholder="Last Name"
-          onChange={handleChange}
-        />
-       
-        <label>Phone</label>
-        <input
-          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="phone"
-          placeholder="Phone"
-          type="text"
-          onChange={handleChange}
-        />
-        <input
-          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="email"
-          placeholder="Email"
-          type="email"
-          onChange={handleChange}
-        />
-        <input
-          className="input input-bordered w-full focus:ring-yellow-500 focus:border-yellow-500"
-          name="password"
-          placeholder="Password"
-          type="password"
-          onChange={handleChange}
-        />
-        <button className="btn btn-primary w-full bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white hover:bg-yellow-500">
-          Sign Up
-        </button>
-      </form>
-    </div>
+    <section className="main-section min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-md w-full p-8 rounded-xl shadow-xl bg-[var(--n)] text-[var(--nc)] border border-[var(--border-color)]">
+        <h2 className="text-3xl font-serif font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
+          Create Account
+        </h2>
+
+        {error && (
+          <p className="text-red-600 text-sm text-center mb-4">{error}</p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {[
+            { label: 'First Name', name: 'firstName' },
+            { label: 'Last Name', name: 'lastName' },
+            { label: 'Phone', name: 'phone', type: 'text' },
+            { label: 'Email', name: 'email', type: 'email' },
+            { label: 'Password', name: 'password', type: 'password' },
+            { label: 'Confirm Password', name: 'confirmPassword', type: 'password' },
+          ].map(({ label, name, type = 'text' }) => (
+            <div key={name} className="space-y-2">
+              <label htmlFor={name} className="block text-sm font-medium opacity-90">
+                {label}
+              </label>
+              <input
+                type={type}
+                name={name}
+                id={name}
+                placeholder={label}
+                onChange={handleChange}
+                className="input input-bordered w-full rounded-md bg-[var(--b1)] text-[var(--bc)] placeholder-opacity-60"
+              />
+            </div>
+          ))}
+
+          <button
+            type="submit"
+            className="w-full py-2 rounded-lg bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white font-semibold shadow-md hover:brightness-110 transition-all"
+            disabled={loading}
+          >
+            {loading ? 'Creating...' : 'Sign Up'}
+          </button>
+        </form>
+      </div>
+    </section>
   );
 };
 

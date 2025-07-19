@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import useReservationForm from './useReservationForm';
+import useReservationForm from '@/hooks/useReservationForm';
+import { toast } from 'react-hot-toast'; 
 
 const CreateReservationModal = ({ onClose, onSuccess }) => {
   const {
@@ -122,19 +123,21 @@ const CreateReservationModal = ({ onClose, onSuccess }) => {
             {errorMsg}
           </p>
         )}
-        {isContactMissing && (
-          <p className="text-error text-sm text-center mt-2">
-            Please provide at least your name or phone number.
-          </p>
-        )}
+      
 
         {/* Submit */}
         <div className="modal-action">
           <button
             type="button"
             className="btn btn-primary w-full"
-            onClick={handleSubmit}
-            disabled={loading || isContactMissing}
+            onClick={() => {
+              if (isContactMissing) {
+                toast.error('Please provide at least your name or phone number.');
+                return;
+              }
+              handleSubmit();
+            }}
+            disabled={loading}
           >
             {loading ? 'Booking...' : 'Submit Reservation'}
           </button>

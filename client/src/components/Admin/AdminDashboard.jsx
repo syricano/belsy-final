@@ -14,7 +14,7 @@ const sections = [
 ];
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('menu');
+  const [activeTab, setActiveTab] = useState('reservations');
 
   const renderSection = () => {
     switch (activeTab) {

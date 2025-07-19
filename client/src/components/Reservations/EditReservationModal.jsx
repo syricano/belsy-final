@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import useReservationForm from './useReservationForm';
+import useReservationForm from '../../hooks/useReservationForm';
 
 const EditReservationModal = ({ reservation, isOpen, onClose, onSuccess }) => {
   const {

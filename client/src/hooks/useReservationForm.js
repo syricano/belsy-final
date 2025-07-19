@@ -158,9 +158,13 @@ const useReservationForm = ({ onSuccess, onClose, initialData = null }) => {
           }
 
           const payload = {
-            ...form,
             guests: Number(form.guests),
-            tableIds: [suggestion.tables[0]]
+            tableIds: [suggestion.tables[0]],
+            reservationTime: form.reservationTime,
+            note: form.note,
+            name: form.name || user?.firstName || '',
+            email: form.email || user?.email || '',
+            phone: form.phone || user?.phone || '',
           };
 
           return createReservation(payload, !user);

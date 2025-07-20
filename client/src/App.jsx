@@ -12,6 +12,7 @@ import {
 } from '@/pages';
 
 import './App.css';
+import ContactPage from './pages/ContactPage';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="signup" element={<Signup />} />
           <Route path="menu" element={<MenuPage />} />
           <Route path="about" element={<About />} />
+          <Route path="contact" element={<ContactPage />} />
 
           {/* Protected Pages nested inside RootLayout */}
           <Route element={<ProtectedLayout />}>

@@ -35,7 +35,7 @@ const About = () => {
         <div className="flex-1 max-w-sm w-full">
         <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-lg">
           <img
-            src="./src/assets/belsy-restaurant.jpg"
+            src="images/belsy-restaurant.jpg"
             alt="Belsy Interior"
             className="w-full h-full object-cover"
           />

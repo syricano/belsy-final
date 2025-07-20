@@ -5,23 +5,31 @@ const HeroSection = () => {
   const { setOpen } = useModal();
 
   return (
-    <section className="relative w-full py-12 px-4">
-      <div className="flex flex-col items-center justify-center text-center min-h-[500px] sm:min-h-[550px] md:min-h-[600px]">
-        <div className="max-w-2xl">
-          <h1 className="text-5xl font-bold text-[var(--bc)]">
-            Taste The Oriental Food
-          </h1>
-          <p className="py-6 text-lg text-[var(--bc)]">
-            Experience the richness of authentic Syrian flavors in every dish.
-            From cozy evenings to grand celebrations, we serve tradition with elegance.
-          </p>
-          <button
-            onClick={() => setOpen(true)}
-            className="btn btn-primary"
-          >
-            Book Your Table Now
-          </button>
-        </div>
+    <section className="relative w-full h-[90vh] md:h-screen overflow-hidden rounded-3xl">
+      {/* Hero Background Image */}
+      <img
+        src="/images/hero.jpg" // ⬅ rename your best image to this in /public/images/
+        alt="Syrian cuisine table setup"
+        className="absolute inset-0 w-full h-full object-cover rounded-3xl object-center"
+      />
+
+      {/* Soft gradient for contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
+
+      {/* Centered Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
+        <h1 className="text-5xl md:text-6xl font-bold font-serif drop-shadow-md">
+          Taste The Oriental Food
+        </h1>
+        <p className="mt-6 text-lg md:text-xl max-w-2xl drop-shadow-sm">
+          Experience the richness of authentic Syrian flavors in every dish. Elegant ambiance, unforgettable taste.
+        </p>
+        <button
+          onClick={() => setOpen(true)}
+          className="mt-10 px-8 py-3 text-lg font-semibold rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-black shadow-lg hover:scale-105 transition-transform"
+        >
+          Book Your Table Now
+        </button>
       </div>
     </section>
   );

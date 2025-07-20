@@ -1,26 +1,20 @@
 import React from 'react';
 
-const images = [
-  '/images/chicken.jpg',
-  '/images/falafel.jpg',
-  '/images/fish.jpg',
-  '/images/kabab.jpg',
-  '/images/yaprak.jpg',
-  '/images/rose-drink.jpg',
-  '/images/maqluba.jpg',
-  '/images/veg-soup.jpg',
-  '/images/shocolate.jpg',
-];
+// Automatically import all images from the slider folder
+const imageModules = import.meta.glob('/src/assets/slider/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const images = Object.values(imageModules).map((mod) => mod.default);
 
 const ImageSlider = () => {
   return (
     <section className="py-8 bg-[var(--main-bg-color)] text-[var(--main-text-color)]">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-serif text-center mb-6">
+      <div className="max-w-7xl mx-auto px-4">
+        <h2 className="text-3xl font-serif text-center mb-6 text-[var(--bc)]">
           A Glimpse of Our Atmosphere
         </h2>
 
-        <div className="carousel w-full rounded-xl shadow-lg overflow-hidden">
+        <div className="carousel w-full rounded-3xl shadow-2xl overflow-hidden h-[80vh]">
           {images.map((src, index) => {
             const prevIndex = (index - 1 + images.length) % images.length;
             const nextIndex = (index + 1) % images.length;
@@ -34,7 +28,7 @@ const ImageSlider = () => {
                 <img
                   src={src}
                   alt={`slide-${index}`}
-                  className="w-full h-[300px] sm:h-[350px] object-cover"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
                   <a

@@ -10,7 +10,7 @@ const Feedback = sequelize.define('Feedback', {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   message: {
     type: DataTypes.TEXT,
@@ -28,6 +28,10 @@ const Feedback = sequelize.define('Feedback', {
       model: 'Users',
       key: 'id',
     },
+  },
+  adminReply: {
+    type: DataTypes.TEXT,
+    allowNull: true,
   }
 });
 

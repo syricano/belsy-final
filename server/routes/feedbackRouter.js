@@ -12,6 +12,7 @@ import verifyToken from '../middleware/verifyToken.js';
 import isAdmin from '../middleware/isAdmin.js';
 import validateZod from '../middleware/validateZod.js';
 import { feedbackSchema } from '../zod/Schemas.js';
+import { feedbackReplySchema } from '../zod/Schemas.js';
 
 const feedbackRouter = express.Router();
 
@@ -28,11 +29,16 @@ feedbackRouter.post(
 // GET /api/feedback/my — Get current user's feedback
 feedbackRouter.get('/my', verifyToken, getMyFeedback);
 
-// PUT /api/feedback/:id — Update feedback (user only)
+
+// PUT — allow either full update or just reply
 feedbackRouter.put(
   '/:id',
   verifyToken,
-  validateZod(feedbackSchema),
+  (req, res, next) => {
+    const isReply = Object.keys(req.body).includes('adminReply');
+    const validate = validateZod(isReply ? feedbackReplySchema : feedbackSchema);
+    return validate(req, res, next);
+  },
   updateFeedback
 );
 
@@ -42,6 +48,6 @@ feedbackRouter.delete('/:id', verifyToken, deleteFeedback);
 // ========== ADMIN ROUTES ==========
 
 // GET /api/feedback — Get all feedbacks (admin only)
-feedbackRouter.get('/', verifyToken, isAdmin, getFeedback);
+feedbackRouter.get('/', getFeedback);
 
 export default feedbackRouter;

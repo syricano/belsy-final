@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { asyncHandler } from '@/utils';
 import { errorHandler } from '@/utils';
 import FetchUserReservations from '@/components/Reservations/FetchUserReservations';
+import UserFeedbackList from '@/components/Feedback/UserFeedbackList';
 
 const UserPage = () => {
   const { user, loading, updateProfile, deleteAccount } = useAuth();
@@ -148,6 +149,12 @@ const UserPage = () => {
         <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] shadow-lg p-6">
           <h3 className="text-2xl font-bold mb-4 text-[var(--bc)] text-center">My Reservations</h3>
           <FetchUserReservations />
+        </div>
+
+        {/* Feedback History */}
+        <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] shadow-lg p-6">
+          <h3 className="text-2xl font-bold mb-4 text-[var(--bc)] text-center">My Feedback</h3>
+          <UserFeedbackList />
         </div>
       </div>
     </section>

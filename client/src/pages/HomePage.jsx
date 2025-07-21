@@ -1,7 +1,8 @@
 import React from 'react';
 import HeroSection from '../components/UI/HeroSection';
 import ImageSlider from '../components/UI/ImageSlider';
-import HappyCustomers from '@/components/UI/HappyCustomers';
+import HappyCustomers from '@/components/Feedback/HappyCustomers';
+import FeedbackForm from '@/components/Feedback/feedbackForm';
 
 const HomePage = () => {
   return (
@@ -9,6 +10,7 @@ const HomePage = () => {
       <HeroSection />
       <ImageSlider />
       <HappyCustomers />
+      <FeedbackForm />
     </div>
   );
 };

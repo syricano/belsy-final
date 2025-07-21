@@ -1,25 +1,11 @@
 import Feedback from '../models/Feedback.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
-import leoProfanity from 'leo-profanity';
-
-// ✅ Use the object directly to preserve context
-leoProfanity.loadDictionary('en'); // loads default (English only)
-
-// You can manually load or extend dictionaries here if you have files.
-// leoProfanity.loadDictionary(leoProfanity.getDictionary('fr'));
-
 
 // POST /api/feedback — Create feedback
 export const addFeedback = asyncHandler(async (req, res) => {
   const { name, message, rating } = req.body;
   const userId = req.userId || null;
-
-  if (leoProfanity.isProfane(name) || leoProfanity.isProfane(message)) {
-    return res.status(400).json({
-      error: 'Please use polite and respectful language in your feedback.',
-    });
-  }
 
   const feedback = await Feedback.create({ name, message, rating, userId });
   res.status(201).json(feedback);
@@ -51,15 +37,10 @@ export const updateFeedback = asyncHandler(async (req, res) => {
   const feedback = await Feedback.findByPk(id);
   if (!feedback) throw new ErrorResponse('Feedback not found', 404);
 
-  if (leoProfanity.isProfane(name) || leoProfanity.isProfane(message)) {
-    return res.status(400).json({
-      error: 'Your update contains inappropriate language. Please revise it.',
-    });
-  }
-
-  feedback.name = name ?? feedback.name;
-  feedback.message = message ?? feedback.message;
-  feedback.rating = rating ?? feedback.rating;
+  if ('name' in req.body) feedback.name = req.body.name;
+  if ('message' in req.body) feedback.message = req.body.message;
+  if ('rating' in req.body) feedback.rating = req.body.rating;
+  if ('adminReply' in req.body) feedback.adminReply = req.body.adminReply;
 
   await feedback.save();
   res.status(200).json(feedback);

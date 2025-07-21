@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MenuCategory from '@/components/Menus/MenuCategory';
 import useGetMenu from '@/hooks/useGetMenu';
 
 const MenuPage = () => {
   const { groupedMenu, loading } = useGetMenu();
   const [expandedCategory, setExpandedCategory] = useState(null);
+
+  useEffect(() => {
+    if (groupedMenu.length > 0 && !expandedCategory) {
+      setExpandedCategory(groupedMenu[0].title); // Auto-expand first category
+    }
+  }, [groupedMenu]);
 
   const handleCategoryClick = (category) => {
     setExpandedCategory(expandedCategory === category ? null : category);

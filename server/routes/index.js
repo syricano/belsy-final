@@ -6,6 +6,7 @@ import menuRouter from './menuRouter.js';
 import tableRouter from './tableRouter.js';
 import contactRouter from './contactRouter.js';
 import uploadRouter from './uploadRouter.js';
+import feedbackRouter from './feedbackRouter.js';
 import express from 'express';
 import path from 'path';
 
@@ -19,5 +20,6 @@ export const routeMap = [
   { path: '/api/tables', handler: tableRouter },
   { path: '/api/contact', handler: contactRouter },
   { path: '/api/upload', handler: uploadRouter },
+  { path: '/api/feedback', handler: feedbackRouter },
   { path: '/uploads', handler: express.static(path.resolve('uploads')) }
 ];

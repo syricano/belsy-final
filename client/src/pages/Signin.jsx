@@ -81,9 +81,16 @@ const Signin = () => {
           <button
             type="submit"
             className="w-full py-2 rounded-lg bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white font-semibold shadow-md hover:brightness-110 transition-all"
+            disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="loading loading-spinner text-white w-4 h-4" />
+                Signing in...
+              </span>
+            ) : 'Sign In'}
           </button>
+
           <div className="text-sm text-right mt-1">
             <button
               type="button"
@@ -112,7 +119,12 @@ const Signin = () => {
               className="w-full py-2 rounded-lg bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white font-semibold shadow-md hover:brightness-110 transition-all"
               disabled={loading}
             >
-              {loading ? 'Sending...' : 'Send Reset Link'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="loading loading-spinner text-white w-4 h-4" />
+                  Sending...
+                </span>
+              ) : 'Send Reset Link'}
             </button>
             {forgotMsg && (
               <p className="text-sm text-center mt-2 text-red-500">{forgotMsg}</p>

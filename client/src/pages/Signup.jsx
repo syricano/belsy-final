@@ -83,7 +83,12 @@ const Signup = () => {
             className="w-full py-2 rounded-lg bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white font-semibold shadow-md hover:brightness-110 transition-all"
             disabled={loading}
           >
-            {loading ? 'Creating...' : 'Sign Up'}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="loading loading-spinner text-white w-4 h-4" />
+                Creating...
+              </span>
+            ) : 'Sign Up'}
           </button>
         </form>
       </div>

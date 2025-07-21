@@ -40,7 +40,13 @@ const ContactManager = () => {
       .finally(() => setSubmitting(false));
   };
 
-  if (loading) return <p className="text-center text-[var(--bc)]">Loading contact info...</p>;
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center py-10">
+        <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+      </div>
+    );
+  }
 
   return (
     <section className="w-full bg-[var(--b1)] text-[var(--bc)] p-8 rounded-2xl shadow-lg border border-[var(--border-color)] max-w-4xl mx-auto">

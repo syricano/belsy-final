@@ -69,11 +69,16 @@ const DutyManager = () => {
       .catch((err) => errorHandler(err, 'Failed to delete duty hour'));
   };
 
-  if (loading) return <p className="text-center text-[var(--bc)]">Loading working hours...</p>;
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center py-10">
+        <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+      </div>
+    );
+  }
 
   return (
     <section className="w-full space-y-8">
-      {/* Header */}
       <h2 className="text-3xl font-serif font-semibold text-center text-[var(--bc)]">Working Hours</h2>
 
       {/* Form */}

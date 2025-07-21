@@ -1,6 +1,9 @@
-import { Link } from 'react-router'; 
+import { Link } from 'react-router';
+import { useModal } from '@/context/ModalContext'; // ✅ Added
 
 const Footer = () => {
+  const { setOpen } = useModal(); // ✅ Access modal control
+
   return (
     <footer className="footer belsy-footer sm:footer-horizontal bg-[#004030] text-[#FFF9E5] px-6 py-12">
       {/* Left/Logo */}
@@ -27,7 +30,13 @@ const Footer = () => {
       <nav>
         <h6 className="footer-title text-[#DCD0A8]">Menu</h6>
         <Link to="/menu" className="link link-hover">View Menu</Link>
-        <Link to="/reservations" className="link link-hover">Book a Table</Link>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="link link-hover text-left"
+        >
+          Book a Table
+        </button>
       </nav>
 
       {/* Right - Social */}

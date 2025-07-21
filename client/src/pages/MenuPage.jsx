@@ -10,7 +10,13 @@ const MenuPage = () => {
     setExpandedCategory(expandedCategory === category ? null : category);
   };
 
-  if (loading) return <p className="text-center py-10 text-[var(--bc)]">Loading menu...</p>;
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center py-10">
+        <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+      </div>
+    );
+  }
 
   return (
     <section className="min-h-screen max-w-full flex justify-center">

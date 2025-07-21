@@ -26,7 +26,9 @@ const ReservationManager = () => {
   } = useReservationManager();
 
   const visibleReservations =
-    filterActive && filteredReservations.length > 0 ? filteredReservations : reservations;
+    filterActive && filteredReservations.length > 0
+      ? filteredReservations
+      : reservations;
 
   return (
     <section className="space-y-8">
@@ -37,7 +39,9 @@ const ReservationManager = () => {
       <ReservationsFilter onSearch={handleSearch} />
 
       {loading ? (
-        <p className="text-center text-[var(--bc)] opacity-60">Loading...</p>
+        <div className="w-full flex justify-center py-10">
+          <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+        </div>
       ) : visibleReservations.length === 0 ? (
         <p className="text-center text-[var(--bc)] opacity-60">No reservations found.</p>
       ) : (

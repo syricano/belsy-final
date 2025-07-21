@@ -24,8 +24,8 @@ const UserPage = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-md text-center text-gray-500">
-        Loading profile...
+      <div className="w-full flex justify-center py-16">
+        <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
       </div>
     );
   }
@@ -143,7 +143,6 @@ const UserPage = () => {
             </div>
           )}
         </div>
-
 
         {/* Reservation History */}
         <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] shadow-lg p-6">

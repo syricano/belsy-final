@@ -4,6 +4,7 @@ import { errorHandler } from '@/utils';
 
 const About = () => {
   const [info, setInfo] = useState(null);
+  const [mapLoaded, setMapLoaded] = useState(false); // ✅ track iframe loading
 
   useEffect(() => {
     getContactInfo()
@@ -33,13 +34,13 @@ const About = () => {
 
         {/* Image */}
         <div className="flex-1 max-w-sm w-full">
-        <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-lg">
-          <img
-            src="images/belsy-restaurant.jpg"
-            alt="Belsy Interior"
-            className="w-full h-full object-cover"
-          />
-        </div>
+          <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-lg">
+            <img
+              src="images/belsy-restaurant.jpg"
+              alt="Belsy Interior"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
 
@@ -52,16 +53,23 @@ const About = () => {
             <p><strong>📧 Email:</strong> {info.email}</p>
             <p><strong>📍 Address:</strong> {info.address}</p>
           </div>
-          <div className="max-w-4xl mx-auto mt-8 rounded-xl overflow-hidden shadow-lg border border-[var(--border-color)]">
+
+          <div className="max-w-4xl mx-auto mt-8 rounded-xl overflow-hidden shadow-lg border border-[var(--border-color)] relative h-[300px]">
+            {!mapLoaded && (
+              <div className="absolute inset-0 flex justify-center items-center bg-[var(--b1)] z-10">
+                <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+              </div>
+            )}
             <iframe
               title="Belsy Location"
-              src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6284.232127867992!2d3.3881076769434193!3d50.6056295761779!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c2e0744996fc73%3A0x4d06c63cf123443f!2sBel&#39;sy!5e1!3m2!1sen!2sde!4v1752972756791!5m2!1sen!2sde" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade'
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6284.232127867992!2d3.3881076769434193!3d50.6056295761779!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c2e0744996fc73%3A0x4d06c63cf123443f!2sBel'sy!5e1!3m2!1sen!2sde!4v1752972756791!5m2!1sen!2sde"
               width="100%"
-              height="300"
+              height="100%"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
+              onLoad={() => setMapLoaded(true)}
             ></iframe>
           </div>
         </div>

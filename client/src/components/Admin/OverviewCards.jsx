@@ -8,6 +8,8 @@ const OverviewCards = () => {
     menuItems: 0,
   });
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -23,6 +25,8 @@ const OverviewCards = () => {
         });
       } catch (err) {
         console.error('Failed to fetch dashboard stats');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -30,7 +34,7 @@ const OverviewCards = () => {
   }, []);
 
   const cardClass =
-    'bg-[var(--b1)] text-[var(--bc)] shadow-md rounded-xl p-6 text-center border border-[var(--border-color)] transition hover:shadow-lg';
+    'w-[260px] sm:w-[280px] md:w-[300px] bg-[var(--b1)] text-[var(--bc)] shadow-md rounded-xl p-6 text-center border border-[var(--border-color)] transition hover:shadow-lg';
 
   const cardTitle =
     'text-xl font-semibold tracking-wide font-serif mb-1';
@@ -39,19 +43,27 @@ const OverviewCards = () => {
     'text-4xl font-extrabold mt-1';
 
   return (
-    <section className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className={cardClass}>
-        <h3 className={cardTitle}>Reservations</h3>
-        <p className={cardValue}>{stats.reservations}</p>
-      </div>
-      <div className={cardClass}>
-        <h3 className={cardTitle}>Tables</h3>
-        <p className={cardValue}>{stats.tables}</p>
-      </div>
-      <div className={cardClass}>
-        <h3 className={cardTitle}>Menu Items</h3>
-        <p className={cardValue}>{stats.menuItems}</p>
-      </div>
+    <section className="w-full flex flex-wrap justify-center gap-6 mb-8">
+      {loading ? (
+        <div className="w-full flex justify-center py-10">
+          <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+        </div>
+      ) : (
+        <>
+          <div className={cardClass}>
+            <h3 className={cardTitle}>Reservations</h3>
+            <p className={cardValue}>{stats.reservations}</p>
+          </div>
+          <div className={cardClass}>
+            <h3 className={cardTitle}>Tables</h3>
+            <p className={cardValue}>{stats.tables}</p>
+          </div>
+          <div className={cardClass}>
+            <h3 className={cardTitle}>Menu Items</h3>
+            <p className={cardValue}>{stats.menuItems}</p>
+          </div>
+        </>
+      )}
     </section>
   );
 };

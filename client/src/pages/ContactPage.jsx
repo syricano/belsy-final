@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { asyncHandler } from '@/utils';
 import axiosInstance from '@/config/axiosConfig';
+import { useNavigate } from 'react-router';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +32,15 @@ const ContactPage = () => {
 
   return (
     <section className="main-section min-h-screen flex items-center justify-center px-6 py-12">
-      <div className="max-w-xl w-full bg-[var(--n)] text-[var(--nc)] p-8 rounded-2xl shadow-lg border border-[var(--border-color)]">
+      <div className="relative max-w-xl w-full bg-[var(--n)] text-[var(--nc)] p-8 rounded-2xl shadow-lg border border-[var(--border-color)]">
+        {/* Close (X) button */}
+        <button
+          onClick={() => navigate(-1)} // or navigate('/') to go home
+          className="absolute top-4 right-4 text-xl text-[var(--bc)] hover:text-error"
+          aria-label="Close"
+        >
+          ✕
+        </button>
         <h2 className="text-3xl font-serif font-bold text-center mb-6">Contact Us</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">

@@ -1,6 +1,33 @@
-// src/components/Admin/MenuManager.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import useMenuManager from '@/hooks/useMenuManager';
+
+// 🧩 Image preview loader component
+const PreviewImage = ({ url, selected, onSelect }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div className="relative h-16 w-full">
+      {!loaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[var(--b1)]">
+          <span className="loading loading-spinner text-[var(--bc)] w-6 h-6" />
+        </div>
+      )}
+      <img
+        src={url}
+        alt="uploaded"
+        onClick={onSelect}
+        onLoad={() => setLoaded(true)}
+        onError={(e) => {
+          e.target.src = '/images/fallback.jpg';
+          setLoaded(true);
+        }}
+        className={`h-16 object-cover cursor-pointer rounded border-2 transition-opacity duration-300 ${
+          selected === url ? 'border-primary ring-2' : 'border-gray-300'
+        } ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      />
+    </div>
+  );
+};
 
 const MenuManager = () => {
   const {
@@ -13,6 +40,7 @@ const MenuManager = () => {
     selectedImage,
     setSelectedImage,
     uploading,
+    loading,
     handleChange,
     handleEdit,
     handleDelete,
@@ -22,6 +50,14 @@ const MenuManager = () => {
     handleCategoryEdit,
     handleCategoryDelete,
   } = useMenuManager();
+
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center py-10">
+        <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+      </div>
+    );
+  }
 
   return (
     <section className="w-full space-y-8">
@@ -79,18 +115,14 @@ const MenuManager = () => {
           <label className="label">Or select an uploaded image</label>
           <div className="grid grid-cols-4 gap-2">
             {uploadedImages.map((url) => (
-              <img
+              <PreviewImage
                 key={url}
-                src={url}
-                alt="uploaded"
-                onClick={() => {
+                url={url}
+                selected={form.image}
+                onSelect={() => {
                   setForm((prev) => ({ ...prev, image: url }));
                   setSelectedImage(url);
                 }}
-                onError={(e) => (e.target.src = '/images/fallback.jpg')}
-                className={`h-16 object-cover cursor-pointer rounded border-2 ${
-                  form.image === url ? 'border-primary ring-2' : 'border-gray-300'
-                }`}
               />
             ))}
           </div>

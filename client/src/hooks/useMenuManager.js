@@ -41,14 +41,17 @@ const useMenuManager = () => {
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(defaultForm);
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅
 
   const fetchAll = () => {
+    setLoading(true); // ✅
     Promise.all([getMenu(), getCategories()])
       .then(([menuData, categoryData]) => {
         setMenu(menuData);
         setCategories(categoryData);
       })
-      .catch(errorHandler);
+      .catch(errorHandler)
+      .finally(() => setLoading(false)); // ✅
   };
 
   useEffect(() => {
@@ -194,6 +197,7 @@ const useMenuManager = () => {
     selectedImage,
     setSelectedImage,
     uploading,
+    loading, // ✅ expose
     handleChange,
     handleEdit,
     handleDelete,

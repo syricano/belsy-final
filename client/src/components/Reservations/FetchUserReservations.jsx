@@ -4,13 +4,11 @@ import { useAuth } from '@/context';
 import { asyncHandler, errorHandler } from '@/utils';
 import EditReservationModal from './EditReservationModal';
 
-
 const FetchUserReservations = () => {
   const { user } = useAuth();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
-
 
   const fetchReservations = () => {
     asyncHandler(getMyReservations, 'Failed to fetch reservations')
@@ -36,8 +34,11 @@ const FetchUserReservations = () => {
   return (
     <div className="mt-10 w-full max-w-4xl">
       <h3 className="text-2xl font-semibold mb-4 text-center">My Reservations</h3>
+
       {loading ? (
-        <p className="text-center">Loading...</p>
+        <div className="w-full flex justify-center py-10">
+          <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+        </div>
       ) : reservations.length === 0 ? (
         <p className="text-center text-gray-500">No reservations found.</p>
       ) : (
@@ -57,15 +58,24 @@ const FetchUserReservations = () => {
               {reservations.map((res) => (
                 <tr key={res.id}>
                   <td>{new Date(res.reservationTime).toLocaleDateString()}</td>
-                  <td>{new Date(res.reservationTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                  <td>
+                    {new Date(res.reservationTime).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </td>
                   <td>{res.guests}</td>
                   <td>{res.Table?.number || '-'}</td>
                   <td className="capitalize">{res.status}</td>
                   <td className="space-x-2">
                     {res.status === 'Pending' && (
                       <>
-                        <button className="btn btn-xs btn-warning" onClick={() => handleUpdate(res)}>Update</button>
-                        <button className="btn btn-xs btn-error" onClick={() => handleCancel(res.id)}>Cancel</button>
+                        <button className="btn btn-xs btn-warning" onClick={() => handleUpdate(res)}>
+                          Update
+                        </button>
+                        <button className="btn btn-xs btn-error" onClick={() => handleCancel(res.id)}>
+                          Cancel
+                        </button>
                       </>
                     )}
                   </td>
@@ -73,6 +83,7 @@ const FetchUserReservations = () => {
               ))}
             </tbody>
           </table>
+
           {editing && (
             <EditReservationModal
               reservation={editing}

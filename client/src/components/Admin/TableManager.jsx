@@ -13,12 +13,15 @@ const TableManager = () => {
   const [tables, setTables] = useState([]);
   const [form, setForm] = useState({ number: '', seats: '', location: 'inRestaurant' });
   const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // for form
+  const [loadingTables, setLoadingTables] = useState(true); // for table list
 
   const fetchTables = () => {
+    setLoadingTables(true);
     asyncHandler(getTables, 'Failed to fetch tables')
       .then(data => setTables(data))
-      .catch(errorHandler);
+      .catch(errorHandler)
+      .finally(() => setLoadingTables(false));
   };
 
   useEffect(() => {
@@ -112,41 +115,47 @@ const TableManager = () => {
       </form>
 
       {/* Table List */}
-      <div className="overflow-x-auto rounded-xl border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)]">
-        <table className="table w-full">
-          <thead>
-            <tr className="text-left text-sm border-b border-[var(--border-color)]">
-              <th>#</th>
-              <th>Seats</th>
-              <th>Location</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tables.map((table) => (
-              <tr key={table.id} className="hover:bg-[var(--card-bg)] transition">
-                <td>{table.number}</td>
-                <td>{table.seats}</td>
-                <td>{table.location}</td>
-                <td className="space-x-2">
-                  <button
-                    onClick={() => handleEdit(table)}
-                    className="btn btn-xs btn-warning"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(table.id)}
-                    className="btn btn-xs btn-error"
-                  >
-                    Delete
-                  </button>
-                </td>
+      {loadingTables ? (
+        <div className="w-full flex justify-center py-10">
+          <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)]">
+          <table className="table w-full">
+            <thead>
+              <tr className="text-left text-sm border-b border-[var(--border-color)]">
+                <th>#</th>
+                <th>Seats</th>
+                <th>Location</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {tables.map((table) => (
+                <tr key={table.id} className="hover:bg-[var(--card-bg)] transition">
+                  <td>{table.number}</td>
+                  <td>{table.seats}</td>
+                  <td>{table.location}</td>
+                  <td className="space-x-2">
+                    <button
+                      onClick={() => handleEdit(table)}
+                      className="btn btn-xs btn-warning"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(table.id)}
+                      className="btn btn-xs btn-error"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </section>
   );
 };

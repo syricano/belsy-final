@@ -23,7 +23,7 @@ const HappyCustomers = () => {
               
               <div className="flex justify-between items-center text-sm opacity-70">
                 <span>— {review.name || 'Anonymous'}</span>
-                {review.rating && <span className="text-yellow-400 font-bold">★ {review.rating}</span>}
+                {review.rating && <span className="font-bold text-yellow-400 drop-shadow-[0_1px_1px_rgba(0,0,0,1.95)]">★ {review.rating}</span>}
               </div>
 
               {review.adminReply && (

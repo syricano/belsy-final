@@ -3,6 +3,9 @@ import { Link } from 'react-router';
 const NotFound = () => {
   return (
     <section className="main-section min-h-screen flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="text-[80px] sm:text-[100px] mb-4 animate-bounce">
+        🚧
+      </div>
       <h1 className="text-[120px] sm:text-[160px] font-extrabold text-[var(--bc)] leading-none">
         404
       </h1>

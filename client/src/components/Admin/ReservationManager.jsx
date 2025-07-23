@@ -141,17 +141,21 @@ const ReservationManager = () => {
                   </>
                 ) : (
                   <>
-                    <button className="btn btn-outline btn-sm" onClick={() => handleUpdate(res)}>
+                    <button
+                      className="btn btn-info btn-sm"
+                      onClick={() => handleUpdate(res)}
+                    >
                       Update
                     </button>
                     <button
-                      className="btn btn-outline btn-error btn-sm"
+                      className="btn btn-error btn-sm"
                       onClick={() => handleCancelation(res.id)}
                     >
                       Cancel
                     </button>
                   </>
                 )}
+
               </div>
             </div>
           ))}

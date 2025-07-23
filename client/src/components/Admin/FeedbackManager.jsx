@@ -93,11 +93,15 @@ const FeedbackManager = () => {
                   <p className="italic">Admin Reply:</p>
                   <p>{fb.adminReply}</p>
                   <button
-                    className="btn btn-xs btn-error mt-2"
-                    onClick={() => handleDeleteReply(fb.id)}
+                    className="btn btn-success btn-sm"
+                    onClick={() => {
+                      setReplyingId(fb.id);
+                      setReply(fb.adminReply || '');
+                    }}
                   >
-                    Delete Reply
+                    Reply
                   </button>
+
                 </div>
               )}
 
@@ -112,14 +116,24 @@ const FeedbackManager = () => {
                   />
                   <div className="flex gap-2">
                     <button className="btn btn-sm btn-primary" onClick={() => handleReply(fb.id)}>Save Reply</button>
-                    <button className="btn btn-sm btn-ghost" onClick={() => setReplyingId(null)}>Cancel</button>
+                    <button className="btn btn-info btn-sm" onClick={() => setReplyingId(null)}>
+                      Cancel
+                    </button>
+
                   </div>
                 </div>
               ) : (
                 <div className="flex gap-2 mt-3">
-                  <button className="btn btn-outline btn-sm" onClick={() => { setReplyingId(fb.id); setReply(fb.adminReply || ''); }}>
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={() => {
+                      setReplyingId(fb.id);
+                      setReply(fb.adminReply || '');
+                    }}
+                  >
                     Reply
                   </button>
+
                   <button className="btn btn-error btn-sm" onClick={() => handleDeleteFeedback(fb.id)}>
                     Delete
                   </button>

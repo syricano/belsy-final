@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/index.js';
 
-const ContactInfo = sequelize.define('ContactInfo', {
+const AddressInfo = sequelize.define('Address', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -21,4 +21,4 @@ const ContactInfo = sequelize.define('ContactInfo', {
   },
 });
 
-export default ContactInfo;
+export default AddressInfo;

@@ -4,9 +4,10 @@ import reservationRouter from './reservationRouter.js';
 import dutyRouter from './dutyRouter.js';
 import menuRouter from './menuRouter.js';
 import tableRouter from './tableRouter.js';
-import contactRouter from './contactRouter.js';
+import addressRouter from './addressRouter.js';
 import uploadRouter from './uploadRouter.js';
 import feedbackRouter from './feedbackRouter.js';
+import contactRouter from './contactRouter.js';
 import express from 'express';
 import path from 'path';
 
@@ -18,8 +19,9 @@ export const routeMap = [
   { path: '/api/duty', handler: dutyRouter },
   { path: '/api/menu', handler: menuRouter },
   { path: '/api/tables', handler: tableRouter },
-  { path: '/api/contact', handler: contactRouter },
+  { path: '/api/address', handler: addressRouter },
   { path: '/api/upload', handler: uploadRouter },
   { path: '/api/feedback', handler: feedbackRouter },
+  { path: '/api/contact', handler: contactRouter },
   { path: '/uploads', handler: express.static(path.resolve('uploads')) }
 ];

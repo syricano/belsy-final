@@ -138,8 +138,8 @@ export const menuSchema = z.object({
 });
 
 
-// Contact Info Schema
-export const contactInfoSchema = z.object({
+// Address Schema
+export const addressSchema = z.object({
   email: z.string().email(),
   phone: z.string().min(5).max(20),
   address: z.string().min(5).max(200),

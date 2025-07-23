@@ -6,6 +6,8 @@ import asyncHandler from '../utils/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import sequelize from '../db/index.js';
 import { Op } from 'sequelize';
+import sendEmail from '../utils/sendEmail.js';
+import { reservationCreatedEmail , reservationUpdatedEmail, reservationCancelledEmail, reservationApprovedEmail, reservationDeclinedEmail} from '../utils/emailTemplates.js';
 
 // POST /api/reservations — user
 export const createReservation = asyncHandler(async (req, res) => {
@@ -174,6 +176,30 @@ export const createReservation = asyncHandler(async (req, res) => {
     return entries;
   });
 
+  const reservationName = req.user?.firstName || guestName || name;
+  const recipientEmail = req.user?.email || guestEmail || email;
+
+  if (recipientEmail) {
+    await sendEmail({
+      to: recipientEmail,
+      subject: 'Reservation Created – Belsy Restaurant',
+      html: reservationCreatedEmail(reservationName, reservationTime),
+    });
+  }
+
+  // ✅ Send notification to admin
+  await sendEmail({
+    to: 'info.belsy@gmail.com',
+    subject: 'New Reservation Notification – Belsy',
+    html: `
+      <p>A new reservation was made by: <strong>${reservationName}</strong></p>
+      <p>Email: ${recipientEmail || 'Not provided'}</p>
+      <p>Phone: ${guestPhone || req.user?.phone || 'N/A'}</p>
+      <p><strong>Date & Time:</strong> ${new Date(reservationTime).toLocaleString()}</p>
+      <p>Number of guests: ${guests}</p>
+    `
+  });
+
   res.status(201).json({
     message: 'Reservation created successfully',
     reservations: newReservations
@@ -212,6 +238,18 @@ export const approveReservation = asyncHandler(async (req, res) => {
   reservation.adminResponse = req.body.adminResponse || 'Approved';
   await reservation.save();
 
+  const user = reservation.userId ? await User.findByPk(reservation.userId) : null;
+  const recipientEmail = user?.email || reservation.guestEmail;
+  const reservationName = user?.firstName || reservation.guestName;
+
+  if (recipientEmail) {
+    await sendEmail({
+      to: recipientEmail,
+      subject: 'Reservation Approved – Belsy Restaurant',
+      html: reservationApprovedEmail(reservationName, reservation.reservationTime),
+    });
+  }
+
   res.json({ message: 'Reservation approved', reservation });
 });
 
@@ -240,6 +278,19 @@ export const declineReservation = asyncHandler(async (req, res) => {
       await r.save({ transaction: t });
     }
   });
+
+  const first = relatedReservations[0];
+  const user = first.userId ? await User.findByPk(first.userId) : null;
+  const reservationName = user?.firstName || first.guestName;
+  const recipientEmail = user?.email || first.guestEmail;
+
+  if (recipientEmail) {
+    await sendEmail({
+      to: recipientEmail,
+      subject: 'Reservation Declined – Belsy Restaurant',
+      html: reservationDeclinedEmail(reservationName, first.reservationTime),
+    });
+  }
 
   res.json({ message: 'Reservation declined for all related tables.' });
 });
@@ -345,6 +396,17 @@ export const updateReservation = asyncHandler(async (req, res) => {
 
   await reservation.save();
 
+  const reservationName = req.user?.firstName || reservation.guestName;
+  const recipientEmail = req.user?.email || reservation.guestEmail;
+
+  if (recipientEmail) {
+    await sendEmail({
+      to: recipientEmail,
+      subject: 'Reservation Updated – Belsy Restaurant',
+      html: reservationUpdatedEmail('updated', reservationName, reservation.reservationTime),
+    });
+  }
+
   res.json({ message: 'Reservation updated successfully', reservation });
 });
 
@@ -369,6 +431,17 @@ export const cancelReservation = asyncHandler(async (req, res) => {
 
   reservation.status = 'Cancelled';
   await reservation.save();
+
+  const reservationName = req.user?.firstName || reservation.guestName;
+  const recipientEmail = req.user?.email || reservation.guestEmail;
+
+  if (recipientEmail) {
+    await sendEmail({
+      to: recipientEmail,
+      subject: 'Reservation Cancelled – Belsy Restaurant',
+      html: reservationCancelledEmail(reservationName, reservation.reservationTime),
+    });
+  }
 
   res.json({ message: 'Reservation cancelled successfully' });
 });

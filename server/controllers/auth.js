@@ -3,6 +3,9 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { Op } from 'sequelize';
+import sendEmail from '../utils/sendEmail.js';
+import ErrorResponse from '../utils/errorResponse.js';
+import { registrationEmail, profileUpdatedEmail  } from '../utils/emailTemplates.js';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -50,6 +53,16 @@ export const signup = async (req, res) => {
 
     const isAdmin = user.role === 'Admin';
 
+    if (process.env.SENDGRID_API_KEY) {
+      sendEmail({
+        to: user.email,
+        subject: 'Welcome to Belsy Restaurant',
+        html: registrationEmail(user.firstName),
+      }).catch((err) => {
+        console.error('📧 Email sending failed:', err.message);
+      });
+    }
+
     res.status(201).json({
       success: `Welcome ${user.firstName} to Belsy`,
       user: {
@@ -65,7 +78,7 @@ export const signup = async (req, res) => {
       isAdmin,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Signup failed' });
+    res.status(500).json({ error: 'Signup failed, Please fill out the form completely' });
   }
 };
 
@@ -188,6 +201,12 @@ export const updateProfile = async (req, res) => {
     user.email = email || user.email;
     user.phone = phone || user.phone;
     await user.save();
+
+    await sendEmail({
+      to: user.email,
+      subject: 'Profile Updated – Belsy Restaurant',
+      html: profileUpdatedEmail(user.firstName),
+    });
 
     res.status(200).json({ message: 'Profile updated successfully' });
   } catch (err) {

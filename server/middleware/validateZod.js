@@ -3,7 +3,10 @@ import { z } from 'zod';
 const validateZod = (zodSchema) => (req, res, next) => {
   const result = zodSchema.safeParse(req.body);
   if (!result.success) {
-    return next(new Error(JSON.stringify(result.error.format()), { cause: 400 }));
+    const formatted = result.error.format();
+    const error = new Error(JSON.stringify(formatted));
+    error.statusCode = 400;
+    return next(error);
   }
   req.sanitizedBody = result.data;
   next();

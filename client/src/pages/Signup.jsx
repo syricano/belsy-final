@@ -34,14 +34,22 @@ const Signup = () => {
 
     const { confirmPassword, ...formData } = form;
 
-    asyncHandler(() => signup(formData), 'Signup failed')
-      .then(() => {
-        toast.success('Account created');
-        navigate('/');
-      })
-      .catch(errorHandler)
-      .finally(() => setLoading(false));
+    try {
+      await signup(formData);
+      toast.success('Account created');
+      navigate('/');
+    } catch (err) {
+      const msg =
+        err?.response?.data?.error ||
+        err?.message ||
+        'Signup failed';
+      toast.error(msg);
+      setError(msg); // Optional: display under form too
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <section className="main-section min-h-screen flex items-center justify-center px-4">

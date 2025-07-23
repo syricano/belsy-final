@@ -78,7 +78,25 @@ export const signup = async (req, res) => {
       isAdmin,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Signup failed, Please fill out the form completely' });
+    console.error('❌ Signup error:', err);
+
+    // Zod validation error (thrown by validateZod)
+    if (err instanceof Error && err.message?.includes('Zod')) {
+      return res.status(400).json({
+        error: 'Invalid input: ' + err.message,
+      });
+    }
+
+    // Sequelize validation error
+    if (err.name === 'SequelizeValidationError') {
+      return res.status(400).json({
+        error: err.errors.map(e => e.message).join(', '),
+      });
+    }
+
+    res.status(500).json({
+      error: 'Signup failed. Please make sure all fields are valid.',
+    });
   }
 };
 

@@ -2,7 +2,7 @@ Belsy Restaurant Reservation System Documentation
 Overview
 The Reservation System allows users to book tables at Belsy Restaurant. Admins can approve, decline, and manage reservations with a detailed approval process. Each reservation can include additional notes for both users and admins. The system provides control over reservation status, with admin responses available for communication.
 
-Additionally, the admin can manage key frontend elements, such as menus, images, working hours, and contact information.
+Additionally, the admin can manage key frontend elements, such as menus, images, working hours, and Address information.
 
 Database Models and Structure
 1. Users Model
@@ -124,7 +124,7 @@ Associations:
 
 Admin can manage menu items (add, edit, delete).
 
-6. Contact Information Model
+6. Address Information Model
 Attributes:
 
 id: Primary key (integer)
@@ -141,7 +141,7 @@ updatedAt: Timestamp
 
 Associations:
 
-Admin can manage contact information (update).
+Admin can manage Address information (update).
 
 
 🔁 Reservation Functionality Overview

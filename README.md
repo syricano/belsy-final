@@ -28,7 +28,7 @@ Belsy Restaurant aims to provide users a seamless online experience to:
 - Explore the restaurant’s menu and drinks
 - Register and login as users
 - Book a table online
-- (Admin) Manage bookings, menus, images, working hours, and contact information from a secure dashboard
+- (Admin) Manage bookings, menus, images, working hours, and Address information from a secure dashboard
 
 This project is built incrementally, beginning with user-facing features and admin control. Future phases may include eCommerce-style online ordering.
 
@@ -57,7 +57,7 @@ This project is built incrementally, beginning with user-facing features and adm
 ### **Phase 3: Admin Dashboard Updates for Management**
 
 - **Update Admin Dashboard to Manage Working Hours (CRUD for restaurant working hours)**
-- **Update Admin Dashboard to Manage Contact Information (CRUD for restaurant contact details)**
+- **Update Admin Dashboard to Manage Address Information (CRUD for restaurant Address details)**
 - **Update Admin Dashboard to Manage Menu Items (CRUD for menu items and images)**
 
 ### **Phase 4: Future Enhancements**
@@ -171,5 +171,5 @@ Edit
 
 | Method | Endpoint         | Description                          | Middleware                                              |
 |--------|------------------|--------------------------------------|----------------------------------------------------------|
-| GET    | `/api/contact`   | Get restaurant contact info          | _Public_                                                 |
-| PUT    | `/api/contact`   | Update or create contact info        | `verifyToken`, `isAdmin`, `validateZod(contactInfoSchema)` |
+| GET    | `/api/address`   | Get restaurant address info          | _Public_                                                 |
+| PUT    | `/api/address`   | Update or create address info        | `verifyToken`, `isAdmin`, `validateZod(addressSchema)` |

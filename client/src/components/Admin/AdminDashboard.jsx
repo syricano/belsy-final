@@ -3,7 +3,7 @@ import ReservationManager from './ReservationManager';
 import TableManager from './TableManager';
 import MenuManager from './MenuManager';
 import DutyManager from './DutyManager';
-import ContactManager from './ContactManager';
+import AddressManager from './AddressManager';
 import FeedbackManager from './FeedbackManager';
 
 const sections = [
@@ -11,7 +11,7 @@ const sections = [
   { id: 'tables', label: 'Tables' },
   { id: 'menu', label: 'Menu' },
   { id: 'duty', label: 'Working Hours' },
-  { id: 'contact', label: 'Contact Info' },
+  { id: 'address', label: 'Address Info' },
   { id: 'feedback', label: 'Feedback' },
 ];
 
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
       case 'tables': return <TableManager />;
       case 'menu': return <MenuManager />;
       case 'duty': return <DutyManager />;
-      case 'contact': return <ContactManager />;
+      case 'address': return <AddressManager />;
       case 'feedback': return <FeedbackManager />;
       default: return null;
     }

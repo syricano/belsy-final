@@ -9,19 +9,19 @@ const defaultInfo = {
   address: '',
 };
 
-const ContactManager = () => {
-  const { getContactInfo, updateContactInfo } = useAdmin();
+const AddressManager = () => {
+  const { getAddress, updateAddress } = useAdmin();
   const [form, setForm] = useState(defaultInfo);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    getContactInfo()
+    getAddress()
       .then((res) => {
         if (res && typeof res === 'object') setForm(res);
-        else throw new Error('Invalid contact info format');
+        else throw new Error('Invalid address format');
       })
-      .catch((err) => errorHandler(err, 'Failed to load contact info'))
+      .catch((err) => errorHandler(err, 'Failed to load address'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -34,8 +34,8 @@ const ContactManager = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    updateContactInfo(form)
-      .then(() => toast.success('Contact information updated successfully!'))
+    updateAddress(form)
+      .then(() => toast.success('Address information updated successfully!'))
       .catch((err) => errorHandler(err, 'Update failed'))
       .finally(() => setSubmitting(false));
   };
@@ -51,7 +51,7 @@ const ContactManager = () => {
   return (
     <section className="w-full bg-[var(--b1)] text-[var(--bc)] p-8 rounded-2xl shadow-lg border border-[var(--border-color)] max-w-4xl mx-auto">
       <h2 className="text-3xl font-serif font-semibold text-center mb-8">
-        Public Contact Information
+        Public Address Information
       </h2>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -111,4 +111,4 @@ const ContactManager = () => {
   );
 };
 
-export default ContactManager;
+export default AddressManager;

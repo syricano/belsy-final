@@ -26,7 +26,7 @@ import AdminDashboard from './Admin/AdminDashboard';
 import ReservationManager from './Admin/ReservationManager';
 import MenuManager from './Admin/MenuManager';
 import DutyManager from './Admin/DutyManager';
-import ContactManager from './Admin/ContactManager';
+import AddressManager from './Admin/AddressManager';
 import TableManager from './Admin/TableManager'; 
 import CreateReservationModal from './Reservations/CreateReservationModal';
 import OverviewCards from './Admin/OverviewCards';
@@ -60,7 +60,7 @@ export {
   ReservationManager,
   MenuManager,
   DutyManager,
-  ContactManager,
+  AddressManager,
   TableManager,
   OverviewCards,
 };

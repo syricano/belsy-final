@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getContactInfo } from '@/data/contact';
+import { getAddress } from '@/data/address';
 import { errorHandler } from '@/utils';
 
 const About = () => {
@@ -7,9 +7,9 @@ const About = () => {
   const [mapLoaded, setMapLoaded] = useState(false); // ✅ track iframe loading
 
   useEffect(() => {
-    getContactInfo()
+    getAddress()
       .then(setInfo)
-      .catch((err) => errorHandler(err, 'Failed to load contact info'));
+      .catch((err) => errorHandler(err, 'Failed to load address info'));
   }, []);
 
   return (
@@ -44,10 +44,10 @@ const About = () => {
         </div>
       </div>
 
-      {/* Contact Info Section */}
+      {/* Address Section */}
       {info && (
         <div className="max-w-4xl mx-auto bg-[var(--b1)] text-[var(--bc)] p-6 rounded-xl shadow border border-[var(--border-color)]">
-          <h3 className="text-2xl font-serif font-semibold mb-4 text-center">Address & Contact Info</h3>
+          <h3 className="text-2xl font-serif font-semibold mb-4 text-center">Address </h3>
           <div className="space-y-2 text-center text-lg">
             <p><strong>📞 Phone:</strong> {info.phone}</p>
             <p><strong>📧 Email:</strong> {info.email}</p>

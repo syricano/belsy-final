@@ -29,11 +29,11 @@ import {
   approveReservation as approveRes,
   declineReservation as declineRes,
 
-  // CONTACT
-  getAllContacts as fetchContacts,
-  deleteContact as removeContact,
-  getContactInfo as fetchContactInfo,
-  updateContactInfo as sendContactUpdate,
+  // Address
+  getAllAddress as fetchAddresses,
+  deleteAddress as removeAddress,
+  getAddress as fetchAddress,
+  updateAddress as sendAddressUpdate,
 } from '@/data';
 
 export const AdminContext = createContext();
@@ -76,11 +76,11 @@ const AdminContextProvider = ({ children }) => {
   const declineReservation = (id, response) =>
     asyncHandler(() => declineRes(id, response), 'Failed to decline reservation');
 
-  // ================== CONTACT ==================
-  const getAllContacts = () => asyncHandler(() => fetchContacts(), 'Failed to fetch contacts');
-  const deleteContact = (id) => asyncHandler(() => removeContact(id), 'Failed to delete contact');
-  const getContactInfo = () => asyncHandler(() => fetchContactInfo(), 'Failed to fetch contact info');
-  const updateContactInfo = (data) => asyncHandler(() => sendContactUpdate(data), 'Failed to update contact info');
+  // ================== Address ==================
+  const getAllAddress = () => asyncHandler(() => fetchAddresses(), 'Failed to fetch addresses');
+  const deleteAddress = (id) => asyncHandler(() => removeAddress(id), 'Failed to delete address');
+  const getAddress = () => asyncHandler(() => fetchAddress(), 'Failed to fetch address');
+  const updateAddress = (data) => asyncHandler(() => sendAddressUpdate(data), 'Failed to update address info');
 
   return (
     <AdminContext.Provider
@@ -114,11 +114,11 @@ const AdminContextProvider = ({ children }) => {
         approveReservation,
         declineReservation,
 
-        // Contact
-        getAllContacts,
-        deleteContact,
-        getContactInfo,
-        updateContactInfo,
+        // Address
+        getAllAddress,
+        deleteAddress,
+        getAddress,
+        updateAddress,
 
         // Session checker (optional)
         checkSession,

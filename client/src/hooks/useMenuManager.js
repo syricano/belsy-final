@@ -41,17 +41,35 @@ const useMenuManager = () => {
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(defaultForm);
   const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅
+  const [loading, setLoading] = useState(true);
+
+  const extractRelativePath = (url) => {
+    const idx = url.indexOf('/uploads/');
+    return idx !== -1 ? url.slice(idx) : url;
+  };
+
+  const getFullImageUrl = (image) => {
+    if (!image) return '';
+    const base = import.meta.env.PROD
+      ? 'https://belsy-final.onrender.com'
+      : 'http://localhost:3000';
+    return image.startsWith('/uploads/') ? `${base}${image}` : image;
+  };
 
   const fetchAll = () => {
-    setLoading(true); // ✅
+    setLoading(true);
     Promise.all([getMenu(), getCategories()])
       .then(([menuData, categoryData]) => {
-        setMenu(menuData);
+        const menuWithFullURLs = menuData.map((item) => ({
+          ...item,
+          image: getFullImageUrl(item.image),
+        }));
+
+        setMenu(menuWithFullURLs);
         setCategories(categoryData);
       })
       .catch(errorHandler)
-      .finally(() => setLoading(false)); // ✅
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -97,11 +115,12 @@ const useMenuManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const payload = {
       ...form,
       price: parseFloat(form.price),
       categoryId: parseInt(form.categoryId),
-      image: form.image?.trim() || undefined,
+      image: extractRelativePath(form.image?.trim() || ''),
     };
 
     const action = editingId
@@ -123,7 +142,7 @@ const useMenuManager = () => {
       name: item.name,
       description: item.description || '',
       price: item.price,
-      image: item.image || '',
+      image: extractRelativePath(item.image || ''),
       categoryId: item.categoryId,
       categoryName: '',
       editingCategoryId: null,
@@ -193,11 +212,12 @@ const useMenuManager = () => {
     menu,
     categories,
     editingId,
+    setEditingId,
     uploadedImages,
     selectedImage,
     setSelectedImage,
     uploading,
-    loading, // ✅ expose
+    loading,
     handleChange,
     handleEdit,
     handleDelete,

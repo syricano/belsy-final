@@ -46,8 +46,8 @@ const ReservationManager = () => {
     const words = res.note.split(' ');
     return (
       <>
-        {words.slice(0, 6).join(' ')}{words.length > 6 ? '...' : ''}
-        {words.length > 6 && (
+        {words.slice(0, 3).join(' ')}{words.length > 3 ? '...' : ''}
+        {words.length > 3 && (
           <button
             onClick={() => setActiveNote(res.note)}
             className="ml-2 btn btn-xs btn-outline"
@@ -99,7 +99,7 @@ const ReservationManager = () => {
                   <td>{res.Table?.number || '—'}</td>
                   <td className="font-bold">
                     <span className={`btn btn-xs ${
-                      res.status === 'Approved' ? 'btn-success' :
+                      res.status === 'Approved' ? 'btn-accent' :
                       res.status === 'Declined' ? 'btn-error' : 'btn-warning'
                     }`}>
                       {res.status}
@@ -114,7 +114,7 @@ const ReservationManager = () => {
                   <td className="flex flex-wrap gap-2">
                     {res.status === 'Pending' && (
                       <>
-                        <button className="btn btn-success btn-xs" onClick={() => handleActionClick(res.id, 'approve')}>Approve</button>
+                        <button className="btn btn-accent btn-xs" onClick={() => handleActionClick(res.id, 'approve')}>Approve</button>
                         <button className="btn btn-error btn-xs" onClick={() => handleActionClick(res.id, 'decline')}>Decline</button>
                       </>
                     )}

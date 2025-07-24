@@ -133,10 +133,15 @@ export const menuSchema = z.object({
   name: z.string().min(2).max(100),
   description: z.string().max(500).optional(),
   price: z.coerce.number(), 
-  image: z.string().optional().refine((val) => val === '' || val.startsWith('/uploads/') || /^https?:\/\/.+\.(jpg|jpeg|png|webp)$/i.test(val),
+  image: z.string().optional().refine(
+    (val) =>
+      val === '' ||
+      val.startsWith('/uploads/') ||
+      /^https?:\/\/.+\.(jpg|jpeg|png|webp)(\?.*)?$/i.test(val),
     {
       message: 'Invalid image path or URL',
-    }),
+    }
+  ),
   categoryId: z.coerce.number(),
 });
 

@@ -105,22 +105,11 @@ const MenuManager = () => {
   };
 
   return (
-    <section className="space-y-6">
-      <h2 className="text-4xl font-bold text-amber-600">Menu Manager</h2>
-      <p className="text-base-content text-lg">
-        Welcome, Admin! This is your central hub to organize and customize your restaurant's offerings. Easily add new dishes, assign them to categories, and pair them with beautiful visuals.
-      </p>
+    <section className="space-y-4">     
 
-      <h3 className="text-2xl font-semibold mt-4">How to Manage the Menu</h3>
-      <ul className="list-disc list-inside text-base-content">
-        <li>Start by entering the name and price of the dish.</li>
-        <li>Click "Choose a Picture" to upload or pick from the image gallery.</li>
-        <li>Select a category from the dropdown, or type a new one to create it.</li>
-        <li>Click "Add" to save, or repeat the cycle to update.</li>
-      </ul>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-1">
+        <div className="col-span-1 border rounded-xl bg-base-100 p-2 shadow">
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="col-span-1 border rounded-xl bg-base-100 p-4 shadow">
           <h3 className="text-lg font-semibold mb-4">Menu Item</h3>
           <form onSubmit={handleSafeSubmit} className="space-y-4">
             <input type="text" name="name" className="input input-bordered w-full" placeholder="Dish name" value={form.name} onChange={handleChange} />
@@ -157,9 +146,10 @@ const MenuManager = () => {
               )}
             </div>
           </form>
+
         </div>
 
-        <div className="col-span-1 lg:col-span-4 overflow-x-auto border rounded-xl bg-base-100 p-4 shadow">
+        <div className="col-span-1 lg:col-span-4 overflow-x-auto border rounded-xl bg-base-100 p-2 shadow">
           <table className="table table-zebra w-full text-sm">
             <thead>
               <tr>
@@ -186,7 +176,7 @@ const MenuManager = () => {
                       />
                     )}
                   </td>
-                  <td className="space-x-2">
+                  <td className="space-x-1">
                     <button className="btn btn-xs btn-info" onClick={() => handleEdit(item)}>Edit</button>
                     <button className="btn btn-xs btn-error" onClick={() => handleDelete(item.id)}>Delete</button>
                   </td>
@@ -199,7 +189,7 @@ const MenuManager = () => {
 
       {galleryOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-base-100 rounded-xl max-w-4xl w-full p-6 space-y-4 relative">
+          <div className="bg-base-100 rounded-xl max-w-4xl w-full p-4 space-y-2 relative">
             <button className="absolute top-2 right-2 btn btn-sm btn-circle" onClick={() => setGalleryOpen(false)}>✕</button>
             <h3 className="text-lg font-semibold text-center">Select or Upload an Image</h3>
             <div>
@@ -233,7 +223,7 @@ const MenuManager = () => {
                 >Use</button>
               </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-96 overflow-y-auto">
               {uploadedImages.map((url) => (
                 <div
                   key={url}

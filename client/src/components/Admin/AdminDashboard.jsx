@@ -44,7 +44,7 @@ const AdminDashboard = () => {
         {sections.map((section) => (
           <button
             key={section.id}
-            className={`rounded-full px-6 py-2 text-sm font-semibold shadow-md transition-all duration-300 border
+            className={`rounded-full px-2 py-2 text-sm font-semibold shadow-md transition-all duration-300 border
               ${activeTab === section.id
                 ? 'bg-[var(--p)] text-[var(--pc)] border-[var(--p)]'
                 : 'bg-[var(--b1)] text-[var(--bc)] hover:bg-[var(--p)] hover:text-[var(--pc)] border border-[var(--border-color)]'}`}

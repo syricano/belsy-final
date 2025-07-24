@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useReservationManager from '@/hooks/useReservationManager';
 import ReservationsFilter from './ReservationsFilter';
 import AdminResponseModal from './AdminResponseModal';
 import EditReservationModal from '../Reservations/EditReservationModal';
+import ReservationManagerPC from './ReservationManagerPC';
+import ReservationManagerMobile from './ReservationManagerMobile';
 
 const ReservationManager = () => {
   const {
@@ -27,7 +29,15 @@ const ReservationManager = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [activeNote, setActiveNote] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const reservationsPerPage = 10;
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const visibleReservations = (filterActive && filteredReservations.length > 0
     ? filteredReservations
@@ -73,70 +83,37 @@ const ReservationManager = () => {
         </div>
       ) : currentReservations.length === 0 ? (
         <p className="text-center text-[var(--bc)] opacity-60">No reservations found.</p>
+      ) : isMobile ? (
+        <ReservationManagerMobile
+          reservations={currentReservations}
+          onApprove={(id) => handleActionClick(id, 'approve')}
+          onDecline={(id) => handleActionClick(id, 'decline')}
+          onUpdate={handleUpdate}
+          onCancel={handleCancelation}
+          renderNote={renderNote}
+        />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="table w-full text-sm bg-gray-50 dark:bg-base-200">
-            <thead>
-              <tr className="text-[var(--bc)] border-b">
-                <th>Date</th>
-                <th>Guests</th>
-                <th>Table</th>
-                <th>Status</th>
-                <th>Name</th>
-                <th>Contact</th>
-                <th>Note</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentReservations.map(res => (
-                <tr
-                  key={res.id}
-                  className={`border-b ${res.status === 'Declined' ? 'opacity-50' : ''}`}
-                >
-                  <td>{new Date(res.reservationTime).toLocaleString()}</td>
-                  <td>{res.guests}</td>
-                  <td>{res.Table?.number || '—'}</td>
-                  <td className="font-bold">
-                    <span className={`btn btn-xs ${
-                      res.status === 'Approved' ? 'btn-accent' :
-                      res.status === 'Declined' ? 'btn-error' : 'btn-warning'
-                    }`}>
-                      {res.status}
-                    </span>
-                  </td>
-                  <td>{res.guestName || res.User?.firstName || '—'}</td>
-                  <td>
-                    <div>{res.guestEmail || res.User?.email || '—'}</div>
-                    <div>{res.guestPhone || res.User?.phone || '—'}</div>
-                  </td>
-                  <td>{renderNote(res)}</td>
-                  <td className="flex flex-wrap gap-2">
-                    {res.status === 'Pending' && (
-                      <>
-                        <button className="btn btn-accent btn-xs" onClick={() => handleActionClick(res.id, 'approve')}>Approve</button>
-                        <button className="btn btn-error btn-xs" onClick={() => handleActionClick(res.id, 'decline')}>Decline</button>
-                      </>
-                    )}
-                    <button className="btn btn-info btn-xs" onClick={() => handleUpdate(res)}>Update</button>
-                    <button className="btn btn-error btn-xs" onClick={() => handleCancelation(res.id)}>Cancel</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <ReservationManagerPC
+          reservations={currentReservations}
+          onApprove={(id) => handleActionClick(id, 'approve')}
+          onDecline={(id) => handleActionClick(id, 'decline')}
+          onUpdate={handleUpdate}
+          onCancel={handleCancelation}
+          renderNote={renderNote}
+        />
+      )}
 
-          <div className="flex justify-center items-center mt-4 gap-2">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center mt-4 gap-2">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
         </div>
       )}
 

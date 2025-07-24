@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useMenuManager from '@/hooks/useMenuManager';
+import MenuManagerPC from './MenuManagerPC';
+import MenuManagerMobile from './MenuManagerMobile';
 
 const PreviewImage = ({ url, selected, onSelect }) => {
   const [loaded, setLoaded] = useState(false);
@@ -52,6 +54,14 @@ const MenuManager = () => {
 
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [imageURL, setImageURL] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleCategoryCheck = (categoryName) => {
     const existing = categories.find(cat => cat.name.toLowerCase() === categoryName.toLowerCase());
@@ -105,11 +115,9 @@ const MenuManager = () => {
   };
 
   return (
-    <section className="space-y-4">     
-
+    <section className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-1">
         <div className="col-span-1 border rounded-xl bg-base-100 p-2 shadow">
-
           <h3 className="text-lg font-semibold mb-4">Menu Item</h3>
           <form onSubmit={handleSafeSubmit} className="space-y-4">
             <input type="text" name="name" className="input input-bordered w-full" placeholder="Dish name" value={form.name} onChange={handleChange} />
@@ -146,44 +154,22 @@ const MenuManager = () => {
               )}
             </div>
           </form>
-
         </div>
 
-        <div className="col-span-1 lg:col-span-4 overflow-x-auto border rounded-xl bg-base-100 p-2 shadow">
-          <table className="table table-zebra w-full text-sm">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {menu.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td>${parseFloat(item.price).toFixed(2)}</td>
-                  <td>{item.Category?.name || item.categoryId}</td>
-                  <td>
-                    {item.image && (
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover rounded"
-                        onError={(e) => (e.target.src = '/images/fallback.jpg')}
-                      />
-                    )}
-                  </td>
-                  <td className="space-x-1">
-                    <button className="btn btn-xs btn-info" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="btn btn-xs btn-error" onClick={() => handleDelete(item.id)}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="col-span-1 lg:col-span-4">
+          {isMobile ? (
+            <MenuManagerMobile
+              menu={menu}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          ) : (
+            <MenuManagerPC
+              menu={menu}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          )}
         </div>
       </div>
 

@@ -1,12 +1,14 @@
 import React from 'react';
+import ActionButton from '@/components/UI/ActionButton'
+
 
 const ReservationManagerMobile = ({ reservations, onApprove, onDecline, onUpdate, onCancel, renderNote }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-[var(--b1)] text-[var(--bc)]">
       {reservations.map(res => (
         <div
           key={res.id}
-          className="p-4 border rounded-md bg-base-100 shadow-sm text-sm"
+          className="p-4 border rounded-md bg-[var(--b1)] text-[var(--bc)] shadow-sm text-sm"
         >
           <div className="font-semibold text-[var(--bc)]">
             {new Date(res.reservationTime).toLocaleString()}
@@ -33,7 +35,7 @@ const ReservationManagerMobile = ({ reservations, onApprove, onDecline, onUpdate
                 <button className="btn btn-xs btn-error" onClick={() => onDecline(res.id)}>Decline</button>
               </>
             )}
-            <button className="btn btn-xs btn-info" onClick={() => onUpdate(res)}>Update</button>
+            <button onClick={() => onUpdate(res)}>Update</button>
             <button className="btn btn-xs btn-error" onClick={() => onCancel(res.id)}>Cancel</button>
           </div>
         </div>

@@ -6,7 +6,7 @@ const MenuManagerMobile = ({ menu, handleEdit, handleDelete }) => {
       {menu.map((item) => (
         <div
           key={item.id}
-          className="p-4 border rounded bg-base-100 shadow text-sm space-y-1"
+          className="p-4 border border-[var(--border-color)] rounded bg-[var(--b1)] text-[var(--bc)] shadow text-sm"
         >
           <div className="font-semibold">{item.name}</div>
           <div className="text-sm text-gray-600">${parseFloat(item.price).toFixed(2)}</div>

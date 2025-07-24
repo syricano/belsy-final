@@ -70,7 +70,7 @@ const ReservationManager = () => {
   };
 
   return (
-    <section className="space-y-8 relative">
+    <section className="space-y-8 relative overflow-x-auto rounded-lg ">
       <h2 className="text-3xl font-serif font-semibold text-[var(--bc)] text-center">
         Reservations
       </h2>

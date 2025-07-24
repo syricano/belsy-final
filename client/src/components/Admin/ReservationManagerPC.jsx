@@ -2,8 +2,8 @@ import React from 'react';
 
 const ReservationManagerPC = ({ reservations, onApprove, onDecline, onUpdate, onCancel, renderNote }) => {
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="min-w-[800px] table-auto w-full text-sm bg-gray-50 dark:bg-base-200">
+    <div className="w-full overflow-x-auto border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] rounded-xl shadow">
+      <table className="min-w-[800px] table-auto w-full text-sm bg-[var(--b1)] text-[var(--bc)]">
         <thead>
           <tr className="text-[var(--bc)] border-b">
             <th>Date</th>

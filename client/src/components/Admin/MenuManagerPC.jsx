@@ -2,7 +2,7 @@ import React from 'react';
 
 const MenuManagerPC = ({ menu, handleEdit, handleDelete }) => {
   return (
-    <div className="overflow-x-auto border rounded-xl bg-base-100 p-2 shadow">
+    <div className="overflow-x-auto border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] rounded-xl shadow">
       <table className="table table-zebra w-full text-sm">
         <thead>
           <tr>

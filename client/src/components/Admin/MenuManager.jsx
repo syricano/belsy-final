@@ -117,9 +117,9 @@ const MenuManager = () => {
   return (
     <section className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-1">
-        <div className="col-span-1 border rounded-xl bg-base-100 p-2 shadow">
+        <div className="col-span-1 border rounded-xl bg-[var(--b1)] text-[var(--bc)] p-2 shadow">
           <h3 className="text-lg font-semibold mb-4">Menu Item</h3>
-          <form onSubmit={handleSafeSubmit} className="space-y-4">
+          <form onSubmit={handleSafeSubmit} className="space-y-4 ">
             <input type="text" name="name" className="input input-bordered w-full" placeholder="Dish name" value={form.name} onChange={handleChange} />
             <input type="text" name="price" className="input input-bordered w-full" placeholder="Price" value={form.price} onChange={handleChange} />
             <select name="categoryId" className="select select-bordered w-full" value={form.categoryId} onChange={handleChange}>
@@ -130,7 +130,7 @@ const MenuManager = () => {
             </select>
             <input type="text" placeholder="Or create new category" className="input input-bordered w-full" value={form.categoryName || ''} onChange={(e) => handleCategoryCheck(e.target.value)} />
             <div className="flex justify-center">
-              <button type="button" className="btn btn-outline btn-secondary w-full" onClick={() => setGalleryOpen(true)}>Choose a Picture</button>
+              <button type="button" className="btn btn-primary w-full" onClick={() => setGalleryOpen(true)}>Choose a Picture</button>
             </div>
             {form.image && (
               <div className="mt-2">
@@ -198,7 +198,7 @@ const MenuManager = () => {
                   placeholder="https://example.com/image.jpg"
                 />
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-primary"
                   onClick={() => {
                     if (imageURL) {
                       setForm((prev) => ({ ...prev, image: imageURL }));

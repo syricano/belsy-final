@@ -2,8 +2,8 @@
 import Navbar from './UI/Navbar';
 import Footer from './UI/Footer';
 import ThemeToggle from './UI/ThemeToggle';
-import Button from './UI/Button';  
 import Card from './UI/Card';
+import ActionButton from './UI/ActionButton';
 import HeroSection from './UI/HeroSection';
 import ImageSlider from './UI/ImageSlider';
 
@@ -39,8 +39,8 @@ export {
   Navbar,
   Footer,
   ThemeToggle,
-  Button,
   Card,
+  ActionButton,
   HeroSection,
   ImageSlider, 
 

@@ -6,6 +6,7 @@ import {
 } from '@/data/feedback';
 import { errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
+import ActionButton from '@/components/UI/ActionButton';
 
 const FeedbackManager = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -42,7 +43,7 @@ const FeedbackManager = () => {
 
   const handleDeleteReply = async (id) => {
     try {
-      await updateFeedback(id, { adminReply: null });
+      await updateFeedback(id, { adminReply: '' });
       toast.success('Reply removed');
       fetchFeedbacks();
     } catch (err) {
@@ -92,16 +93,21 @@ const FeedbackManager = () => {
                 <div className="bg-[var(--n)] text-[var(--nc)] text-sm p-3 rounded border mt-2">
                   <p className="italic">Admin Reply:</p>
                   <p>{fb.adminReply}</p>
-                  <button
-                    className="btn btn-success btn-sm"
-                    onClick={() => {
-                      setReplyingId(fb.id);
-                      setReply(fb.adminReply || '');
-                    }}
-                  >
-                    Reply
-                  </button>
-
+                  <div className="flex gap-2 mt-2">
+                    <ActionButton
+                      type="reply"
+                      onClick={() => {
+                        setReplyingId(fb.id);
+                        setReply(fb.adminReply || '');
+                      }}
+                      label="Edit Reply"
+                    />
+                    <ActionButton
+                      type="delete"
+                      onClick={() => handleDeleteReply(fb.id)}
+                      label="Delete Reply"
+                    />
+                  </div>
                 </div>
               )}
 
@@ -115,28 +121,34 @@ const FeedbackManager = () => {
                     onChange={(e) => setReply(e.target.value)}
                   />
                   <div className="flex gap-2">
-                    <button className="btn btn-sm btn-primary" onClick={() => handleReply(fb.id)}>Save Reply</button>
-                    <button className="btn btn-info btn-sm" onClick={() => setReplyingId(null)}>
-                      Cancel
-                    </button>
-
+                    <ActionButton
+                      type="approve"
+                      label="Save Reply"
+                      onClick={() => handleReply(fb.id)}
+                    />
+                    <ActionButton
+                      type="decline"
+                      label="Cancel"
+                      onClick={() => setReplyingId(null)}
+                    />
                   </div>
                 </div>
               ) : (
                 <div className="flex gap-2 mt-3">
-                  <button
-                    className="btn btn-success btn-sm"
+                  <ActionButton
+                    type="reply"
+                    label="Reply"
                     onClick={() => {
                       setReplyingId(fb.id);
                       setReply(fb.adminReply || '');
                     }}
-                  >
-                    Reply
-                  </button>
+                  />
 
-                  <button className="btn btn-error btn-sm" onClick={() => handleDeleteFeedback(fb.id)}>
-                    Delete
-                  </button>
+                  <ActionButton
+                    type="delete"
+                    label="Delete"
+                    onClick={() => handleDeleteFeedback(fb.id)}
+                  />
                 </div>
               )}
             </div>

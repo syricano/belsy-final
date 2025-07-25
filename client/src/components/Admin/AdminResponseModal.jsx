@@ -5,7 +5,6 @@ const AdminResponseModal = ({ isOpen, onClose, onSubmit }) => {
   const [message, setMessage] = useState('');
 
   const handleConfirm = () => {
-    if (!message.trim()) return toast.error('Response cannot be empty');
     onSubmit(message);
     setMessage('');
     onClose();

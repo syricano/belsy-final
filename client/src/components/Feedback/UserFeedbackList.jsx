@@ -6,6 +6,7 @@ import {
 } from '@/data/feedback';
 import { errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
+import ActionButton from '@/components/UI/ActionButton';
 
 const UserFeedbackList = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -109,10 +110,17 @@ const UserFeedbackList = () => {
                 ))}
               </select>
               <div className="flex gap-3">
-                <button className="btn btn-primary btn-sm" onClick={handleUpdate} disabled={submitting}>
-                  Save
-                </button>
-                <button className="btn btn-ghost btn-sm" onClick={handleCancel}>Cancel</button>
+                <ActionButton
+                  type="edit"
+                  label={submitting ? 'Saving...' : 'Save'}
+                  onClick={handleUpdate}
+                  disabled={submitting}
+                />
+                <ActionButton
+                  type="decline"
+                  label="Cancel"
+                  onClick={handleCancel}
+                />
               </div>
             </>
           ) : (
@@ -123,8 +131,8 @@ const UserFeedbackList = () => {
                 {fb.rating && <span className="text-yellow-400 font-bold">★ {fb.rating}</span>}
               </div>
               <div className="flex gap-2 mt-2">
-                <button className="btn btn-outline btn-sm" onClick={() => handleEdit(fb)}>Edit</button>
-                <button className="btn btn-error btn-sm" onClick={() => handleDelete(fb.id)}>Delete</button>
+                <ActionButton type="edit" label="Edit" onClick={() => handleEdit(fb)} />
+                <ActionButton type="delete" label="Delete" onClick={() => handleDelete(fb.id)} />
               </div>
             </>
           )}

@@ -29,6 +29,7 @@ const ReservationManager = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [activeNote, setActiveNote] = useState(null);
+  const [activeNoteY, setActiveNoteY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const reservationsPerPage = 10;
 
@@ -42,9 +43,9 @@ const ReservationManager = () => {
   const visibleReservations = (filterActive && filteredReservations.length > 0
     ? filteredReservations
     : reservations).sort((a, b) => {
-      const order = { Pending: 0, Approved: 1, Declined: 2 };
-      return order[a.status] - order[b.status] || new Date(a.reservationTime) - new Date(b.reservationTime);
-    });
+    const order = { Pending: 0, Approved: 1, Declined: 2, Cancelled: 3 };
+    return order[a.status] - order[b.status] || new Date(a.reservationTime) - new Date(b.reservationTime);
+  });
 
   const indexOfLast = currentPage * reservationsPerPage;
   const indexOfFirst = indexOfLast - reservationsPerPage;
@@ -59,7 +60,11 @@ const ReservationManager = () => {
         {words.slice(0, 3).join(' ')}{words.length > 3 ? '...' : ''}
         {words.length > 3 && (
           <button
-            onClick={() => setActiveNote(res.note)}
+            onClick={(e) => {
+              const y = e.target.getBoundingClientRect().top + window.scrollY;
+              setActiveNote(res.note);
+              setActiveNoteY(y);
+            }}
             className="ml-2 btn btn-xs btn-outline"
           >
             Read more »
@@ -69,8 +74,33 @@ const ReservationManager = () => {
     );
   };
 
+  const filteredActions = (res) => {
+    const isInactive = ['Declined', 'Cancelled'].includes(res.status);
+    return {
+      showApprove: res.status === 'Pending',
+      showDecline: res.status === 'Pending',
+      showEdit: !isInactive,
+      showCancel: !isInactive,
+    };
+  };
+
+  const getStatusBadgeClasses = (status) => {
+    switch (status) {
+      case 'Approved':
+        return 'bg-[var(--a)] text-[var(--ac)]';
+      case 'Declined':
+        return 'bg-[var(--bc)] text-[var(--b1)]';
+      case 'Cancelled':
+        return 'bg-[var(--n)] text-[var(--nc)]';
+      case 'Pending':
+        return 'bg-transparent border border-[var(--bc)] text-[var(--bc)]';
+      default:
+        return '';
+    }
+  };
+
   return (
-    <section className="space-y-8 relative overflow-x-auto rounded-lg ">
+    <section className="space-y-6 overflow-x-auto rounded-lg">
       <h2 className="text-3xl font-serif font-semibold text-[var(--bc)] text-center">
         Reservations
       </h2>
@@ -91,6 +121,8 @@ const ReservationManager = () => {
           onUpdate={handleUpdate}
           onCancel={handleCancelation}
           renderNote={renderNote}
+          filterActions={filteredActions}
+          getStatusBadgeClasses={getStatusBadgeClasses}
         />
       ) : (
         <ReservationManagerPC
@@ -100,6 +132,8 @@ const ReservationManager = () => {
           onUpdate={handleUpdate}
           onCancel={handleCancelation}
           renderNote={renderNote}
+          filterActions={filteredActions}
+          getStatusBadgeClasses={getStatusBadgeClasses}
         />
       )}
 
@@ -118,7 +152,10 @@ const ReservationManager = () => {
       )}
 
       {activeNote && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-base-100 text-[var(--bc)] shadow-xl border border-[var(--border-color)] max-w-md w-full rounded-xl p-6 z-50">
+        <div
+          className="absolute left-1/2 transform -translate-x-1/2 bg-base-100 text-[var(--bc)] shadow-xl border border-[var(--border-color)] max-w-md w-full rounded-xl p-6 z-50"
+          style={{ top: `${activeNoteY}px` }}
+        >
           <h3 className="text-lg font-bold mb-2">Reservation Note</h3>
           <p className="mb-4 whitespace-pre-wrap">{activeNote}</p>
           <div className="flex justify-end">

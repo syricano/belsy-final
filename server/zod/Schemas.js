@@ -85,7 +85,7 @@ export const reservationSchema = z
 
   // admin response schema
 export const adminResponseSchema = z.object({
-  adminResponse: z.string().min(2, 'Response is required, Please write a friendly response to customer')
+  adminResponse: z.string().optional().or(z.literal('')),
 });
 
 
@@ -171,5 +171,5 @@ export const feedbackSchema = z.object({
 
 // Feedback Update Schema
 export const feedbackReplySchema = z.object({
-  adminReply: z.string().min(1, 'Reply cannot be empty'),
+  adminReply: z.string().optional()
 });

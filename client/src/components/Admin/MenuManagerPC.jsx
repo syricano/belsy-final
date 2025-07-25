@@ -1,4 +1,5 @@
 import React from 'react';
+import ActionButton from '@/components/UI/ActionButton';
 
 const MenuManagerPC = ({ menu, handleEdit, handleDelete }) => {
   return (
@@ -24,14 +25,14 @@ const MenuManagerPC = ({ menu, handleEdit, handleDelete }) => {
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-16 h-16 object-cover rounded border border-[var(--border-color)]"
                     onError={(e) => (e.target.src = '/images/fallback.jpg')}
                   />
                 )}
               </td>
               <td className="space-x-1">
-                <button className="btn btn-xs btn-info" onClick={() => handleEdit(item)}>Edit</button>
-                <button className="btn btn-xs btn-error" onClick={() => handleDelete(item.id)}>Delete</button>
+                <ActionButton type="edit" onClick={() => handleEdit(item)} />
+                <ActionButton type="delete" onClick={() => handleDelete(item.id)} />
               </td>
             </tr>
           ))}

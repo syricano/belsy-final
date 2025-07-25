@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAdmin } from '@/context';
 import { errorHandler } from '@/utils/errorHandler';
+import ActionButton from '@/components/UI/ActionButton';
 
 const defaultForm = {
   dayOfWeek: 'Monday',
@@ -81,7 +82,6 @@ const DutyManager = () => {
     <section className="w-full space-y-8">
       <h2 className="text-3xl font-serif font-semibold text-center text-[var(--bc)]">Working Hours</h2>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-[var(--b1)] text-[var(--bc)] border border-[var(--border-color)] p-6 rounded-xl shadow flex flex-wrap gap-4 items-end justify-start"
@@ -130,25 +130,17 @@ const DutyManager = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          {editingId ? 'Update' : 'Add'}
-        </button>
-
-        {editingId && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
+        <div className="flex gap-2 mt-4">
+          <ActionButton type={editingId ? 'edit' : 'add'} label={editingId ? 'Update' : 'Add'} />
+          {editingId && (
+            <ActionButton type="decline" label="Cancel" onClick={() => {
               setForm(defaultForm);
               setEditingId(null);
-            }}
-          >
-            Cancel
-          </button>
-        )}
+            }} />
+          )}
+        </div>
       </form>
 
-      {/* Duty List Table */}
       <div className="overflow-x-auto rounded-lg shadow border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)]">
         <table className="table w-full">
           <thead>
@@ -166,18 +158,8 @@ const DutyManager = () => {
                 <td className="py-2 px-4">{entry.startTime}</td>
                 <td className="py-2 px-4">{entry.endTime}</td>
                 <td className="py-2 px-4 space-x-2">
-                  <button
-                    className="btn btn-xs btn-info"
-                    onClick={() => handleEdit(entry)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-xs btn-error"
-                    onClick={() => handleDelete(entry.id)}
-                  >
-                    Delete
-                  </button>
+                  <ActionButton type="edit" onClick={() => handleEdit(entry)} />
+                  <ActionButton type="delete" onClick={() => handleDelete(entry.id)} />
                 </td>
               </tr>
             ))}

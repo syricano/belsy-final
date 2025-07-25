@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAdmin } from '@/context';
 import { errorHandler, asyncHandler } from '@/utils';
+import ActionButton from '@/components/UI/ActionButton';
 
 const TableManager = () => {
   const {
@@ -13,8 +14,8 @@ const TableManager = () => {
   const [tables, setTables] = useState([]);
   const [form, setForm] = useState({ number: '', seats: '', location: 'inRestaurant' });
   const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(false); // for form
-  const [loadingTables, setLoadingTables] = useState(true); // for table list
+  const [loading, setLoading] = useState(false);
+  const [loadingTables, setLoadingTables] = useState(true);
 
   const fetchTables = () => {
     setLoadingTables(true);
@@ -32,16 +33,13 @@ const TableManager = () => {
     const { name, value } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: ['seats', 'number'].includes(name)
-        ? value === '' ? '' : Number(value)
-        : value,
+      [name]: ['seats', 'number'].includes(name) ? (value === '' ? '' : Number(value)) : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-
     const handler = editingId ? updateTable : createTable;
     const args = editingId ? [editingId, form] : [form];
 
@@ -72,7 +70,6 @@ const TableManager = () => {
 
   return (
     <section className="space-y-10">
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-[var(--b1)] text-[var(--bc)] p-6 rounded-xl shadow-md border border-[var(--border-color)] grid grid-cols-1 md:grid-cols-3 gap-4"
@@ -105,16 +102,21 @@ const TableManager = () => {
           <option value="inHall">In Hall</option>
         </select>
 
-        <button
-          type="submit"
-          className="btn btn-primary col-span-1 md:col-span-3"
-          disabled={loading}
-        >
-          {editingId ? 'Update Table' : 'Add Table'}
-        </button>
+        <div className="col-span-1 md:col-span-3 flex gap-2">
+          {editingId ? (
+            <>
+              <ActionButton type="edit" label="Update Table" disabled={loading} />
+              <ActionButton type="decline" label="Cancel" onClick={() => {
+                setForm({ number: '', seats: '', location: 'inRestaurant' });
+                setEditingId(null);
+              }} />
+            </>
+          ) : (
+            <ActionButton type="add" label="Add Table" disabled={loading} />
+          )}
+        </div>
       </form>
 
-      {/* Table List */}
       {loadingTables ? (
         <div className="w-full flex justify-center py-10">
           <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
@@ -137,18 +139,8 @@ const TableManager = () => {
                   <td>{table.seats}</td>
                   <td>{table.location}</td>
                   <td className="space-x-2">
-                    <button
-                      onClick={() => handleEdit(table)}
-                      className="btn btn-xs btn-warning"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(table.id)}
-                      className="btn btn-xs btn-error"
-                    >
-                      Delete
-                    </button>
+                    <ActionButton type="edit" onClick={() => handleEdit(table)} />
+                    <ActionButton type="delete" onClick={() => handleDelete(table.id)} />
                   </td>
                 </tr>
               ))}

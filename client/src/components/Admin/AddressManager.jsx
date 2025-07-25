@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAdmin } from '@/context';
 import { errorHandler } from '@/utils/errorHandler';
 import toast from 'react-hot-toast';
+import ActionButton from '@/components/UI/ActionButton';
 
 const defaultInfo = {
   phone: '',
@@ -98,13 +99,12 @@ const AddressManager = () => {
         </div>
 
         <div className="md:col-span-2">
-          <button
-            type="submit"
-            className="btn btn-primary w-full"
+          <ActionButton
+            type="edit"
+            label={submitting ? 'Saving...' : 'Save Changes'}
+            className="w-full"
             disabled={submitting}
-          >
-            {submitting ? 'Saving...' : 'Save Changes'}
-          </button>
+          />
         </div>
       </form>
     </section>

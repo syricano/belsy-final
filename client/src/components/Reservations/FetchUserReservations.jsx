@@ -3,6 +3,7 @@ import { getMyReservations, cancelReservation } from '@/data';
 import { useAuth } from '@/context';
 import { asyncHandler, errorHandler } from '@/utils';
 import EditReservationModal from './EditReservationModal';
+import ActionButton from '@/components/UI/ActionButton';
 
 const FetchUserReservations = () => {
   const { user } = useAuth();
@@ -66,12 +67,8 @@ const FetchUserReservations = () => {
 
                 {res.status === 'Pending' && (
                   <div className="flex flex-col gap-2 mt-4">
-                    <button className="btn btn-sm btn-warning" onClick={() => handleUpdate(res)}>
-                      Update
-                    </button>
-                    <button className="btn btn-sm btn-error" onClick={() => handleCancel(res.id)}>
-                      Cancel
-                    </button>
+                    <ActionButton type="edit" label="Update" onClick={() => handleUpdate(res)} />
+                    <ActionButton type="delete" label="Cancel" onClick={() => handleCancel(res.id)} />
                   </div>
                 )}
               </div>
@@ -102,12 +99,8 @@ const FetchUserReservations = () => {
                     <td>
                       {res.status === 'Pending' && (
                         <div className="flex gap-2">
-                          <button className="btn btn-xs btn-warning" onClick={() => handleUpdate(res)}>
-                            Update
-                          </button>
-                          <button className="btn btn-xs btn-error" onClick={() => handleCancel(res.id)}>
-                            Cancel
-                          </button>
+                          <ActionButton type="edit" size="xs" label="Update" onClick={() => handleUpdate(res)} />
+                          <ActionButton type="delete" size="xs" label="Cancel" onClick={() => handleCancel(res.id)} />
                         </div>
                       )}
                     </td>

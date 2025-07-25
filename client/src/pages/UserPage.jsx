@@ -6,6 +6,7 @@ import { asyncHandler } from '@/utils';
 import { errorHandler } from '@/utils';
 import FetchUserReservations from '@/components/Reservations/FetchUserReservations';
 import UserFeedbackList from '@/components/Feedback/UserFeedbackList';
+import ActionButton from '@/components/UI/ActionButton';
 
 const UserPage = () => {
   const { user, loading, updateProfile, deleteAccount } = useAuth();
@@ -105,19 +106,19 @@ const UserPage = () => {
             </form>
 
             <div className="flex justify-between gap-4 pt-2">
-              <button
+              <ActionButton
+                type={isEditing ? 'edit' : 'add'}
+                label={isEditing ? (saving ? 'Saving...' : 'Save') : 'Update'}
                 onClick={handleUpdate}
+                className="flex-1"
                 disabled={saving}
-                className="flex-1 btn btn-primary"
-              >
-                {isEditing ? (saving ? 'Saving...' : 'Save') : 'Update'}
-              </button>
-              <button
+              />
+              <ActionButton
+                type="delete"
+                label="Delete"
                 onClick={handleAccountCloser}
-                className="flex-1 py-2 px-4 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold shadow-md transition-all"
-              >
-                Delete
-              </button>
+                className="flex-1"
+              />
             </div>
 
             {showDeleteInput && (
@@ -132,12 +133,12 @@ const UserPage = () => {
                   className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
                   placeholder="Enter your password"
                 />
-                <button
+                <ActionButton
+                  type="delete"
+                  label="Confirm Delete"
                   onClick={handleFinalDelete}
-                  className="w-full py-2 px-4 rounded-lg bg-red-700 hover:bg-red-600 text-white font-semibold shadow"
-                >
-                  Confirm Delete
-                </button>
+                  className="w-full"
+                />
               </div>
             )}
           </div>

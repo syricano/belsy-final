@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import useMenuManager from '@/hooks/useMenuManager';
 import MenuManagerPC from './MenuManagerPC';
 import MenuManagerMobile from './MenuManagerMobile';
+import ActionButton from '@/components/UI/ActionButton';
 
 const PreviewImage = ({ url, selected, onSelect }) => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className="relative h-16 w-full">
+    <div className="relative h-32 w-full">
       {!loaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-base-200">
           <span className="loading loading-spinner w-6 h-6" />
@@ -21,8 +22,8 @@ const PreviewImage = ({ url, selected, onSelect }) => {
           e.target.src = '/images/fallback.jpg';
           setLoaded(true);
         }}
-        className={`h-16 w-full object-cover cursor-pointer rounded border-2 ${
-          selected === url ? 'border-primary ring-2' : 'border-base-300'
+        className={`h-32 w-full object-cover cursor-pointer rounded border-2 ${
+          selected === url ? 'border-[var(--p)] ring-2' : 'border-base-300'
         } ${loaded ? 'opacity-100' : 'opacity-0'}`}
       />
     </div>
@@ -55,6 +56,7 @@ const MenuManager = () => {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [imageURL, setImageURL] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [showCategoryManager, setShowCategoryManager] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -94,6 +96,11 @@ const MenuManager = () => {
     setEditingId(null);
   };
 
+  const handleCategoryUpdate = () => {
+    if (!form.categoryName.trim()) return;
+    handleCategorySubmit();
+  };
+
   const handleSafeSubmit = (e) => {
     e.preventDefault();
     if (!form.categoryId && form.categoryName) {
@@ -119,7 +126,7 @@ const MenuManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-1">
         <div className="col-span-1 border rounded-xl bg-[var(--b1)] text-[var(--bc)] p-2 shadow">
           <h3 className="text-lg font-semibold mb-4">Menu Item</h3>
-          <form onSubmit={handleSafeSubmit} className="space-y-4 ">
+          <form onSubmit={handleSafeSubmit} className="space-y-4">
             <input type="text" name="name" className="input input-bordered w-full" placeholder="Dish name" value={form.name} onChange={handleChange} />
             <input type="text" name="price" className="input input-bordered w-full" placeholder="Price" value={form.price} onChange={handleChange} />
             <select name="categoryId" className="select select-bordered w-full" value={form.categoryId} onChange={handleChange}>
@@ -128,7 +135,21 @@ const MenuManager = () => {
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
-            <input type="text" placeholder="Or create new category" className="input input-bordered w-full" value={form.categoryName || ''} onChange={(e) => handleCategoryCheck(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Or create new category"
+              className="input input-bordered w-full"
+              value={form.categoryName || ''}
+              onChange={(e) => handleCategoryCheck(e.target.value)}
+            />
+
+            {form.editingCategoryId && (
+              <div className="flex gap-2">
+                <ActionButton type="edit" label="Update Category" onClick={handleCategoryUpdate} />
+                <ActionButton type="decline" label="Cancel" onClick={() => setForm(prev => ({ ...prev, categoryName: '', editingCategoryId: null }))} />
+              </div>
+            )}
+
             <div className="flex justify-center">
               <button type="button" className="btn btn-primary w-full" onClick={() => setGalleryOpen(true)}>Choose a Picture</button>
             </div>
@@ -144,16 +165,40 @@ const MenuManager = () => {
             <div className="grid grid-cols-2 gap-2">
               {editingId ? (
                 <>
-                  <button className="btn btn-outline w-full" type="button" onClick={resetForm}>Unselect</button>
-                  <button className="btn btn-primary w-full" type="submit">Update</button>
+                  <ActionButton type="decline" onClick={resetForm} label="Unselect" className="w-full" />
+                  <ActionButton type="edit" label="Update" className="w-full" />
                 </>
               ) : (
                 <div className="col-span-2">
-                  <button className="btn btn-primary w-full" type="submit">Add</button>
+                  <ActionButton type="add" label="Add" className="w-full" />
                 </div>
               )}
             </div>
           </form>
+
+          <div className="mt-4">
+            <button
+              type="button"
+              className="btn btn-outline w-full"
+              onClick={() => setShowCategoryManager((prev) => !prev)}
+            >
+              {showCategoryManager ? 'Hide Category Manager' : 'Manage Categories'}
+            </button>
+          </div>
+
+          {showCategoryManager && (
+            <div className="mt-4 space-y-2">
+              {categories.map((cat) => (
+                <div key={cat.id} className="flex justify-between items-center border px-3 py-1 rounded">
+                  <span>{cat.name}</span>
+                  <div className="flex gap-1">
+                    <ActionButton type="edit" onClick={() => setForm(prev => ({ ...prev, categoryName: cat.name, editingCategoryId: cat.id }))} />
+                    {cat.id && <ActionButton type="delete" onClick={() => handleCategoryDelete(cat.id)} />}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="col-span-1 lg:col-span-4">
@@ -213,7 +258,7 @@ const MenuManager = () => {
               {uploadedImages.map((url) => (
                 <div
                   key={url}
-                  className={`cursor-pointer border rounded overflow-hidden ${form.image === url ? 'border-primary ring-2' : 'border-base-300'}`}
+                  className={`cursor-pointer border rounded overflow-hidden ${form.image === url ? 'border-[var(--p)] ring-2' : 'border-base-300'}`}
                   onClick={() => {
                     setForm((prev) => ({ ...prev, image: url }));
                     setSelectedImage(url);

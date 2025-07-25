@@ -1,7 +1,12 @@
-// src/components/UI/ActionButton.jsx
 import React from 'react';
 import {
-  Pencil, Trash, Check, X, Reply, Plus, Eye
+  Pencil,
+  Trash,
+  Check,
+  X,
+  Reply,
+  Plus,
+  Eye,
 } from 'lucide-react';
 
 const icons = {
@@ -14,27 +19,25 @@ const icons = {
   view: Eye,
 };
 
-const colors = {
-  edit: 'btn-info',
-  delete: 'btn-error',
-  approve: 'btn-success',
-  decline: 'btn-warning',
-  reply: 'btn-secondary',
-  add: 'btn-primary',
-  view: 'btn-accent',
-};
-
-const ActionButton = ({ type, onClick, size = 'xs', label = '', className = '', disabled = false }) => {
+const ActionButton = ({
+  type = 'edit',
+  onClick,
+  label = '',
+  className = '',
+  disabled = false,
+  iconClass = '',
+}) => {
   const Icon = icons[type] || Pencil;
-  const color = colors[type] || 'btn-outline';
 
   return (
     <button
-      className={`btn btn-${size} ${color} flex items-center gap-1 ${className}`}
       onClick={onClick}
       disabled={disabled}
+      className={`flex items-center gap-1 px-3 py-1 text-xs font-medium border rounded transition
+        bg-[var(--bc)] text-[var(--b1)] border-[var(--border-color)]
+        hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
     >
-      <Icon size={14} />
+      <Icon size={14} className={iconClass || 'text-[var(--b1)]'} />
       {label && <span>{label}</span>}
     </button>
   );

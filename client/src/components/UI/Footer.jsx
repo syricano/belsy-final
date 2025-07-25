@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, NavLink } from 'react-router';
 import { useModal } from '@/context/ModalContext';
 
 const Footer = () => {
@@ -9,11 +9,13 @@ const Footer = () => {
       {/* Left - Logo + Description */}
       <aside className="space-y-3 max-w-sm">
         <div className="flex items-center gap-3">
+          <Link to='/'>
           <img
             src="/images/belsy-logo.jpg"
             alt="Belsy Logo"
             className="w-12 h-12 object-cover rounded-full border border-[var(--bc)]"
           />
+          </Link>
           <span className="text-xl font-serif tracking-wide">Belsy Restaurant</span>
         </div>
         <p className="text-sm opacity-80">
@@ -45,10 +47,10 @@ const Footer = () => {
 
       {/* Right - Social (Empty Placeholder) */}
       <nav>
-        <h6 className="footer-title">Social</h6>
-        <div className="grid grid-flow-col gap-4 opacity-60 text-sm">
-          Coming soon
-        </div>
+        <h6 className="footer-title">Social</h6>          
+        <Link to='https://www.facebook.com/syriacano' target='_blank' className="link link-hover hover:text-[var(--p)] transition-all"> Facebook </Link>
+        <Link to='https://github.com/syricano' target='_blank' className="link link-hover hover:text-[var(--p)] transition-all"> Github </Link>
+        <Link to='https://linkedin.com/in/anass-muhammad-ali-737608ab' target='_blank' className="link link-hover hover:text-[var(--p)] transition-all"> LinkedIn </Link>
       </nav>
     </footer>
   );

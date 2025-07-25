@@ -13,12 +13,16 @@ const Navbar = () => {
   return (
     <div className="navbar belsy-navbar bg-[var(--n)]/80 text-[var(--nc)] shadow-sm sticky top-0 z-50 backdrop-blur-md transition-colors duration-300">
       {/* Navbar Start */}
-      <div className="navbar-start">
-        <img
-          src="/images/belsy-logo.jpg"
-          alt="Belsy Logo"
-          className="w-12 h-12 object-cover rounded-full mr-2 border border-[var(--bc)]"
-        />
+      <div>
+        <NavLink to='/'>
+          <img
+            src="/images/belsy-logo.jpg"
+            alt="Belsy Logo"
+            className="w-10 h-10 object-cover rounded-full mr-2 border border-[var(--bc)]"
+          />
+        </NavLink>
+      </div>
+      <div className="navbar-start">   
 
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">

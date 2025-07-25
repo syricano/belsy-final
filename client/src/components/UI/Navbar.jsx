@@ -10,17 +10,9 @@ const Navbar = () => {
 
   const handleLogout = () => signout();
 
-  const linkClass = ({ isActive }) =>
-    `px-4 py-2 font-medium transition text-xl ${
-      isActive
-        ? 'underline text-[var(--p)]'
-        : 'hover:text-[var(--accent-color)] hover:underline'
-    }`;
-
   return (
-    <div className="navbar belsy-navbar bg-[var(--n)] text-[var(--nc)] shadow-sm sticky top-0 z-50 transition-colors duration-300">
-
-      {/* Navbar Start (Logo & Mobile) */}
+    <div className="navbar belsy-navbar bg-[var(--n)]/80 text-[var(--nc)] shadow-sm sticky top-0 z-50 backdrop-blur-md transition-colors duration-300">
+      {/* Navbar Start */}
       <div className="navbar-start">
         <img
           src="/images/belsy-logo.jpg"
@@ -35,13 +27,13 @@ const Navbar = () => {
             </svg>
           </div>
           <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow bg-[var(--n)] text-[var(--nc)] rounded-box w-56 space-y-2">
-            <li><NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Home</NavLink></li>
-            <li><NavLink to="/menu" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Menu</NavLink></li>
-            <li><NavLink to="/about" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>About</NavLink></li>
+            <li><NavLink to="/" className="nav-link">Home</NavLink></li>
+            <li><NavLink to="/menu" className="nav-link">Menu</NavLink></li>
+            <li><NavLink to="/about" className="nav-link">About</NavLink></li>
             {isLoggedIn && (
               <>
-                {isAdmin && <li><NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Admin</NavLink></li>}
-                <li><NavLink to="/profile" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Dashboard</NavLink></li>
+                {isAdmin && <li><NavLink to="/admin" className="nav-link">Admin</NavLink></li>}
+                <li><NavLink to="/profile" className="nav-link">Dashboard</NavLink></li>
                 <li>
                   <button onClick={handleLogout} className="nav-link">
                     Logout
@@ -51,8 +43,8 @@ const Navbar = () => {
             )}
             {!isLoggedIn && (
               <>
-                <li><NavLink to="/signin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signin</NavLink></li>
-                <li><NavLink to="/signup" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signup</NavLink></li>
+                <li><NavLink to="/signin" className="nav-link">Signin</NavLink></li>
+                <li><NavLink to="/signup" className="nav-link">Signup</NavLink></li>
               </>
             )}
           </ul>
@@ -63,29 +55,29 @@ const Navbar = () => {
         </NavLink>
       </div>
 
-      {/* Navbar Center (Desktop Links) */}
+      {/* Navbar Center */}
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 gap-2">
-          <li><NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Home</NavLink></li>
-          <li><NavLink to="/menu" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Menu</NavLink></li>
-          <li><NavLink to="/about" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>About</NavLink></li>
+          <li><NavLink to="/" className="nav-link">Home</NavLink></li>
+          <li><NavLink to="/menu" className="nav-link">Menu</NavLink></li>
+          <li><NavLink to="/about" className="nav-link">About</NavLink></li>
         </ul>
       </div>
 
-      {/* Navbar End (Theme + Auth) */}
+      {/* Navbar End */}
       <div className="navbar-end gap-3 pr-4">
         <ThemeToggle />
         <div className="hidden lg:flex items-center gap-6">
           {isLoggedIn ? (
             <>
-              {isAdmin && <NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Admin</NavLink>}
-              <NavLink to="/profile" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Dashboard</NavLink>
-              <NavLink onClick={handleLogout} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Logout</NavLink>
+              {isAdmin && <NavLink to="/admin" className="nav-link">Admin</NavLink>}
+              <NavLink to="/profile" className="nav-link">Dashboard</NavLink>
+              <NavLink onClick={handleLogout} className="nav-link">Logout</NavLink>
             </>
           ) : (
             <>
-              <NavLink to="/signin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signin</NavLink>
-              <NavLink to="/signup" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Signup</NavLink>
+              <NavLink to="/signin" className="nav-link">Signin</NavLink>
+              <NavLink to="/signup" className="nav-link">Signup</NavLink>
             </>
           )}
         </div>

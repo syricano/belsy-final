@@ -8,7 +8,7 @@ const MenuPage = () => {
 
   useEffect(() => {
     if (groupedMenu.length > 0 && !expandedCategory) {
-      setExpandedCategory(groupedMenu[0].title); // Auto-expand first category
+      setExpandedCategory(groupedMenu[0].title);
     }
   }, [groupedMenu]);
 
@@ -24,9 +24,17 @@ const MenuPage = () => {
     );
   }
 
+  if (!groupedMenu.length) {
+    return (
+      <div className="w-full flex justify-center py-20 text-[var(--bc)] text-xl font-medium">
+        No menu items available.
+      </div>
+    );
+  }
+
   return (
     <section className="min-h-screen max-w-full flex justify-center">
-      <div className="py-16 max-w-7xl mx-auto w-full">
+      <div className="py-16 max-w-7xl mx-auto w-full animate-fade-in-up">
         <div className="h-20">
           <h1 className="px-6 text-4xl font-serif text-center font-semibold text-[var(--bc)] bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
             Discover Our Menu
@@ -38,8 +46,9 @@ const MenuPage = () => {
           {groupedMenu.map(({ title }) => (
             <div
               key={title}
-              className={`w-24 h-24 rounded-xl shadow-2xl flex items-center justify-center cursor-pointer transition-all duration-300
+              className={`w-24 h-24 rounded-xl shadow-xl flex items-center justify-center cursor-pointer transition-all duration-300 transform
                 text-white text-center text-sm font-semibold leading-tight
+                hover:scale-105 hover:shadow-2xl
                 ${expandedCategory === title ? 'bg-amber-600' : 'bg-amber-800'}`}
               onClick={() => handleCategoryClick(title)}
             >
@@ -50,7 +59,7 @@ const MenuPage = () => {
 
         {/* Expandable MenuCategory */}
         {expandedCategory && (
-          <div className="transition-all duration-500 ease-in-out">
+          <div className="transition-all duration-500 ease-in-out animate-fade-in-up">
             {groupedMenu
               .filter((group) => group.title === expandedCategory)
               .map((group) => (

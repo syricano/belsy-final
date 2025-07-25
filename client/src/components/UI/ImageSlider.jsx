@@ -41,7 +41,7 @@ const ImageSlider = () => {
             <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
           </div>
         ) : (
-          <div className="carousel w-full rounded-3xl shadow-2xl overflow-hidden h-[80vh]">
+          <div className="carousel w-full rounded-3xl shadow-2xl overflow-hidden h-[50vh] sm:h-[70vh] md:h-[80vh]">
             {loadedImages.map((src, index) => {
               const prevIndex = (index - 1 + images.length) % images.length;
               const nextIndex = (index + 1) % images.length;
@@ -55,18 +55,18 @@ const ImageSlider = () => {
                   <img
                     src={src}
                     alt={`slide-${index}`}
-                    className="w-full h-full object-contain sm:object-cover"
+                    className="w-full h-full object-contain sm:object-cover transition-opacity duration-500"
                   />
                   <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
                     <a
                       href={`#slide${prevIndex + 1}`}
-                      className="btn btn-circle bg-amber-800 text-white hover:bg-amber-600 border-none"
+                      className="btn btn-circle bg-amber-800 text-white hover:bg-amber-600 border-none shadow-md"
                     >
                       ❮
                     </a>
                     <a
                       href={`#slide${nextIndex + 1}`}
-                      className="btn btn-circle bg-amber-800 text-white hover:bg-amber-600 border-none"
+                      className="btn btn-circle bg-amber-800 text-white hover:bg-amber-600 border-none shadow-md"
                     >
                       ❯
                     </a>

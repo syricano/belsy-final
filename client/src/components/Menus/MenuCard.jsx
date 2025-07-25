@@ -6,8 +6,8 @@ const MenuCard = ({ item }) => {
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
-    <div className="bg-[var(--b1)] text-[var(--bc)] shadow-xl rounded-xl overflow-hidden transition-transform duration-300 hover:scale-105">
-      <div className="relative h-48 w-full">
+    <div className="group bg-[var(--b1)] text-[var(--bc)] shadow-xl rounded-xl overflow-hidden transition-transform duration-300 hover:scale-105">
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
         {!imageLoaded && !imageFailed && (
           <div className="absolute inset-0 flex justify-center items-center bg-[var(--b1)]">
             <span className="loading loading-spinner text-[var(--bc)] w-8 h-8" />
@@ -16,7 +16,7 @@ const MenuCard = ({ item }) => {
         <img
           src={item.image}
           alt={item.name}
-          className={`h-48 w-full object-cover rounded-t-xl transition-opacity duration-500 ${
+          className={`w-full h-full object-cover rounded-t-xl transition-transform duration-500 group-hover:scale-105 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           onLoad={() => setImageLoaded(true)}
@@ -29,7 +29,11 @@ const MenuCard = ({ item }) => {
       </div>
 
       <div className="p-4">
-        <MenuItem name={item.name} description={item.description} price={item.price} />
+        <MenuItem
+          name={item.name}
+          description={item.description}
+          price={item.price}
+        />
       </div>
     </div>
   );

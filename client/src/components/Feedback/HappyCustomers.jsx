@@ -17,13 +17,15 @@ const HappyCustomers = () => {
           {feedbacks.map((review) => (
             <div
               key={review.id}
-              className="bg-[var(--n)] text-[var(--nc)] border border-[var(--border-color)] rounded-xl p-6 shadow-lg transition hover:shadow-xl"
+              className="bg-[var(--n)] text-[var(--nc)] border border-[var(--border-color)] rounded-xl p-6 shadow-lg transition-all transform hover:scale-[1.01] hover:rotate-[-0.5deg]"
             >
               <p className="text-md italic mb-4">“{review.message}”</p>
-              
+
               <div className="flex justify-between items-center text-sm opacity-70">
                 <span>— {review.name || 'Anonymous'}</span>
-                {review.rating && <span className="font-bold text-yellow-400 drop-shadow-[0_1px_1px_rgba(0,0,0,1.95)]">★ {review.rating}</span>}
+                {review.rating && (
+                  <span className="font-bold text-yellow-400 drop-shadow-md">★ {review.rating}</span>
+                )}
               </div>
 
               {review.adminReply && (
@@ -34,7 +36,6 @@ const HappyCustomers = () => {
               )}
             </div>
           ))}
-
         </div>
       </div>
     </section>

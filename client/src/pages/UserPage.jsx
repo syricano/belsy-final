@@ -122,7 +122,7 @@ const UserPage = () => {
             </div>
 
             {showDeleteInput && (
-              <div className="mt-6 space-y-3 animate-fade-in">
+              <div className="mt-6 space-y-3 animate-fade-in-up">
                 <label className="block text-sm font-medium opacity-90">
                   Confirm Deletion (Password)
                 </label>
@@ -165,6 +165,7 @@ const UserPage = () => {
           {sections.map((section) => (
             <button
               key={section.id}
+              aria-label={`Go to ${section.label}`}
               className={`rounded-full px-6 py-2 text-sm font-semibold shadow-md transition-all duration-300 border
                 ${activeTab === section.id
                   ? 'bg-[var(--p)] text-white border-[var(--p)]'
@@ -176,7 +177,7 @@ const UserPage = () => {
           ))}
         </div>
 
-        <div className="bg-[var(--n)] text-[var(--nc)] rounded-2xl shadow-xl p-8 border border-[var(--border-color)]">
+        <div className="bg-[var(--n)] text-[var(--nc)] rounded-2xl shadow-xl p-8 border border-[var(--border-color)] animate-fade-in-up">
           {renderSection()}
         </div>
       </div>

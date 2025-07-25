@@ -44,26 +44,25 @@ const Signup = () => {
         err?.message ||
         'Signup failed';
       toast.error(msg);
-      setError(msg); // Optional: display under form too
+      setError(msg);
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
     <section className="main-section min-h-screen flex items-center justify-center px-4">
-      <div className="max-w-md w-full p-8 rounded-xl shadow-xl bg-[var(--n)] text-[var(--nc)] border border-[var(--border-color)]">
+      <div className="max-w-md w-full p-8 rounded-xl shadow-xl bg-[var(--n)] text-[var(--nc)] border border-[var(--border-color)] animate-fade-in-up">
         <h2 className="text-3xl font-serif font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
           Create Account
         </h2>
 
         {error && (
-          <p className="text-red-600 text-sm text-center mb-4">{error}</p>
+          <p className="text-red-600 text-sm text-center mb-4" aria-live="polite">{error}</p>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {[
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {[ 
             { label: 'First Name', name: 'firstName' },
             { label: 'Last Name', name: 'lastName' },
             { label: 'Phone', name: 'phone', type: 'text' },

@@ -4,7 +4,7 @@ import { errorHandler } from '@/utils';
 
 const About = () => {
   const [info, setInfo] = useState(null);
-  const [mapLoaded, setMapLoaded] = useState(false); // ✅ track iframe loading
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
     getAddress()
@@ -13,8 +13,7 @@ const About = () => {
   }, []);
 
   return (
-    <section className="main-section min-h-screen px-6 md:px-20 py-12 space-y-16">
-      
+    <section className="main-section min-h-screen px-6 md:px-20 py-12 space-y-16 animate-fade-in-up">
       {/* Intro Section */}
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-10">
         {/* Text */}
@@ -38,7 +37,7 @@ const About = () => {
             <img
               src="images/belsy-restaurant.jpg"
               alt="Belsy Interior"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
             />
           </div>
         </div>
@@ -46,8 +45,8 @@ const About = () => {
 
       {/* Address Section */}
       {info && (
-        <div className="max-w-4xl mx-auto bg-[var(--b1)] text-[var(--bc)] p-6 rounded-xl shadow border border-[var(--border-color)]">
-          <h3 className="text-2xl font-serif font-semibold mb-4 text-center">Address </h3>
+        <div className="max-w-4xl mx-auto bg-[var(--n)] text-[var(--nc)] p-6 rounded-xl shadow-md border border-[var(--border-color)]">
+          <h3 className="text-2xl font-serif font-semibold mb-4 text-center">Our Location</h3>
           <div className="space-y-2 text-center text-lg">
             <p><strong>📞 Phone:</strong> {info.phone}</p>
             <p><strong>📧 Email:</strong> {info.email}</p>

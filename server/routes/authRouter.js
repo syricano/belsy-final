@@ -81,7 +81,7 @@ authRouter.get('/google', passport.authenticate('google', {
 
 authRouter.get('/google/callback', passport.authenticate('google', {
   failureRedirect: '/signin',
-  session: false
+  session: true
 }), (req, res) => {
   const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
   res.cookie('token', token, {

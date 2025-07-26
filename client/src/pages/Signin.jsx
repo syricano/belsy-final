@@ -16,7 +16,7 @@ const Signin = () => {
   const { signin, forgotPassword } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
 
   const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -55,7 +55,7 @@ const Signin = () => {
     const isDev = window.location.hostname === 'localhost';
     const backend = isDev
       ? 'http://localhost:3000'
-      : 'https://belsy-final.onrender.com';
+      : 'https://belsy-api.onrender.com'; 
 
     window.location.href = `${backend}/api/auth/google`;
   };

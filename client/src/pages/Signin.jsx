@@ -5,7 +5,9 @@ import { asyncHandler, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 
 const Signin = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const cachedEmail = localStorage.getItem('cachedEmail') || '';
+  const [form, setForm] = useState({ email: cachedEmail, password: '' });
+  const [remember, setRemember] = useState(true);
   const [forgotEmail, setForgotEmail] = useState('');
   const [showForgot, setShowForgot] = useState(false);
   const [forgotMsg, setForgotMsg] = useState('');
@@ -25,6 +27,7 @@ const Signin = () => {
 
     asyncHandler(() => signin(form), 'Signin failed')
       .then(() => {
+        if (remember) localStorage.setItem('cachedEmail', form.email);
         toast.success('Signed in successfully');
         navigate(location.state?.next || '/profile');
       })
@@ -45,6 +48,15 @@ const Signin = () => {
       })
       .catch(err => setForgotMsg(err.message))
       .finally(() => setLoading(false));
+  };
+
+  const handleSocialLogin = () => {
+    const isDev = window.location.hostname === 'localhost';
+    const backend = isDev
+      ? 'http://localhost:3000'
+      : 'https://belsy-api.onrender.com';
+
+    window.location.href = `${backend}/api/auth/google`;
   };
 
   return (
@@ -68,6 +80,7 @@ const Signin = () => {
                 type={type}
                 name={name}
                 id={name}
+                value={form[name]}
                 placeholder={label}
                 onChange={handleChange}
                 className="input input-bordered w-full rounded-md bg-[var(--b1)] text-[var(--bc)] placeholder-opacity-60"
@@ -75,9 +88,20 @@ const Signin = () => {
             </div>
           ))}
 
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={() => setRemember(!remember)}
+              id="remember"
+              className="checkbox checkbox-sm"
+            />
+            <label htmlFor="remember" className="text-sm">Remember my email</label>
+          </div>
+
           <button
             type="submit"
-            className="w-full py-2 rounded-lg bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white font-semibold shadow-md hover:brightness-110 transition-all"
+            className="btn btn-primary w-full"
             disabled={loading}
           >
             {loading ? (
@@ -99,6 +123,21 @@ const Signin = () => {
           </div>
         </form>
 
+        {/* 🔐 Google Sign-in */}
+        <div className="mt-6 space-y-3 border-t border-[var(--border-color)] pt-4 text-sm text-center">
+          <p className="opacity-70">or sign in with</p>
+          <button
+            type="button"
+            onClick={handleSocialLogin}
+            className="btn btn-primary w-full"
+          >
+            <span className="flex items-center justify-center gap-2">
+              <img src="/icons/google.svg" alt="Google" className="w-5 h-5 rounded-full" />
+              Sign in with Google
+            </span>
+          </button>
+        </div>
+
         {showForgot && (
           <div className="mt-6 space-y-4 border-t pt-4 border-[var(--border-color)] animate-fade-in-up">
             <label className="block text-sm font-medium opacity-90">
@@ -113,7 +152,7 @@ const Signin = () => {
             />
             <button
               onClick={handleForgotPassword}
-              className="w-full py-2 rounded-lg bg-gradient-to-r from-yellow-400 via-orange-500 to-black text-white font-semibold shadow-md hover:brightness-110 transition-all"
+              className="btn btn-primary w-full"
               disabled={loading}
             >
               {loading ? (

@@ -8,6 +8,11 @@ import applyAssociations from './db/associations.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import uploadRouter from './routes/uploadRouter.js';
+import session from 'express-session';
+import passport from 'passport';
+import './config/passport.js';
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +21,20 @@ const PORT = process.env.PORT || 3000;
 app.use(cookieParser());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
+
+// social auth routes
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'yourSecretKey',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // === Mount Routes
 routeMap.forEach(({ path, handler }) => app.use(path, handler));

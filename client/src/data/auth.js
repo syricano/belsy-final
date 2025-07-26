@@ -43,9 +43,16 @@ export const updateProfile = async (formData) => {
   return handleRequest(() => axiosInstance.put(`${baseURL}/update-profile`, formData), 'Update profile failed');
 };
 
-export const changePassword = async (oldPassword, newPassword) => {
-  return handleRequest(() => axiosInstance.put(`${baseURL}/change-password`, { oldPassword, newPassword }), 'Change password failed');
-}
+export const changePassword = async (currentPassword, newPassword, confirmNewPassword) => {
+  return handleRequest(() =>
+    axiosInstance.put('/auth/change-password', {
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+    }),
+    'Change password failed'
+  );
+};
 
 export const deleteAccount = async (formData) => {
   return handleRequest(() =>

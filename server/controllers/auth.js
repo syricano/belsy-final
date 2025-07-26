@@ -235,7 +235,11 @@ export const updateProfile = async (req, res) => {
 // PUT /api/auth/change-password
 export const changePassword = async (req, res) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ error: "New passwords don't match" });
+    }
 
     const user = await User.findByPk(req.userId, {
       attributes: ['id', 'password'],
@@ -251,6 +255,7 @@ export const changePassword = async (req, res) => {
 
     res.status(200).json({ message: 'Password changed successfully' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to change password' });
   }
 };

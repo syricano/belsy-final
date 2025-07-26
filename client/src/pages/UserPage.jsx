@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '@/context';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { asyncHandler } from '@/utils';
-import { errorHandler } from '@/utils';
+import { asyncHandler, errorHandler } from '@/utils';
+import { changePassword } from '@/data/auth';
 import FetchUserReservations from '@/components/Reservations/FetchUserReservations';
 import UserFeedbackList from '@/components/Feedback/UserFeedbackList';
 import ActionButton from '@/components/UI/ActionButton';
@@ -24,6 +24,11 @@ const UserPage = () => {
   const [showDeleteInput, setShowDeleteInput] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
 
   if (loading) {
     return (
@@ -76,6 +81,33 @@ const UserPage = () => {
         navigate('/');
       })
       .catch(errorHandler);
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return toast.error('Please fill all password fields');
+    }
+    if (newPassword.length < 6) {
+      return toast.error('New password must be at least 6 characters');
+    }
+    if (newPassword !== confirmPassword) {
+      return toast.error('New passwords do not match');
+    }
+
+    setChangingPassword(true);
+    asyncHandler(
+      () => changePassword(currentPassword, newPassword, confirmPassword),
+      'Password update failed'
+    )
+      .then(() => {
+        toast.success('Password updated successfully');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      })
+      .catch(errorHandler)
+      .finally(() => setChangingPassword(false));
   };
 
   const renderSection = () => {
@@ -141,6 +173,40 @@ const UserPage = () => {
                 />
               </div>
             )}
+
+            {/* Password Change Section */}
+            <div className="border-t border-[var(--border-color)] pt-6 mt-6 space-y-5">
+              <h3 className="text-lg font-semibold">Change Password</h3>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <input
+                  type="password"
+                  className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
+                  placeholder="Current Password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
+                <input
+                  type="password"
+                  className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
+                  placeholder="New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <input
+                  type="password"
+                  className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
+                  placeholder="Confirm New Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <ActionButton
+                  type="edit"
+                  label={changingPassword ? 'Updating...' : 'Update Password'}
+                  className="w-full"
+                  disabled={changingPassword}
+                />
+              </form>
+            </div>
           </div>
         );
       default:

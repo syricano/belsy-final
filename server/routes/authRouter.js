@@ -49,11 +49,15 @@ authRouter.put(
   verifyToken,
   validateZod(changePasswordSchema),
   asyncHandler(async (req, res) => {
-    const { oldPassword, newPassword } = req.body;
-    const user = await User.findByPk(req.userId, { attributes: ['id', 'password'] });
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findByPk(req.userId, {
+      attributes: ['id', 'password'],
+    });
 
     if (!user) throw new ErrorResponse('User not found', 404);
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) throw new ErrorResponse('Current password is incorrect', 401);
 
     user.password = await bcrypt.hash(newPassword, 10);
@@ -62,6 +66,7 @@ authRouter.put(
     res.status(200).json({ message: 'Password changed successfully' });
   })
 );
+
 
 // 🧭 Optional Redirect Proxy (can be used from frontend)
 authRouter.get('/redirect/google', (req, res) => {

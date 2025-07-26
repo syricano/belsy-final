@@ -54,7 +54,7 @@ const Signin = () => {
     const isDev = window.location.hostname === 'localhost';
     const backend = isDev
       ? 'http://localhost:3000'
-      : 'https://belsy-api.onrender.com';
+      : 'https://belsy-final.onrender.com';
 
     window.location.href = `${backend}/api/auth/google`;
   };

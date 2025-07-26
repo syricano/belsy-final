@@ -162,7 +162,7 @@ const useMenuManager = () => {
   };
 
   const handleCategorySubmit = () => {
-    if (!form.categoryName) return;
+    if (!form.categoryName || form.categoryName.trim().length < 2) return;
 
     const action = form.editingCategoryId
       ? updateCategory(form.editingCategoryId, { name: form.categoryName })

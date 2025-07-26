@@ -61,21 +61,27 @@ body {
 
 /* Nav link animation */
 .nav-link {
+  display: block;
+  width: 100%;
+  text-align: left;
   padding: 0.5rem 1rem;
   font-size: 1.125rem;
   font-weight: 500;
   color: var(--bc);
+  border-radius: 0.5rem;
   transition: all 0.3s ease;
-  position: relative;
 }
 
-.nav-link:hover {
-  color: var(--p);
+.nav-link:hover,
+.nav-link:focus {
+  background-color: var(--p);
+  color: var(--pc);
   transform: translateY(-1px);
 }
 
 .nav-link.active {
-  color: var(--p);
+  background-color: var(--p);
+  color: var(--pc);
   font-weight: 600;
 }
 

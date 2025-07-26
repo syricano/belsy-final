@@ -4,7 +4,7 @@ import ActionButton from '@/components/UI/ActionButton';
 const MenuManagerPC = ({ menu, handleEdit, handleDelete }) => {
   return (
     <div className="overflow-x-auto border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] rounded-xl shadow">
-      <table className="table table-zebra w-full text-sm">
+      <table className="table w-full text-sm">
         <thead>
           <tr>
             <th>Name</th>

@@ -51,7 +51,7 @@ const ReservationsFilter = ({ onSearch }) => {
       />
       <button
         type="button"
-        className="btn btn-sm btn-accent w-full min-w-0"
+        className="btn btn-sm bg-gray-600 text-white hover:bg-gray-800 w-full min-w-0"
         onClick={handleClear}
       >
         Clear

@@ -151,7 +151,16 @@ const MenuManager = () => {
             )}
 
             <div className="flex justify-center">
-              <button type="button" className="btn btn-primary w-full" onClick={() => setGalleryOpen(true)}>Choose a Picture</button>
+              <button
+                type="button"
+                onClick={() => setGalleryOpen(true)}
+                className={`flex items-center justify-center gap-2 px-3 py-1.5 w-full text-sm font-medium border rounded-lg 
+                  bg-amber-600 text-[var(--b1)] border-[var(--border-color)]
+                  hover:bg-amber-800 focus:outline-none focus:ring-2 focus:ring-[var(--p)]
+                  transition-all duration-200`}
+              >
+                Choose a Picture
+              </button>
             </div>
             {form.image && (
               <div className="mt-2">
@@ -170,20 +179,19 @@ const MenuManager = () => {
                 </>
               ) : (
                 <div className="col-span-2">
-                  <ActionButton type="add" label="Add" className="w-full" />
+                  <ActionButton type="add" label="Add" className="w-full text-center" />
                 </div>
               )}
             </div>
           </form>
 
           <div className="mt-4">
-            <button
-              type="button"
-              className="btn btn-outline w-full"
+            <ActionButton
+              type="update"
+              label={showCategoryManager ? 'Hide Category Manager' : 'Manage Categories'}
+              className="w-full justify-center"
               onClick={() => setShowCategoryManager((prev) => !prev)}
-            >
-              {showCategoryManager ? 'Hide Category Manager' : 'Manage Categories'}
-            </button>
+            />
           </div>
 
           {showCategoryManager && (

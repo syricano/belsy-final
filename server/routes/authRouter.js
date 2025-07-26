@@ -69,6 +69,10 @@ authRouter.put(
 
 // 🟢 Google OAuth Login
 
+authRouter.get('/google', passport.authenticate('google', {
+  scope: ['profile', 'email'],
+}));
+
 authRouter.get('/google/callback',
   passport.authenticate('google', {
     failureRedirect: '/signin',

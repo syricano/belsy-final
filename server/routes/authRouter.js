@@ -67,31 +67,30 @@ authRouter.put(
   })
 );
 
+// 🟢 Google OAuth Login
 
-// 🧭 Optional Redirect Proxy (can be used from frontend)
 authRouter.get('/redirect/google', (req, res) => {
-  res.redirect(`${process.env.BACKEND_URL}/api/auth/google`);
+  const redirectTo = `${process.env.BACKEND_URL}/api/auth/google`;
+  res.redirect(redirectTo);
 });
 
-// 🟢 Google OAuth Login
+
+
 authRouter.get('/google', passport.authenticate('google', {
   scope: ['profile', 'email']
 }));
 
-// 🔁 Google OAuth Callback
 authRouter.get('/google/callback', passport.authenticate('google', {
   failureRedirect: '/signin',
   session: false
 }), (req, res) => {
   const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
   res.cookie('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
-
   res.redirect(`${process.env.CLIENT_URL}/profile`);
 });
 

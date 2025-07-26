@@ -123,7 +123,21 @@ const Signin = () => {
             </button>
           </div>
         </form>
-          
+            
+        {/* 🔐 Google Sign-in */}
+        <div className="mt-6 space-y-3 border-t border-[var(--border-color)] pt-4 text-sm text-center">
+          <p className="opacity-70">or sign in with</p>
+          <button
+            type="button"
+            onClick={handleSocialLogin}
+            className="btn btn-primary w-full"
+          >
+            <span className="flex items-center justify-center gap-2">
+              <img src="/icons/google.svg" alt="Google" className="w-5 h-5 rounded-full" />
+              Sign in with Google
+            </span>
+          </button>
+        </div>
 
         {showForgot && (
           <div className="mt-6 space-y-4 border-t pt-4 border-[var(--border-color)] animate-fade-in-up">

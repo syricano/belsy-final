@@ -17,14 +17,13 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-const base = 'https://belsy-api.onrender.com';
 // 🔐 Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${base}/api/auth/google/callback`
+      callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

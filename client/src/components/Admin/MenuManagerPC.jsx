@@ -11,7 +11,7 @@ const MenuManagerPC = ({ menu, handleEdit, handleDelete }) => {
             <th>Price</th>
             <th>Category</th>
             <th>Image</th>
-            <th>Actions</th>
+            <th className='text-right'>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -30,7 +30,7 @@ const MenuManagerPC = ({ menu, handleEdit, handleDelete }) => {
                   />
                 )}
               </td>
-              <td className="space-x-1">
+              <td className="space-x-1 flex justify-end gap-2">
                 <ActionButton type="edit" onClick={() => handleEdit(item)} />
                 <ActionButton type="delete" onClick={() => handleDelete(item.id)} />
               </td>

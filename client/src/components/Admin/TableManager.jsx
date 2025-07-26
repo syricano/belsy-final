@@ -129,7 +129,7 @@ const TableManager = () => {
                 <th>#</th>
                 <th>Seats</th>
                 <th>Location</th>
-                <th>Actions</th>
+                <th className='text-right'>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +138,7 @@ const TableManager = () => {
                   <td>{table.number}</td>
                   <td>{table.seats}</td>
                   <td>{table.location}</td>
-                  <td className="space-x-2">
+                  <td className="space-x-2 flex justify-end gap-2 ">
                     <ActionButton type="edit" onClick={() => handleEdit(table)} />
                     <ActionButton type="delete" onClick={() => handleDelete(table.id)} />
                   </td>

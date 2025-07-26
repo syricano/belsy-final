@@ -148,7 +148,7 @@ const DutyManager = () => {
               <th className="py-3 px-4">Day</th>
               <th className="py-3 px-4">Start</th>
               <th className="py-3 px-4">End</th>
-              <th className="py-3 px-4">Actions</th>
+              <th className="py-3 px-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -157,7 +157,7 @@ const DutyManager = () => {
                 <td className="py-2 px-4">{entry.dayOfWeek}</td>
                 <td className="py-2 px-4">{entry.startTime}</td>
                 <td className="py-2 px-4">{entry.endTime}</td>
-                <td className="py-2 px-4 space-x-2">
+                <td className="py-2 px-4 space-x-2 flex justify-end gap-2">
                   <ActionButton type="edit" onClick={() => handleEdit(entry)} />
                   <ActionButton type="delete" onClick={() => handleDelete(entry.id)} />
                 </td>

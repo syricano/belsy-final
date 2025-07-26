@@ -70,8 +70,7 @@ authRouter.put(
 // 🟢 Google OAuth Login
 
 authRouter.get('/redirect/google', (req, res) => {
-  const redirectTo = `${process.env.BACKEND_URL}/api/auth/google`;
-  res.redirect(redirectTo);
+  res.redirect(`${process.env.BACKEND_URL}/api/auth/google`);
 });
 
 

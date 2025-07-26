@@ -69,28 +69,31 @@ authRouter.put(
 
 // 🟢 Google OAuth Login
 
-authRouter.get('/redirect/google', (req, res) => {
-  res.redirect(`${process.env.BACKEND_URL}/api/auth/google`);
-});
+authRouter.get('/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/signin',
+    session: true,
+  }),
+  (req, res) => {
+    if (!req.user) {
+      console.log('❌ req.user is missing');
+      return res.redirect('/signin');
+    }
 
+    const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
-authRouter.get('/google', passport.authenticate('google', {
-  scope: ['profile', 'email']
-}));
+    console.log('✅ Google user authenticated:', req.user.email);
+    console.log('✅ Redirecting to frontend:', `${process.env.CLIENT_URL}/profile`);
 
-authRouter.get('/google/callback', passport.authenticate('google', {
-  failureRedirect: '/signin',
-  session: true
-}), (req, res) => {
-  const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  });
-  res.redirect(`${process.env.CLIENT_URL}/profile`);
-});
+    res.redirect(`${process.env.CLIENT_URL}/profile`);
+  }
+);
 
 export default authRouter;

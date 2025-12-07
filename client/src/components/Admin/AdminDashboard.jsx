@@ -5,6 +5,7 @@ import MenuManager from './MenuManager';
 import DutyManager from './DutyManager';
 import AddressManager from './AddressManager';
 import FeedbackManager from './FeedbackManager';
+import OrderManager from './OrderManager';
 
 const sections = [
   { id: 'reservations', label: 'Reservations' },
@@ -13,6 +14,7 @@ const sections = [
   { id: 'duty', label: 'Working Hours' },
   { id: 'address', label: 'Address Info' },
   { id: 'feedback', label: 'Feedback' },
+  { id: 'orders', label: 'Orders' },
 ];
 
 const AdminDashboard = () => {
@@ -26,6 +28,7 @@ const AdminDashboard = () => {
       case 'duty': return <DutyManager />;
       case 'address': return <AddressManager />;
       case 'feedback': return <FeedbackManager />;
+      case 'orders': return <OrderManager />;
       default: return null;
     }
   };

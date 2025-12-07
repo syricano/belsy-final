@@ -1,18 +1,11 @@
 import axios from 'axios';
 
+const isDev = import.meta.env.MODE === 'development';
+const baseURL = isDev ? '/api' : (import.meta.env.VITE_API_BASE_URL || '/api');
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
-  withCredentials: true,
-});
-
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
+  baseURL,
+  withCredentials: true, // rely on httpOnly auth cookies
 });
 
 export default axiosInstance;

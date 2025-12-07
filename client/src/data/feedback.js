@@ -21,6 +21,10 @@ const handleRequest = async (callback, errorMsg) => {
 export const getAllFeedback = () =>
   handleRequest(() => axiosInstance.get(baseURL), 'Failed to fetch feedback');
 
+// Public feedback feed
+export const getPublicFeedback = () =>
+  handleRequest(() => axiosInstance.get(`${baseURL}/public`), 'Failed to fetch feedback');
+
 // Create feedback (guest or user)
 export const createFeedback = (data) =>
   handleRequest(() => axiosInstance.post(baseURL, data), 'Failed to submit feedback');

@@ -3,15 +3,17 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import { ModalProvider } from '@/context/ModalContext';
-import { AuthContextProvider } from './context';
+import { AuthContextProvider, CartProvider } from './context';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthContextProvider>
-      <ModalProvider>
-        <App />
-      </ModalProvider>
+      <CartProvider>
+        <ModalProvider>
+          <App />
+        </ModalProvider>
+      </CartProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );

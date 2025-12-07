@@ -173,3 +173,55 @@ export const feedbackSchema = z.object({
 export const feedbackReplySchema = z.object({
   adminReply: z.string().optional()
 });
+
+// Cart Schemas
+export const addCartItemSchema = z.object({
+  menuId: z.coerce.number().int().positive(),
+  quantity: z.coerce.number().int().positive().default(1),
+});
+
+export const updateCartItemSchema = z.object({
+  quantity: z.coerce.number().int(),
+});
+
+// Checkout schema
+export const checkoutSchema = z.object({
+  name: z.string().min(1, 'Name is required').optional(),
+  email: z.string().email('Valid email required').optional(),
+  phone: z.string().min(5, 'Phone is required').optional(),
+  note: z.string().max(500).optional(),
+  paymentMethod: z.enum(['cash', 'card', 'paypal']).optional(),
+});
+
+export const orderStatusSchema = z.object({
+  status: z.enum(['Pending', 'Confirmed', 'Cancelled']),
+});
+
+export const paymentUpdateSchema = z.object({
+  paymentMethod: z.enum(['cash', 'card', 'paypal']),
+  paymentStatus: z.enum(['Paid']).optional(),
+});
+
+export const adminPaymentUpdateSchema = z.object({
+  paymentStatus: z.enum(['Unpaid', 'Paid', 'Refunded', 'Failed']),
+  paymentMethod: z.enum(['cash', 'card', 'paypal']).optional(),
+  paidAt: z.string().optional(),
+});
+
+export const stripeIntentSchema = z.object({
+  orderId: z.coerce.number().int().positive(),
+});
+
+export const stripeConfirmSchema = z.object({
+  orderId: z.coerce.number().int().positive(),
+  paymentIntentId: z.string().min(1),
+});
+
+export const paypalCreateSchema = z.object({
+  orderId: z.coerce.number().int().positive(),
+});
+
+export const paypalCaptureSchema = z.object({
+  orderId: z.coerce.number().int().positive(),
+  paypalOrderId: z.string().min(1),
+});

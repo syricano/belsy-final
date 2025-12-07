@@ -53,6 +53,15 @@ export const getFeedback = asyncHandler(async (req, res) => {
   res.status(200).json(feedbacks);
 });
 
+// GET /api/feedback/public — sanitized public list
+export const getPublicFeedback = asyncHandler(async (req, res) => {
+  const feedbacks = await Feedback.findAll({
+    attributes: ['id', 'name', 'message', 'rating', 'adminReply', 'createdAt'],
+    order: [['createdAt', 'DESC']],
+  });
+  res.status(200).json(feedbacks);
+});
+
 // GET /api/feedback/my — Get feedback by current user
 export const getMyFeedback = asyncHandler(async (req, res) => {
   const userId = req.userId;

@@ -7,6 +7,9 @@ import AdminPage from "./AdminPage";
 import UserPage from "./UserPage";
 import Signin from "./Signin";
 import Signup from "./Signup";
+import CartPage from "./CartPage";
+import CheckoutPage from "./CheckoutPage";
+import OrdersPage from "./OrdersPage";
 
 export {  
   HomePage,
@@ -17,5 +20,8 @@ export {
   UserPage,
   Signin,
   Signup,
-    About
+  About,
+  CartPage,
+  CheckoutPage,
+  OrdersPage,
 };

@@ -22,3 +22,16 @@ export const updateAddress = asyncHandler(async (req, res) => {
   await address.update(req.body);
   res.json(address);
 });
+
+// DELETE /api/address/:id — Admin only
+export const deleteAddress = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const address = await Address.findByPk(id);
+
+  if (!address) {
+    throw new ErrorResponse('Address not found', 404);
+  }
+
+  await address.destroy();
+  res.json({ message: 'Address deleted successfully' });
+});

@@ -2,6 +2,7 @@ import express from 'express';
 import {
   addFeedback,
   getFeedback,
+  getPublicFeedback,
   getMyFeedback,
   updateFeedback,
   deleteFeedback
@@ -29,6 +30,8 @@ feedbackRouter.post(
 // GET /api/feedback/my — Get current user's feedback
 feedbackRouter.get('/my', verifyToken, getMyFeedback);
 
+// Public list (sanitized)
+feedbackRouter.get('/public', getPublicFeedback);
 
 // PUT — allow either full update or just reply
 feedbackRouter.put(
@@ -48,6 +51,6 @@ feedbackRouter.delete('/:id', verifyToken, deleteFeedback);
 // ========== ADMIN ROUTES ==========
 
 // GET /api/feedback — Get all feedbacks (admin only)
-feedbackRouter.get('/', getFeedback);
+feedbackRouter.get('/', verifyToken, isAdmin, getFeedback);
 
 export default feedbackRouter;

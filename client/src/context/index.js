@@ -1,9 +1,11 @@
 import { useContext } from 'react';
 import { AuthContext } from './AuthProvider';
 import { AdminContext } from './AdminProvider';
+import { CartContext } from './CartProvider';
 
 import AuthContextProvider from './AuthProvider';
 import AdminContextProvider from './AdminProvider';
+import CartProvider from './CartProvider';
 
 const useAuth = () => {
   const context = useContext(AuthContext);
@@ -17,9 +19,17 @@ const useAdmin = () => {
   return context;
 };
 
+const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) throw new Error('useCart must be used within a CartProvider');
+  return context;
+};
+
 export {
   useAuth,
   AuthContextProvider,
   useAdmin,
   AdminContextProvider,
+  useCart,
+  CartProvider,
 };

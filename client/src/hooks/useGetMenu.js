@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getMenu, getCategories } from '@/data';
+import { getMenu } from '@/data';
 import { errorHandler } from '@/utils';
 
 const getFullImageUrl = (image) => {
@@ -16,18 +16,25 @@ const useGetMenu = () => {
 
   const fetchMenuData = async () => {
     try {
-      const [items, rawCategories] = await Promise.all([getMenu(), getCategories()]);
-
-      const categories = Array.isArray(rawCategories) ? rawCategories : [];
+      const items = await getMenu();
 
       const transformedItems = items.map(item => ({
         ...item,
         image: getFullImageUrl(item.image),
       }));
 
-      const grouped = categories.map((cat) => ({
-        title: cat.name,
-        items: transformedItems.filter((item) => item.categoryId === cat.id),
+      const categoriesMap = new Map();
+      transformedItems.forEach((item) => {
+        const categoryName = item.Category?.name || 'Uncategorized';
+        if (!categoriesMap.has(categoryName)) {
+          categoriesMap.set(categoryName, []);
+        }
+        categoriesMap.get(categoryName).push(item);
+      });
+
+      const grouped = Array.from(categoriesMap.entries()).map(([title, items]) => ({
+        title,
+        items,
       }));
 
       setGroupedMenu(grouped);

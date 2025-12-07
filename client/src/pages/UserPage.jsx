@@ -7,6 +7,7 @@ import { changePassword } from '@/data/auth';
 import FetchUserReservations from '@/components/Reservations/FetchUserReservations';
 import UserFeedbackList from '@/components/Feedback/UserFeedbackList';
 import ActionButton from '@/components/UI/ActionButton';
+import OrdersPage from './OrdersPage';
 
 const UserPage = () => {
   const { user, loading, updateProfile, deleteAccount } = useAuth();
@@ -113,6 +114,7 @@ const UserPage = () => {
   const renderSection = () => {
     switch (activeTab) {
       case 'reservations': return <FetchUserReservations />;
+      case 'orders': return <OrdersPage embed />;
       case 'feedback': return <UserFeedbackList />;
       case 'profile':
         return (
@@ -216,6 +218,7 @@ const UserPage = () => {
 
   const sections = [
     { id: 'reservations', label: 'My Reservations' },
+    { id: 'orders', label: 'My Orders' },
     { id: 'feedback', label: 'My Feedback' },
     { id: 'profile', label: 'My Profile' },
   ];

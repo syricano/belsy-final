@@ -1,11 +1,15 @@
 import { NavLink } from 'react-router';
+import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
-import { useAuth } from '@/context';
+import { useAuth, useCart } from '@/context';
+import CartDrawer from '../Cart/CartDrawer';
 
 const Navbar = () => {
   const { user, signout } = useAuth();
+  const { cart } = useCart();
   const isLoggedIn = Boolean(user);
   const isAdmin = user?.role === 'Admin';
+  const [cartOpen, setCartOpen] = useState(false);
 
   const handleLogout = () => signout();
 
@@ -40,7 +44,21 @@ const Navbar = () => {
     }
   };
 
+  const cartButton = (
+    <button
+      className="btn btn-ghost relative text-[var(--nc)]"
+      onClick={() => setCartOpen(true)}
+      aria-label="Open cart"
+    >
+      <span role="img" aria-hidden="true">🛒</span>
+      <span className="badge badge-sm bg-[var(--p)] text-[var(--pc)] absolute -top-2 -right-2">
+        {cart.items?.length || 0}
+      </span>
+    </button>
+  );
+
   return (
+    <>
     <div className="navbar belsy-navbar bg-[var(--n)]/80 text-[var(--nc)] shadow-sm sticky top-0 z-50 backdrop-blur-md transition-colors duration-300">
       {/* Navbar Start */}
       <div>
@@ -116,10 +134,19 @@ const Navbar = () => {
 
       {/* Navbar End */}
       <div className="navbar-end gap-3 pr-4">
-        <ThemeToggle />
-        <div className="hidden lg:flex items-center gap-6">{renderAuthLinks()}</div>
+        <div className="hidden lg:flex items-center gap-4">
+          {cartButton}
+          <ThemeToggle />
+          {renderAuthLinks()}
+        </div>
+        <div className="lg:hidden flex items-center gap-2">
+          {cartButton}
+          <ThemeToggle />
+        </div>
       </div>
     </div>
+    <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+    </>
   );
 };
 

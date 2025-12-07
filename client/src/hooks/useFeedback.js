@@ -1,6 +1,6 @@
 // src/hooks/useFeedback.js
 import { useEffect, useState } from 'react';
-import { getAllFeedback } from '@/data/feedback';
+import { getPublicFeedback } from '@/data/feedback';
 import { errorHandler } from '@/utils';
 
 const useFeedback = () => {
@@ -9,7 +9,7 @@ const useFeedback = () => {
 
   const fetchFeedback = async () => {
     try {
-      const data = await getAllFeedback();
+      const data = await getPublicFeedback();
       setFeedbacks(data);
     } catch (err) {
       errorHandler(err, 'Failed to load feedback');

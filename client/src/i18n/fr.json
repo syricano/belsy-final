@@ -1,0 +1,182 @@
+{
+    "lang": {
+      "en": "English",
+      "fr": "Français",
+      "nl": "Nederlands"
+    },
+    "nav": {
+      "home": "Accueil",
+      "menu": "Menu",
+      "about": "À propos",
+      "contact": "Contact",
+      "cart": "Panier",
+      "checkout": "Commander",
+      "admin": "Admin",
+      "dashboard": "Tableau de bord",
+      "signin": "Se connecter",
+      "signup": "S'inscrire",
+      "logout": "Déconnexion"
+    },
+    "cart": {
+      "title": "Votre panier",
+      "empty": "Votre panier est vide",
+      "add_to_cart": "Ajouter au panier",
+      "remove_from_cart": "Retirer du panier",
+      "quantity": "Quantité",
+      "subtotal": "Sous-total",
+      "delivery_fee": "Frais de livraison",
+      "total": "Total",
+      "pickup": "À emporter",
+      "delivery": "Livraison"
+    },
+    "checkout": {
+      "title": "Commander",
+      "contact_info": "Informations de contact",
+      "name": "Nom",
+      "phone": "Téléphone",
+      "email": "E-mail",
+      "address": "Adresse",
+      "notes": "Notes",
+      "order_mode": "Mode de commande",
+      "payment_method": "Méthode de paiement",
+      "place_order": "Passer la commande",
+      "required_field": "Ce champ est requis"
+    },
+    "order": {
+      "mode": {
+        "pickup": "À emporter",
+        "delivery": "Livraison"
+      },
+      "status": {
+        "pending_confirmation": "En attente de confirmation",
+        "confirmed": "Confirmée",
+        "preparing": "En préparation",
+        "ready_for_pickup": "Prête à être récupérée",
+        "picked_up_by_driver": "Récupérée par le livreur",
+        "on_the_way": "En route",
+        "arrived": "Arrivée",
+        "delivered": "Livrée",
+        "completed": "Terminée"
+      },
+      "timeline": "Chronologie de la commande",
+      "order_number": "Commande n°",
+      "estimated_time": "Temps estimé",
+      "minutes": "minutes"
+    },
+    "payment": {
+      "cash": "Espèces",
+      "card": "Carte",
+      "paypal": "PayPal",
+      "cash_only": "Espèces uniquement",
+      "online_payment": "Paiement en ligne"
+    },
+    "menu": {
+      "title": "Découvrez notre menu",
+      "no_items": "Aucun article de menu disponible.",
+      "price": "Prix",
+      "description": "Description",
+      "add_to_cart": "Ajouter au panier"
+    },
+    "common": {
+      "loading": "Chargement…",
+      "error": "Erreur",
+      "success": "Succès",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "save": "Enregistrer",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "close": "Fermer",
+      "back": "Retour",
+      "next": "Suivant",
+      "previous": "Précédent"
+    },
+    "home": {
+      "hero_title": "Savourez la cuisine orientale",
+      "hero_subtitle": "Découvrez la richesse des saveurs syriennes authentiques dans chaque plat. Ambiance élégante, goût inoubliable.",
+      "book_table": "Réservez votre table",
+      "happy_customers": "Clients heureux",
+      "share_experience": "Partagez votre expérience",
+      "name": "Nom",
+      "feedback": "Avis",
+      "rating": "Note",
+      "submit_feedback": "Envoyer l'avis",
+      "submitting": "Envoi…",
+      "thank_you": "Merci pour votre avis !"
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "name": "Nom",
+      "email": "E-mail",
+      "message": "Message",
+      "send_message": "Envoyer le message",
+      "sending": "Envoi…",
+      "message_sent": "Message envoyé avec succès !",
+      "your_name": "Votre nom",
+      "your_email": "vous@exemple.com",
+      "write_message": "Écrivez votre message…"
+    },
+    "auth": {
+      "signin": "Se connecter",
+      "signup": "S'inscrire",
+      "create_account": "Créer un compte",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "phone": "Téléphone",
+      "confirm_password": "Confirmer le mot de passe",
+      "remember_email": "Mémoriser mon e-mail",
+      "forgot_password": "Mot de passe oublié ?",
+      "signin_google": "Se connecter avec Google",
+      "or_signin_with": "ou connectez-vous avec",
+      "enter_email_reset": "Saisissez votre e-mail pour réinitialiser le mot de passe",
+      "your_email": "Votre e-mail",
+      "send_reset_link": "Envoyer le lien de réinitialisation",
+      "signing_in": "Connexion…",
+      "creating": "Création…",
+      "sending": "Envoi…",
+      "signed_in_success": "Connexion réussie",
+      "account_created": "Compte créé",
+      "reset_link_sent": "Lien de réinitialisation envoyé à votre e-mail",
+      "passwords_no_match": "Les mots de passe ne correspondent pas"
+    },
+    "user": {
+      "dashboard": "Tableau de bord utilisateur",
+      "my_reservations": "Mes réservations",
+      "my_feedback": "Mes avis",
+      "my_profile": "Mon profil",
+      "profile_updated": "Profil mis à jour avec succès",
+      "password_updated": "Mot de passe mis à jour avec succès",
+      "account_deleted": "Compte supprimé avec succès",
+      "user_not_found": "Utilisateur introuvable. Veuillez vous reconnecter.",
+      "confirm_deletion": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+      "enter_password_confirm": "Veuillez saisir votre mot de passe pour confirmer la suppression du compte.",
+      "confirm_delete": "Confirmer la suppression",
+      "change_password": "Changer le mot de passe",
+      "current_password": "Mot de passe actuel",
+      "new_password": "Nouveau mot de passe",
+      "confirm_new_password": "Confirmer le nouveau mot de passe",
+      "update_password": "Mettre à jour le mot de passe",
+      "updating": "Mise à jour…",
+      "update": "Mettre à jour",
+      "saving": "Enregistrement…",
+      "fill_password_fields": "Veuillez remplir tous les champs de mot de passe",
+      "password_min_length": "Le nouveau mot de passe doit comporter au moins 6 caractères",
+      "passwords_no_match": "Les nouveaux mots de passe ne correspondent pas"
+    },
+    "not_found": {
+      "title": "Oups ! La page que vous recherchez est introuvable 😢",
+      "back_home": "Retour à l’accueil"
+    },
+    "footer": {
+      "description": "Une cuisine orientale raffinée servie dans une ambiance élégante. Votre table vous attend.",
+      "company": "Entreprise",
+      "menu": "Menu",
+      "view_menu": "Voir le menu",
+      "book_table": "Réserver une table",
+      "social": "Réseaux sociaux",
+      "rights_reserved": "Tous droits réservés"
+    }
+  }
+  

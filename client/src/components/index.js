@@ -30,6 +30,7 @@ import AddressManager from './Admin/AddressManager';
 import TableManager from './Admin/TableManager'; 
 import CreateReservationModal from './Reservations/CreateReservationModal';
 import OverviewCards from './Admin/OverviewCards';
+import OrderManager from './Admin/OrderManager';
 //import BookReservationButton from './Reservations/BookReservationButton';
 
 
@@ -63,4 +64,5 @@ export {
   AddressManager,
   TableManager,
   OverviewCards,
+  OrderManager,
 };

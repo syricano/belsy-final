@@ -3,6 +3,7 @@ import useMenuManager from '@/hooks/useMenuManager';
 import MenuManagerPC from './MenuManagerPC';
 import MenuManagerMobile from './MenuManagerMobile';
 import ActionButton from '@/components/UI/ActionButton';
+import { computeVat } from '@/utils';
 
 const PreviewImage = ({ url, selected, onSelect }) => {
   const [loaded, setLoaded] = useState(false);
@@ -57,6 +58,7 @@ const MenuManager = () => {
   const [imageURL, setImageURL] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
+  const priceInfo = computeVat({ gross: form.price || 0 });
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -128,7 +130,22 @@ const MenuManager = () => {
           <h3 className="text-lg font-semibold mb-4">Menu Item</h3>
           <form onSubmit={handleSafeSubmit} className="space-y-4">
             <input type="text" name="name" className="input input-bordered w-full" placeholder="Dish name" value={form.name} onChange={handleChange} />
-            <input type="text" name="price" className="input input-bordered w-full" placeholder="Price" value={form.price} onChange={handleChange} />
+            <div className="space-y-1">
+              <input
+                type="number"
+                name="price"
+                className="input input-bordered w-full"
+                placeholder="Price (incl. 19% VAT)"
+                value={form.price}
+                step="0.01"
+                onChange={handleChange}
+              />
+              <p className="text-xs opacity-80">Price (incl. 19% VAT)</p>
+              <div className="text-xs opacity-80 bg-[var(--b2)] border border-[var(--border-color)] rounded-lg p-2">
+                <p>Net (excl. VAT): ${priceInfo.net.toFixed(2)}</p>
+                <p>VAT (19%): ${priceInfo.vat.toFixed(2)}</p>
+              </div>
+            </div>
             <select name="categoryId" className="select select-bordered w-full" value={form.categoryId} onChange={handleChange}>
               <option value="">Select Category</option>
               {categories.map((cat) => (

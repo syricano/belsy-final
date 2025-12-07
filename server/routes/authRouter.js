@@ -41,7 +41,10 @@ authRouter.post("/signout", signout);
 authRouter.put("/update-profile", verifyToken, validateZod(updateProfileSchema), updateProfile);
 authRouter.post("/delete-account", verifyToken, validateZod(deleteAccountSchema), deleteAccount);
 authRouter.post("/forgot-password", validateZod(forgotPasswordSchema), forgotPassword);
-authRouter.post("/reset-password/:token", validateZod(resetPasswordSchema), resetPassword);
+authRouter.post([
+  "/reset-password",
+  "/reset-password/:token"
+], validateZod(resetPasswordSchema), resetPassword);
 
 // 🔐 Change Password
 authRouter.put(

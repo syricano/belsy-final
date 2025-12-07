@@ -12,7 +12,7 @@ import {
 
 const adminRouter = Router();
 
-adminRouter.get('/dashboard', (req, res) => {
+adminRouter.get('/dashboard', verifyToken, isAdmin, (req, res) => {
   res.status(200).json({ message: '👑 Welcome to the Admin Dashboard!' });
 });
 

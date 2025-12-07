@@ -35,10 +35,11 @@ reservationRouter.post(
 reservationRouter.get('/mine', verifyToken, getMyReservations);
 
 // PATCH /api/reservations/:id — user can update own reservation
-reservationRouter.patch('/:id', verifyToken, updateReservation);
+reservationRouter.patch('/:id', optionalAuth, updateReservation);
 
 // PATCH /api/reservations/:id/cancel — cancel reservation
-reservationRouter.patch('/:id/cancel', verifyToken, cancelReservation);
+reservationRouter.patch('/:id/cancel', optionalAuth, cancelReservation);
+reservationRouter.patch('/:id/cancelled', optionalAuth, cancelReservation); // legacy spelling support
 
 // POST /api/reservations/suggest-tables — suggest tables by guest count
 reservationRouter.post(

@@ -339,7 +339,7 @@ export const suggestTables = asyncHandler(async (req, res) => {
 });
 export const updateReservation = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { guests, reservationTime, note, adminNote } = req.body;
+  const { guests, reservationTime, note, adminNote, email, phone } = req.body;
 
   const reservation = await Reservation.findByPk(id);
   if (!reservation) throw new ErrorResponse('Reservation not found', 404);
@@ -347,14 +347,19 @@ export const updateReservation = asyncHandler(async (req, res) => {
   // Authorization check: check if the user is the owner or an admin
   const isAdmin = req.user?.role === 'Admin';
   const isOwner = reservation.userId === req.user?.id;
+  const requesterEmail = req.user?.email || email;
+  const requesterPhone = req.user?.phone || phone;
 
-  if (!isAdmin && !isOwner) {
-    throw new ErrorResponse('You are not authorized to update this reservation', 403);
+  if (!req.user && !requesterEmail && !requesterPhone) {
+    throw new ErrorResponse('Provide email or phone used for the reservation', 401);
   }
+
   const isGuestOwner =
     !reservation.userId &&
-    reservation.guestEmail === req.user?.email &&
-    reservation.guestPhone === req.user?.phone;
+    (
+      (reservation.guestEmail && requesterEmail && reservation.guestEmail === requesterEmail) ||
+      (reservation.guestPhone && requesterPhone && reservation.guestPhone === requesterPhone)
+    );
 
   if (!isAdmin && !isOwner && !isGuestOwner) {
     throw new ErrorResponse('You are not authorized to update this reservation', 403);
@@ -412,18 +417,25 @@ export const updateReservation = asyncHandler(async (req, res) => {
 
 export const cancelReservation = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const { email, phone } = req.body || {};
 
   const reservation = await Reservation.findByPk(id);
   if (!reservation) throw new ErrorResponse('Reservation not found', 404);
 
   const isAdmin = req.user?.role === 'Admin';
   const isOwner = reservation.userId && reservation.userId === req.user?.id;
+  const requesterEmail = req.user?.email || email;
+  const requesterPhone = req.user?.phone || phone;
   const isGuestOwner =
     !reservation.userId &&
-    req.user?.email &&
-    req.user?.phone &&
-    reservation.guestEmail === req.user.email &&
-    reservation.guestPhone === req.user.phone;
+    (
+      (reservation.guestEmail && requesterEmail && reservation.guestEmail === requesterEmail) ||
+      (reservation.guestPhone && requesterPhone && reservation.guestPhone === requesterPhone)
+    );
+
+  if (!req.user && !isGuestOwner) {
+    throw new ErrorResponse('You are not authorized to cancel this reservation', 403);
+  }
 
   if (!isAdmin && !isOwner && !isGuestOwner) {
     throw new ErrorResponse('You are not authorized to cancel this reservation', 403);

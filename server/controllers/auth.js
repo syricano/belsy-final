@@ -179,7 +179,18 @@ export const forgotPassword = async (req, res) => {
 // POST /api/auth/reset-password/:token
 export const resetPassword = async (req, res) => {
   try {
-    const { token } = req.params;
+    const tokenFromParam = req.params.token;
+    const tokenFromBody = req.body.token;
+    const token = tokenFromParam || tokenFromBody;
+
+    if (!token) {
+      return res.status(400).json({ message: 'Reset token is required' });
+    }
+
+    if (!tokenFromParam && tokenFromBody) {
+      console.warn('⚠️ reset-password called without URL token. Body token support is deprecated.');
+    }
+
     const { newPassword } = req.body;
 
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');

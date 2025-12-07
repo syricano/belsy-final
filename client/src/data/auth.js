@@ -36,7 +36,7 @@ export const forgotPassword = async (email) => {
 };
 
 export const resetPassword = async (token, newPassword) => {
-  return handleRequest(() => axiosInstance.post(`${baseURL}/reset-password`, { token, newPassword }), 'Reset password failed');
+  return handleRequest(() => axiosInstance.post(`${baseURL}/reset-password/${token}`, { newPassword }), 'Reset password failed');
 };
 
 export const updateProfile = async (formData) => {

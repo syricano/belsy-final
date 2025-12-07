@@ -26,7 +26,7 @@ menuRouter.put('/:id', verifyToken, isAdmin, validateZod(menuSchema), updateMenu
 menuRouter.delete('/:id', verifyToken, isAdmin, deleteMenuItem);
 
 // Admin-only category routes
-menuRouter.get('/categories', getAllCategories);
+menuRouter.get('/categories', verifyToken, isAdmin, getAllCategories);
 menuRouter.post('/categories', verifyToken, isAdmin, validateZod(categorySchema), createCategory);
 menuRouter.put('/categories/:id', verifyToken, isAdmin, validateZod(categorySchema), updateCategory);
 menuRouter.delete('/categories/:id', verifyToken, isAdmin, deleteCategory);

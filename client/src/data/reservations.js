@@ -39,9 +39,9 @@ export const getAllReservations = () =>
   handleRequest(() => axiosInstance.get(`${baseURL}/admin`), 'Failed to fetch admin reservations');
 
 // Cancel reservation (sets status to "Cancelled")
-export const cancelReservation = (id) =>
+export const cancelReservation = (id, contactInfo = {}) =>
   handleRequest(() =>
-    axiosInstance.patch(`${baseURL}/${id}/cancel`, { status: 'Canceled' }), 'Cancel failed');
+    axiosInstance.patch(`${baseURL}/${id}/cancel`, contactInfo), 'Cancel failed');
 
 // Update reservation (guest/date/time/note)
 export const updateReservation = (id, data) =>

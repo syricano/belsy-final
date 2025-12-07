@@ -3,10 +3,11 @@ import path from 'path';
 import express from 'express';
 import upload from '../middleware/uploadMiddleware.js';
 import verifyToken from '../middleware/verifyToken.js';
+import isAdmin from '../middleware/isAdmin.js';
 
 const router = express.Router();
 
-router.get('/list', (req, res) => {
+router.get('/list', verifyToken, isAdmin, (req, res) => {
   const uploadDir = path.resolve('uploads');
   fs.readdir(uploadDir, (err, files) => {
     if (err) return res.status(500).json({ error: 'Could not read uploads folder' });
@@ -17,7 +18,7 @@ router.get('/list', (req, res) => {
 });
 
 
-router.post('/', verifyToken, (req, res) => {
+router.post('/', verifyToken, isAdmin, (req, res) => {
   upload.single('image')(req, res, function (err) {
     if (err) {
       if (err.code === 'LIMIT_FILE_SIZE') {
@@ -35,7 +36,7 @@ router.post('/', verifyToken, (req, res) => {
     res.status(201).json({ message: 'Upload successful', fileUrl });
   });
 });
-router.delete('/:filename', verifyToken, (req, res) => {
+router.delete('/:filename', verifyToken, isAdmin, (req, res) => {
   const filePath = path.resolve('uploads', req.params.filename);
   fs.unlink(filePath, (err) => {
     if (err) {

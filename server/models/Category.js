@@ -12,6 +12,11 @@ const Category = sequelize.define('Category', {
     allowNull: false,
     unique: true,
   },
+  nameTranslations: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: null,
+  },
 });
 
 export default Category;

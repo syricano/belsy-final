@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthProvider';
 import { AdminContext } from './AdminProvider';
 import { CartContext } from './CartProvider';
+import { LangProvider, useLang } from './LangProvider';
 
 import AuthContextProvider from './AuthProvider';
 import AdminContextProvider from './AdminProvider';
@@ -32,4 +33,6 @@ export {
   AdminContextProvider,
   useCart,
   CartProvider,
+  LangProvider,
+  useLang,
 };

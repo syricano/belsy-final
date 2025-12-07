@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { addCartItem, clearCart, getCart, removeCartItem, updateCartItem } from '@/data/cart';
 import { errorHandler } from '@/utils';
+import { useLang } from './LangProvider';
 
 export const CartContext = createContext();
 
 const CartProvider = ({ children }) => {
+  const { language } = useLang();
   const [cart, setCart] = useState({
     items: [],
     total: 0,
@@ -29,7 +31,7 @@ const CartProvider = ({ children }) => {
 
   useEffect(() => {
     loadCart();
-  }, []);
+  }, [language]);
 
   const addItem = async (menuId, quantity = 1) => {
     try {

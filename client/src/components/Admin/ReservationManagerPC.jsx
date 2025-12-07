@@ -1,5 +1,6 @@
 import React from 'react';
 import ActionButton from '@/components/UI/ActionButton';
+import { useLang } from '@/context';
 
 const ReservationManagerPC = ({
   reservations,
@@ -11,6 +12,7 @@ const ReservationManagerPC = ({
   filterActions,
   getStatusBadgeClasses,
 }) => {
+  const { t } = useLang();
   return (
     <div className="w-full overflow-x-auto border border-[var(--border-color)] bg-[var(--b1)] text-[var(--bc)] rounded-xl shadow">
       <table className="min-w-[900px] table-auto w-full text-sm bg-[var(--b1)] text-[var(--bc)] 
@@ -18,14 +20,14 @@ const ReservationManagerPC = ({
   [&>tbody>tr>td]:px-4 [&>tbody>tr>td]:py-2">
         <thead className="text-[var(--bc)] font-semibold uppercase text-xs tracking-wide">
           <tr className="text-[var(--bc)] border-b align-middle">
-            <th>Date</th>
-            <th>Guests</th>
-            <th>Table</th>
-            <th>Status</th>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Note</th>
-            <th>Actions</th>
+            <th>{t('admin.reservations.date')}</th>
+            <th>{t('admin.reservations.guests')}</th>
+            <th>{t('admin.reservations.table')}</th>
+            <th>{t('admin.reservations.status')}</th>
+            <th>{t('admin.reservations.name')}</th>
+            <th>{t('admin.reservations.contact')}</th>
+            <th>{t('admin.reservations.note')}</th>
+            <th>{t('common.edit')}</th>
           </tr>
         </thead>
         <tbody>
@@ -41,7 +43,7 @@ const ReservationManagerPC = ({
                 <td>{res.Table?.number || '—'}</td>
                 <td className="font-bold">
                   <span className={`badge text-xs ${getStatusBadgeClasses(res.status)}`}>
-                    {res.status}
+                    {t(`admin.reservations.status_label.${(res.status || '').toLowerCase()}`) || res.status}
                   </span>
                 </td>
                 <td>{res.guestName || res.User?.firstName || '—'}</td>

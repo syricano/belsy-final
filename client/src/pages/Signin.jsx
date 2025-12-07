@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { useAuth } from '@/context';
+import { useAuth, useLang } from '@/context';
 import { asyncHandler, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 
@@ -16,6 +16,7 @@ const Signin = () => {
   const { signin, forgotPassword } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLang();
 
 
   const handleChange = e =>
@@ -26,10 +27,10 @@ const Signin = () => {
     setError('');
     setLoading(true);
 
-    asyncHandler(() => signin(form), 'Signin failed')
+    asyncHandler(() => signin(form), t('auth.signin_error'))
       .then(() => {
         if (remember) localStorage.setItem('cachedEmail', form.email);
-        toast.success('Signed in successfully');
+        toast.success(t('auth.signed_in_success'));
         navigate(location.state?.next || '/profile');
       })
       .catch(err => setError(err.message))
@@ -37,13 +38,13 @@ const Signin = () => {
   };
 
   const handleForgotPassword = async () => {
-    if (!forgotEmail) return setForgotMsg('Please enter your email');
+    if (!forgotEmail) return setForgotMsg(t('auth.enter_email_reset'));
     setForgotMsg('');
     setLoading(true);
 
-    asyncHandler(() => forgotPassword(forgotEmail), 'Reset failed')
+    asyncHandler(() => forgotPassword(forgotEmail), t('auth.reset_error'))
       .then(() => {
-        toast.success('Reset link sent to your email');
+        toast.success(t('auth.reset_link_sent'));
         setForgotEmail('');
         setShowForgot(false);
       })
@@ -64,7 +65,7 @@ const Signin = () => {
     <section className="main-section min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full p-8 rounded-xl shadow-xl bg-[var(--n)] text-[var(--nc)] border border-[var(--border-color)] animate-fade-in-up">
         <h2 className="text-3xl font-serif font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
-          Sign In
+          {t('auth.signin')}
         </h2>
 
         {error && (
@@ -72,7 +73,7 @@ const Signin = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {[{ label: 'Email', name: 'email', type: 'email' }, { label: 'Password', name: 'password', type: 'password' }].map(({ label, name, type }) => (
+          {[{ label: t('auth.email'), name: 'email', type: 'email' }, { label: t('auth.password'), name: 'password', type: 'password' }].map(({ label, name, type }) => (
             <div key={name} className="space-y-2">
               <label htmlFor={name} className="block text-sm font-medium opacity-90">
                 {label}
@@ -97,7 +98,7 @@ const Signin = () => {
               id="remember"
               className="checkbox checkbox-sm"
             />
-            <label htmlFor="remember" className="text-sm">Remember my email</label>
+            <label htmlFor="remember" className="text-sm">{t('auth.remember_email')}</label>
           </div>
 
           <button
@@ -108,9 +109,9 @@ const Signin = () => {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="loading loading-spinner text-white w-4 h-4" />
-                Signing in...
+                {t('auth.signing_in')}
               </span>
-            ) : 'Sign In'}
+            ) : t('auth.signin')}
           </button>
 
           <div className="text-sm text-right mt-1">
@@ -119,14 +120,14 @@ const Signin = () => {
               onClick={() => setShowForgot(prev => !prev)}
               className="text-blue-500 hover:underline"
             >
-              Forgot Password?
+              {t('auth.forgot_password')}
             </button>
           </div>
         </form>
             
         {/* 🔐 Google Sign-in */}
         <div className="mt-6 space-y-3 border-t border-[var(--border-color)] pt-4 text-sm text-center">
-          <p className="opacity-70">or sign in with</p>
+          <p className="opacity-70">{t('auth.or_signin_with')}</p>
           <button
             type="button"
             onClick={handleSocialLogin}
@@ -134,7 +135,7 @@ const Signin = () => {
           >
             <span className="flex items-center justify-center gap-2">
               <img src="/icons/google.svg" alt="Google" className="w-5 h-5 rounded-full" />
-              Sign in with Google
+              {t('auth.signin_google')}
             </span>
           </button>
         </div>
@@ -142,14 +143,14 @@ const Signin = () => {
         {showForgot && (
           <div className="mt-6 space-y-4 border-t pt-4 border-[var(--border-color)] animate-fade-in-up">
             <label className="block text-sm font-medium opacity-90">
-              Enter your email to reset password
+              {t('auth.enter_email_reset')}
             </label>
             <input
               type="email"
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
               className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
-              placeholder="Your email"
+              placeholder={t('auth.your_email')}
             />
             <button
               onClick={handleForgotPassword}
@@ -159,9 +160,9 @@ const Signin = () => {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="loading loading-spinner text-white w-4 h-4" />
-                  Sending...
+                  {t('auth.sending')}
                 </span>
-              ) : 'Send Reset Link'}
+              ) : t('auth.send_reset_link')}
             </button>
             {forgotMsg && (
               <p className="text-sm text-center mt-2 text-red-500" aria-live="polite">{forgotMsg}</p>

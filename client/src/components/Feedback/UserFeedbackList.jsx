@@ -7,6 +7,7 @@ import {
 import { errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 import ActionButton from '@/components/UI/ActionButton';
+import { useLang } from '@/context';
 
 const UserFeedbackList = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -14,13 +15,14 @@ const UserFeedbackList = () => {
   const [form, setForm] = useState({ name: '', message: '', rating: 5 });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const { t } = useLang();
 
   const fetchFeedback = async () => {
     try {
       const data = await getMyFeedback();
       setFeedbacks(data);
     } catch (err) {
-      errorHandler(err, 'Failed to load your feedback');
+      errorHandler(err, t('feedback.load_error'));
     } finally {
       setLoading(false);
     }
@@ -49,35 +51,35 @@ const UserFeedbackList = () => {
     setSubmitting(true);
     try {
       await updateFeedback(editingId, form);
-      toast.success('Feedback updated');
+      toast.success(t('feedback.updated'));
       setEditingId(null);
       fetchFeedback();
     } catch (err) {
-      errorHandler(err, 'Update failed');
+      errorHandler(err, t('common.error'));
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm('Delete this feedback?');
+    const confirmed = window.confirm(t('feedback.confirm_delete'));
     if (!confirmed) return;
 
     try {
       await deleteFeedback(id);
-      toast.success('Feedback deleted');
+      toast.success(t('feedback.deleted'));
       fetchFeedback();
     } catch (err) {
-      errorHandler(err, 'Delete failed');
+      errorHandler(err, t('common.error'));
     }
   };
 
-  if (loading) return <p className="text-center text-sm">Loading feedback...</p>;
-  if (!feedbacks.length) return <p className="text-center text-sm">No feedback submitted yet.</p>;
+  if (loading) return <p className="text-center text-sm">{t('feedback.loading')}</p>;
+  if (!feedbacks.length) return <p className="text-center text-sm">{t('feedback.none')}</p>;
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-serif font-semibold">🗒️ Your Feedback</h3>
+      <h3 className="text-2xl font-serif font-semibold">🗒️ {t('feedback.yours')}</h3>
       {feedbacks.map((fb) => (
         <div
           key={fb.id}
@@ -112,13 +114,13 @@ const UserFeedbackList = () => {
               <div className="flex gap-3">
                 <ActionButton
                   type="edit"
-                  label={submitting ? 'Saving...' : 'Save'}
+                  label={submitting ? t('common.saving') : t('common.save')}
                   onClick={handleUpdate}
                   disabled={submitting}
                 />
                 <ActionButton
                   type="decline"
-                  label="Cancel"
+                  label={t('common.cancel')}
                   onClick={handleCancel}
                 />
               </div>
@@ -127,12 +129,12 @@ const UserFeedbackList = () => {
             <>
               <p className="italic mb-1">“{fb.message}”</p>
               <div className="flex justify-between text-sm opacity-70">
-                <span>— {fb.name}</span>
+                <span>— {fb.name || t('feedback.anonymous')}</span>
                 {fb.rating && <span className="text-yellow-400 font-bold">★ {fb.rating}</span>}
               </div>
               <div className="flex gap-2 mt-2">
-                <ActionButton type="edit" label="Edit" onClick={() => handleEdit(fb)} />
-                <ActionButton type="delete" label="Delete" onClick={() => handleDelete(fb.id)} />
+                <ActionButton type="edit" label={t('common.edit')} onClick={() => handleEdit(fb)} />
+                <ActionButton type="delete" label={t('common.delete')} onClick={() => handleDelete(fb.id)} />
               </div>
             </>
           )}

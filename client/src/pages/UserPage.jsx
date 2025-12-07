@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '@/context';
+import { useAuth, useLang } from '@/context';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { asyncHandler, errorHandler } from '@/utils';
@@ -11,6 +11,7 @@ import OrdersPage from './OrdersPage';
 
 const UserPage = () => {
   const { user, loading, updateProfile, deleteAccount } = useAuth();
+  const { t } = useLang();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('reservations');
 
@@ -42,7 +43,7 @@ const UserPage = () => {
   if (!user) {
     return (
       <div className="container mx-auto p-6 max-w-md text-center text-red-500">
-        User not found. Please sign in again.
+        {t('user.user_not_found')}
       </div>
     );
   }
@@ -56,9 +57,9 @@ const UserPage = () => {
     if (!isEditing) return setIsEditing(true);
 
     setSaving(true);
-    asyncHandler(() => updateProfile(formData), 'Update failed')
+    asyncHandler(() => updateProfile(formData), t('common.error'))
       .then(() => {
-        toast.success('Profile updated successfully');
+        toast.success(t('user.profile_updated'));
         setIsEditing(false);
       })
       .catch(errorHandler)
@@ -66,19 +67,19 @@ const UserPage = () => {
   };
 
   const handleAccountCloser = () => {
-    const confirmed = window.confirm('Are you sure you want to delete your account? This action is irreversible.');
+    const confirmed = window.confirm(t('user.confirm_deletion'));
     if (confirmed) setShowDeleteInput(true);
   };
 
   const handleFinalDelete = () => {
     if (!password) {
-      alert('Please enter your password to confirm account deletion.');
+      alert(t('user.enter_password_confirm'));
       return;
     }
 
-    asyncHandler(() => deleteAccount({ password }), 'Delete failed')
+    asyncHandler(() => deleteAccount({ password }), t('common.error'))
       .then(() => {
-        toast.success('Account deleted successfully');
+        toast.success(t('user.account_deleted'));
         navigate('/');
       })
       .catch(errorHandler);
@@ -87,22 +88,22 @@ const UserPage = () => {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     if (!currentPassword || !newPassword || !confirmPassword) {
-      return toast.error('Please fill all password fields');
+      return toast.error(t('user.fill_password_fields'));
     }
     if (newPassword.length < 6) {
-      return toast.error('New password must be at least 6 characters');
+      return toast.error(t('user.password_min_length'));
     }
     if (newPassword !== confirmPassword) {
-      return toast.error('New passwords do not match');
+      return toast.error(t('user.passwords_no_match'));
     }
 
     setChangingPassword(true);
     asyncHandler(
       () => changePassword(currentPassword, newPassword, confirmPassword),
-      'Password update failed'
+      t('common.error')
     )
       .then(() => {
-        toast.success('Password updated successfully');
+        toast.success(t('user.password_updated'));
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
@@ -123,7 +124,7 @@ const UserPage = () => {
               {['firstName', 'lastName', 'email', 'phone'].map((field) => (
                 <div key={field} className="space-y-2">
                   <label htmlFor={field} className="block text-sm font-medium opacity-90 capitalize">
-                    {field.replace('Name', ' Name')}
+                    {t(`auth.${field === 'email' ? 'email' : field === 'phone' ? 'phone' : field === 'firstName' ? 'first_name' : 'last_name'}`)}
                   </label>
                   <input
                     type={field === 'email' ? 'email' : 'text'}
@@ -133,7 +134,7 @@ const UserPage = () => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     className="w-full input input-bordered rounded-lg bg-[var(--b1)] text-[var(--bc)] placeholder-opacity-60"
-                    placeholder={field.replace('Name', ' Name')}
+                    placeholder={t(`auth.${field === 'email' ? 'email' : field === 'phone' ? 'phone' : field === 'firstName' ? 'first_name' : 'last_name'}`)}
                   />
                 </div>
               ))}
@@ -142,14 +143,14 @@ const UserPage = () => {
             <div className="flex justify-between gap-4 pt-2">
               <ActionButton
                 type={isEditing ? 'edit' : 'add'}
-                label={isEditing ? (saving ? 'Saving...' : 'Save') : 'Update'}
+                label={isEditing ? (saving ? t('common.saving') : t('common.save')) : t('common.edit')}
                 onClick={handleUpdate}
                 className="flex-1"
                 disabled={saving}
               />
               <ActionButton
                 type="delete"
-                label="Delete"
+                label={t('common.delete')}
                 onClick={handleAccountCloser}
                 className="flex-1"
               />
@@ -158,18 +159,18 @@ const UserPage = () => {
             {showDeleteInput && (
               <div className="mt-6 space-y-3 animate-fade-in-up">
                 <label className="block text-sm font-medium opacity-90">
-                  Confirm Deletion (Password)
+                  {t('user.confirm_delete')}
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
-                  placeholder="Enter your password"
+                  placeholder={t('user.enter_password_confirm')}
                 />
                 <ActionButton
                   type="delete"
-                  label="Confirm Delete"
+                  label={t('user.confirm_delete')}
                   onClick={handleFinalDelete}
                   className="w-full"
                 />
@@ -178,32 +179,32 @@ const UserPage = () => {
 
             {/* Password Change Section */}
             <div className="border-t border-[var(--border-color)] pt-6 mt-6 space-y-5">
-              <h3 className="text-lg font-semibold">Change Password</h3>
+              <h3 className="text-lg font-semibold">{t('user.change_password')}</h3>
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <input
                   type="password"
                   className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
-                  placeholder="Current Password"
+                  placeholder={t('user.current_password')}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                 />
                 <input
                   type="password"
                   className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
-                  placeholder="New Password"
+                  placeholder={t('user.new_password')}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <input
                   type="password"
                   className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
-                  placeholder="Confirm New Password"
+                  placeholder={t('user.confirm_new_password')}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <ActionButton
                   type="edit"
-                  label={changingPassword ? 'Updating...' : 'Update Password'}
+                  label={changingPassword ? t('user.updating') : t('user.update_password')}
                   className="w-full"
                   disabled={changingPassword}
                 />
@@ -217,17 +218,17 @@ const UserPage = () => {
   };
 
   const sections = [
-    { id: 'reservations', label: 'My Reservations' },
-    { id: 'orders', label: 'My Orders' },
-    { id: 'feedback', label: 'My Feedback' },
-    { id: 'profile', label: 'My Profile' },
+    { id: 'reservations', label: t('user.my_reservations') },
+    { id: 'orders', label: t('user.my_orders') || t('orders.title') },
+    { id: 'feedback', label: t('user.my_feedback') },
+    { id: 'profile', label: t('user.my_profile') },
   ];
 
   return (
     <section className="main-section min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto space-y-12">
         <h1 className="text-3xl font-serif font-semibold text-center text-[var(--bc)] mb-6">
-          User Dashboard
+          {t('user.dashboard')}
         </h1>
 
         <div className="flex flex-wrap justify-center gap-4">

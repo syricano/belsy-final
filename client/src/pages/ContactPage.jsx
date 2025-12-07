@@ -3,11 +3,13 @@ import { toast } from 'react-hot-toast';
 import { asyncHandler } from '@/utils';
 import axiosInstance from '@/config/axiosConfig';
 import { useNavigate } from 'react-router';
+import { useLang } from '@/context';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLang();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,13 +20,13 @@ const ContactPage = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    asyncHandler(() => axiosInstance.post('/contact/message', form), 'Message send failed')
+    asyncHandler(() => axiosInstance.post('/contact/message', form), t('contact.send_error'))
       .then(() => {
-        toast.success('Message sent successfully!');
+        toast.success(t('contact.message_sent'));
         setForm({ name: '', email: '', message: '' });
       })
       .catch((err) => {
-        toast.error(err.message || 'Something went wrong');
+        toast.error(err.message || t('common.error'));
       })
       .finally(() => setSubmitting(false));
   };
@@ -36,23 +38,23 @@ const ContactPage = () => {
         <button
           onClick={() => navigate(-1)}
           className="btn btn-sm btn-outline absolute top-4 right-4"
-          aria-label="Close"
+          aria-label={t('common.close')}
         >
           ✕
         </button>
 
-        <h2 className="text-3xl font-serif font-bold text-center mb-6">Contact Us</h2>
+        <h2 className="text-3xl font-serif font-bold text-center mb-6">{t('contact.title')}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6" role="form">
           <fieldset className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+              <label htmlFor="name" className="block text-sm font-medium mb-1">{t('contact.name')}</label>
               <input
                 type="text"
                 name="name"
                 id="name"
                 required
-                placeholder="Your name"
+                placeholder={t('contact.your_name')}
                 className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
                 value={form.name}
                 onChange={handleChange}
@@ -60,13 +62,13 @@ const ContactPage = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium mb-1">{t('contact.email')}</label>
               <input
                 type="email"
                 name="email"
                 id="email"
                 required
-                placeholder="you@example.com"
+                placeholder={t('contact.your_email')}
                 className="input input-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
                 value={form.email}
                 onChange={handleChange}
@@ -74,13 +76,13 @@ const ContactPage = () => {
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
+              <label htmlFor="message" className="block text-sm font-medium mb-1">{t('contact.message')}</label>
               <textarea
                 name="message"
                 id="message"
                 required
                 rows="4"
-                placeholder="Write your message..."
+                placeholder={t('contact.write_message')}
                 className="textarea textarea-bordered w-full bg-[var(--b1)] text-[var(--bc)]"
                 value={form.message}
                 onChange={handleChange}
@@ -92,7 +94,7 @@ const ContactPage = () => {
               disabled={submitting}
               className="btn btn-primary w-full"
             >
-              {submitting ? 'Sending...' : 'Send Message'}
+              {submitting ? t('contact.sending') : t('contact.send_message')}
             </button>
           </fieldset>
         </form>

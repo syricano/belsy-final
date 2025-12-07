@@ -11,6 +11,7 @@ import {
 } from '@/data/orders';
 import { computeVat, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
+import { useLang } from '@/context';
 
 const OrdersPage = ({ embed = false }) => {
   const params = useParams();
@@ -22,6 +23,7 @@ const OrdersPage = ({ embed = false }) => {
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvc: '' });
   const [paypalSession, setPaypalSession] = useState(null);
+  const { t } = useLang();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -32,7 +34,7 @@ const OrdersPage = ({ embed = false }) => {
         setSelected(data[0] || null);
       }
     } catch (err) {
-      errorHandler(err, 'Failed to load orders');
+      errorHandler(err, t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -44,7 +46,7 @@ const OrdersPage = ({ embed = false }) => {
       const data = await getOrderById(orderId);
       setSelected(data);
     } catch (err) {
-      errorHandler(err, 'Failed to load order');
+      errorHandler(err, t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -63,10 +65,10 @@ const OrdersPage = ({ embed = false }) => {
     setPaying(true);
     try {
       const updated = await updateOrderPayment(orderId, { paymentMethod: 'cash' });
-      toast.success('Cash selected. Pay on delivery.');
+      toast.success(t('orders.toast_cash'));
       syncOrder(updated);
     } catch (err) {
-      errorHandler(err, 'Payment update failed');
+      errorHandler(err, t('orders.toast_payment_failed'));
     } finally {
       setPaying(false);
     }
@@ -74,17 +76,17 @@ const OrdersPage = ({ embed = false }) => {
 
   const handleCardPay = async (orderId) => {
     if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvc) {
-      toast.error('Enter card details to continue');
+      toast.error(t('orders.toast_card_required'));
       return;
     }
     setPaying(true);
     try {
       const intent = await createStripePaymentIntent(orderId);
       const updated = await confirmStripePayment(orderId, intent.paymentIntentId);
-      toast.success('Card payment confirmed');
+      toast.success(t('orders.toast_card_confirmed'));
       syncOrder(updated);
     } catch (err) {
-      errorHandler(err, 'Card payment failed');
+      errorHandler(err, t('orders.toast_card_failed'));
     } finally {
       setPaying(false);
     }
@@ -95,9 +97,9 @@ const OrdersPage = ({ embed = false }) => {
     try {
       const session = await createPaypalPayment(orderId);
       setPaypalSession(session);
-      toast.success('PayPal order created');
+      toast.success(t('orders.toast_paypal_created'));
     } catch (err) {
-      errorHandler(err, 'PayPal start failed');
+      errorHandler(err, t('orders.toast_paypal_failed'));
     } finally {
       setPaying(false);
     }
@@ -105,16 +107,16 @@ const OrdersPage = ({ embed = false }) => {
 
   const handlePaypalCapture = async (orderId) => {
     if (!paypalSession?.paypalOrderId) {
-      toast.error('Create a PayPal order first');
+      toast.error(t('orders.toast_paypal_needs_order'));
       return;
     }
     setPaying(true);
     try {
       const updated = await capturePaypalPayment(orderId, paypalSession.paypalOrderId);
-      toast.success('PayPal payment captured');
+      toast.success(t('orders.toast_paypal_captured'));
       syncOrder(updated);
     } catch (err) {
-      errorHandler(err, 'PayPal capture failed');
+      errorHandler(err, t('orders.toast_paypal_capture_failed'));
     } finally {
       setPaying(false);
     }
@@ -148,6 +150,22 @@ const OrdersPage = ({ embed = false }) => {
   const showDebug = import.meta.env?.DEV;
   const paidAtLabel = selected?.paidAt ? new Date(selected.paidAt).toLocaleString() : '';
 
+  const formatStatus = (status) => {
+    if (!status) return status;
+    const translated = t(`orders.status.${(status || '').toLowerCase()}`);
+    return translated && !translated.startsWith('orders.status.') ? translated : status;
+  };
+  const formatPaymentStatus = (status) => {
+    if (!status) return status;
+    const translated = t(`orders.payment_status.${(status || '').toLowerCase()}`);
+    return translated && !translated.startsWith('orders.payment_status.') ? translated : status;
+  };
+  const formatPaymentMethod = (method) => {
+    if (!method) return method;
+    const translated = t(`payment.${method}`);
+    return translated && !translated.startsWith('payment.') ? translated : method;
+  };
+
   const Wrapper = ({ children }) => embed ? <div className="space-y-4">{children}</div> : (
     <section className="main-section min-h-screen py-10 px-4">
       <div className="max-w-5xl mx-auto">
@@ -164,13 +182,13 @@ const OrdersPage = ({ embed = false }) => {
   const content = (
     <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 bg-[var(--n)] text-[var(--nc)] p-4 rounded-2xl shadow border border-[var(--border-color)]">
-          <h2 className="text-xl font-serif font-semibold mb-3">My Orders</h2>
+          <h2 className="text-xl font-serif font-semibold mb-3">{t('orders.title')}</h2>
           {loading && orders.length === 0 ? (
             <div className="flex justify-center py-6">
               <span className="loading loading-spinner text-[var(--bc)]" />
             </div>
           ) : orders.length === 0 ? (
-            <p className="opacity-70">No orders yet.</p>
+            <p className="opacity-70">{t('orders.none')}</p>
           ) : (
             <div className="space-y-2">
               {orders.map((order) => (
@@ -179,9 +197,9 @@ const OrdersPage = ({ embed = false }) => {
                   className={`w-full text-left p-3 rounded-lg border ${selected?.id === order.id ? 'border-[var(--p)] bg-[var(--b1)]' : 'border-[var(--border-color)]'}`}
                   onClick={() => fetchOne(order.id)}
                 >
-                  <p className="font-semibold">Order #{order.id}</p>
+                  <p className="font-semibold">{t('orders.order_label')} #{order.id}</p>
                   <p className="text-sm opacity-70">
-                    {`${order.status} • ${order.paymentStatus} • $${order.total?.toFixed(2)}`}
+                    {`${formatStatus(order.status) || order.status} • ${formatPaymentStatus(order.paymentStatus) || order.paymentStatus} • $${order.total?.toFixed(2)}`}
                   </p>
                 </button>
               ))}
@@ -197,10 +215,10 @@ const OrdersPage = ({ embed = false }) => {
           ) : selected ? (
             <div className="space-y-4">
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <h3 className="text-2xl font-serif font-semibold">Order #{selected.id}</h3>
+                <h3 className="text-2xl font-serif font-semibold">{t('orders.order_label')} #{selected.id}</h3>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="badge badge-lg">{selected.status}</span>
-                  {isPaid && <span className="badge badge-success badge-outline">Paid</span>}
+                  <span className="badge badge-lg">{formatStatus(selected.status) || selected.status}</span>
+                  {isPaid && <span className="badge badge-success badge-outline">{t('orders.paid_badge')}</span>}
                 </div>
               </div>
               {showDebug && (
@@ -211,21 +229,21 @@ const OrdersPage = ({ embed = false }) => {
                 </div>
               )}
               <p className="opacity-80">{selected.customerName} • {selected.customerEmail} • {selected.customerPhone}</p>
-              {selected.note && <p className="text-sm opacity-80">Note: {selected.note}</p>}
+              {selected.note && <p className="text-sm opacity-80">{t('checkout.note')}: {selected.note}</p>}
               {!canPayStrict && (
                 <div className="flex flex-wrap gap-2">
-                  <span className="badge">Payment: {selected.paymentStatus || 'Unknown'}</span>
-                  <span className="badge">Method: {selected.paymentMethod || '—'}</span>
+                  <span className="badge">{t('orders.payment')}: {formatPaymentStatus(selected.paymentStatus) || selected.paymentStatus || '—'}</span>
+                  <span className="badge">{t('orders.method')}: {formatPaymentMethod(selected.paymentMethod) || selected.paymentMethod || '—'}</span>
                   {paidAtLabel && (
                     <span className="badge badge-outline">
-                      Paid at {paidAtLabel}
+                      {t('orders.paid_at')} {paidAtLabel}
                     </span>
                   )}
                 </div>
               )}
               {isCashConfirmedUnpaid && (
                 <p className="text-sm opacity-80">
-                  You chose to pay in cash when you receive your order.
+                  {t('orders.cash_note')}
                 </p>
               )}
               <div className="border-t border-[var(--border-color)] pt-3 space-y-2">
@@ -238,15 +256,15 @@ const OrdersPage = ({ embed = false }) => {
               </div>
               <div className="space-y-1 text-sm border-t border-[var(--border-color)] pt-3">
                 <div className="flex justify-between font-bold text-lg">
-                  <span>Subtotal (incl. 19% VAT)</span>
+                  <span>{t('cart.subtotal_label')}</span>
                   <span>${subtotalGross.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Incl. VAT (19%)</span>
+                  <span>{t('cart.vat_label')}</span>
                   <span>${subtotalVat.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Net (excl. VAT)</span>
+                  <span>{t('cart.net_label')}</span>
                   <span>${subtotalNet.toFixed(2)}</span>
                 </div>
               </div>
@@ -254,7 +272,7 @@ const OrdersPage = ({ embed = false }) => {
                 <div className="space-y-3 rounded-xl border border-[var(--border-color)] bg-[var(--b2)] p-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium" htmlFor="payment-method-select">
-                      Payment Method
+                      {t('orders.payment_method_label')}
                     </label>
                     <select
                       id="payment-method-select"
@@ -266,14 +284,14 @@ const OrdersPage = ({ embed = false }) => {
                       }}
                     >
                       {paymentOptions.map((m) => (
-                        <option key={m} value={m}>{m}</option>
+                        <option key={m} value={m}>{formatPaymentMethod(m)}</option>
                       ))}
                     </select>
                   </div>
 
                   {paymentMethod === 'cash' && (
                     <div className="space-y-2">
-                      <p className="text-sm opacity-80">Pay in cash when you receive your order.</p>
+                      <p className="text-sm opacity-80">{t('orders.cash_help')}</p>
                       <button
                         className="btn btn-primary"
                         type="button"
@@ -284,7 +302,7 @@ const OrdersPage = ({ embed = false }) => {
                           paymentStatusNormalized !== 'unpaid'
                         }
                       >
-                        {paying ? 'Saving...' : 'Confirm cash on delivery'}
+                        {paying ? t('orders.saving') : t('orders.cash_confirm')}
                       </button>
                     </div>
                   )}
@@ -294,19 +312,19 @@ const OrdersPage = ({ embed = false }) => {
                       <div className="grid sm:grid-cols-2 gap-2">
                         <input
                           className="input input-bordered input-sm w-full"
-                          placeholder="Card number"
+                          placeholder={t('orders.card_number')}
                           value={cardDetails.number}
                           onChange={(e) => setCardDetails((prev) => ({ ...prev, number: e.target.value }))}
                         />
                         <input
                           className="input input-bordered input-sm w-full"
-                          placeholder="MM/YY"
+                          placeholder={t('orders.card_expiry')}
                           value={cardDetails.expiry}
                           onChange={(e) => setCardDetails((prev) => ({ ...prev, expiry: e.target.value }))}
                         />
                         <input
                           className="input input-bordered input-sm w-full sm:w-auto"
-                          placeholder="CVC"
+                          placeholder={t('orders.card_cvc')}
                           value={cardDetails.cvc}
                           onChange={(e) => setCardDetails((prev) => ({ ...prev, cvc: e.target.value }))}
                         />
@@ -316,19 +334,19 @@ const OrdersPage = ({ embed = false }) => {
                         onClick={() => handleCardPay(selected.id)}
                         disabled={paying}
                       >
-                        {paying ? 'Processing...' : 'Pay with Card'}
+                        {paying ? t('orders.processing') : t('orders.pay_with_card')}
                       </button>
-                      <p className="text-xs opacity-70">Card payments are simulated now and will auto-confirm once approved.</p>
+                      <p className="text-xs opacity-70">{t('orders.card_note')}</p>
                     </div>
                   )}
 
                   {paymentMethod === 'paypal' && (
                     <div className="space-y-2">
-                      <p className="text-sm opacity-80">Simulated PayPal approval flow.</p>
+                      <p className="text-sm opacity-80">{t('orders.paypal_help')}</p>
                       {paypalSession ? (
                         <>
                           <div className="rounded-md border border-[var(--border-color)] bg-[var(--b1)] p-3 text-xs break-words">
-                            <p className="font-semibold">Approval URL</p>
+                            <p className="font-semibold">{t('orders.approval_url')}</p>
                             <p className="font-mono">{paypalSession.approvalUrl}</p>
                           </div>
                           <button
@@ -336,7 +354,7 @@ const OrdersPage = ({ embed = false }) => {
                             onClick={() => handlePaypalCapture(selected.id)}
                             disabled={paying}
                           >
-                            {paying ? 'Capturing...' : 'Approve payment'}
+                            {paying ? t('orders.capturing') : t('orders.approve_payment')}
                           </button>
                         </>
                       ) : (
@@ -345,7 +363,7 @@ const OrdersPage = ({ embed = false }) => {
                           onClick={() => handlePaypalCreate(selected.id)}
                           disabled={paying}
                         >
-                          {paying ? 'Processing...' : 'Pay with PayPal'}
+                          {paying ? t('orders.processing') : t('orders.pay_with_paypal')}
                         </button>
                       )}
                     </div>
@@ -354,7 +372,7 @@ const OrdersPage = ({ embed = false }) => {
               )}
             </div>
           ) : (
-            <p className="opacity-70">Select an order to view details.</p>
+            <p className="opacity-70">{t('orders.select_prompt')}</p>
           )}
         </div>
     </div>

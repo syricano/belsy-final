@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { getAddress } from '@/data/address';
 import { errorHandler } from '@/utils';
+import { useLang } from '@/context';
 
 const About = () => {
   const [info, setInfo] = useState(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const { t } = useLang();
 
   useEffect(() => {
     getAddress()
       .then(setInfo)
-      .catch((err) => errorHandler(err, 'Failed to load address info'));
+      .catch((err) => errorHandler(err, t('contact.load_error')));
   }, []);
 
   return (
@@ -19,15 +21,13 @@ const About = () => {
         {/* Text */}
         <div className="flex-1">
           <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6 text-[var(--bc)]">
-            Welcome to Belsy Restaurant
+            {t('about.title')}
           </h2>
           <p className="text-lg mb-4 text-[var(--bc)]">
-            At Belsy, we bring authentic Syrian flavors to your table in a warm and elegant setting.
-            Our cuisine blends tradition with creativity, using only the freshest ingredients.
+            {t('about.body1')}
           </p>
           <p className="text-md text-[var(--bc)]">
-            Whether you're planning a cozy dinner, a family gathering, or a special celebration,
-            Belsy offers an unforgettable experience – from the first bite to the last sip.
+            {t('about.body2')}
           </p>
         </div>
 
@@ -46,11 +46,11 @@ const About = () => {
       {/* Address Section */}
       {info && (
         <div className="max-w-4xl mx-auto bg-[var(--n)] text-[var(--nc)] p-6 rounded-xl shadow-md border border-[var(--border-color)]">
-          <h3 className="text-2xl font-serif font-semibold mb-4 text-center">Our Location</h3>
+          <h3 className="text-2xl font-serif font-semibold mb-4 text-center">{t('about.location')}</h3>
           <div className="space-y-2 text-center text-lg">
-            <p><strong>📞 Phone:</strong> {info.phone}</p>
-            <p><strong>📧 Email:</strong> {info.email}</p>
-            <p><strong>📍 Address:</strong> {info.address}</p>
+            <p><strong>📞 {t('contact.phone')}:</strong> {info.phone}</p>
+            <p><strong>📧 {t('contact.email')}:</strong> {info.email}</p>
+            <p><strong>📍 {t('contact.address')}:</strong> {info.address}</p>
           </div>
 
           <div className="max-w-4xl mx-auto mt-8 rounded-xl overflow-hidden shadow-lg border border-[var(--border-color)] relative h-[300px]">

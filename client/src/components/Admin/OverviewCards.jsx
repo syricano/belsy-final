@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/config/axiosConfig';
+import { useLang } from '@/context';
 
 const OverviewCards = () => {
   const [stats, setStats] = useState({
@@ -9,6 +10,7 @@ const OverviewCards = () => {
   });
   const [loading, setLoading] = useState(true);
   const [showMore, setShowMore] = useState(false);
+  const { t } = useLang();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -36,12 +38,12 @@ const OverviewCards = () => {
   return (
     <section className="w-full mb-8 px-2">
       <div className="flex justify-center items-center gap-4 mb-4 px-2">
-        <h2 className="text-xl font-semibold text-[var(--bc)]">Statistics</h2>
+        <h2 className="text-xl font-semibold text-[var(--bc)]">{t('admin.overview.title')}</h2>
         <button
           className="text-sm text-[var(--bc)] hover:underline"
           onClick={() => setShowMore((prev) => !prev)}
         >
-          {showMore ? 'Hide <<' : 'Show more >>'}
+          {showMore ? t('admin.overview.hide') : t('admin.overview.show_more')}
         </button>
       </div>
 
@@ -53,10 +55,10 @@ const OverviewCards = () => {
         <>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             {[
-              { label: 'Reservations', value: stats.reservations },
-              { label: 'Tables', value: stats.tables },
-              { label: 'Menu Items', value: stats.menuItems },
-              { label: 'Feedback', value: 'Add' },
+              { label: t('admin.overview.reservations'), value: stats.reservations },
+              { label: t('admin.overview.tables'), value: stats.tables },
+              { label: t('admin.overview.menu_items'), value: stats.menuItems },
+              { label: t('admin.overview.feedback'), value: t('admin.overview.add_placeholder') },
             ].map(({ label, value }, idx) => (
               <div
                 key={idx}
@@ -72,16 +74,16 @@ const OverviewCards = () => {
             {/* Mobile layout */}
             <div className="flex flex-col items-start gap-2 sm:hidden text-[var(--bc)]">
               <p>
-                <span className="font-semibold">Reservations:</span> {stats.reservations}
+                <span className="font-semibold">{t('admin.overview.reservations')}:</span> {stats.reservations}
               </p>
               <p>
-                <span className="font-semibold">Tables:</span> {stats.tables}
+                <span className="font-semibold">{t('admin.overview.tables')}:</span> {stats.tables}
               </p>
               <p>
-                <span className="font-semibold">Menu Items:</span> {stats.menuItems}
+                <span className="font-semibold">{t('admin.overview.menu_items')}:</span> {stats.menuItems}
               </p>
               <p>
-                <span className="font-semibold">Feedback:</span> Add
+                <span className="font-semibold">{t('admin.overview.feedback')}:</span> {t('admin.overview.add_placeholder')}
               </p>
             </div>
           </div>

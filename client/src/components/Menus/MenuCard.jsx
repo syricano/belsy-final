@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MenuItem from './MenuItem';
-import { useCart } from '@/context';
+import { useCart, useLang } from '@/context';
 import { toast } from 'react-hot-toast';
 
 const MenuCard = ({ item }) => {
@@ -8,11 +8,12 @@ const MenuCard = ({ item }) => {
   const [imageFailed, setImageFailed] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
+  const { t } = useLang();
 
   const handleAdd = async () => {
     if (quantity <= 0) return;
     await addItem(item.id, quantity);
-    toast.success(`${item.name} added to cart`);
+    toast.success(`${item.name} ${t('cart.added')}`);
     setQuantity(1);
   };
 
@@ -48,17 +49,17 @@ const MenuCard = ({ item }) => {
         />
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <button className="btn btn-sm" onClick={() => setQuantity((q) => Math.max(q - 1, 1))}>-</button>
-            <span>{quantity}</span>
-            <button className="btn btn-sm" onClick={() => setQuantity((q) => q + 1)}>+</button>
-          </div>
-          <button className="btn btn-primary" onClick={handleAdd}>
-            Add to Cart
-          </button>
+          <button className="btn btn-sm" onClick={() => setQuantity((q) => Math.max(q - 1, 1))}>-</button>
+          <span>{quantity}</span>
+          <button className="btn btn-sm" onClick={() => setQuantity((q) => q + 1)}>+</button>
         </div>
+        <button className="btn btn-primary" onClick={handleAdd}>
+            {t('cart.add_to_cart')}
+          </button>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default MenuCard;

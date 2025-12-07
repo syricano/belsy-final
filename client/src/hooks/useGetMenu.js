@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getMenu } from '@/data';
 import { errorHandler } from '@/utils';
+import { translations } from '@/i18n';
 
 const getFullImageUrl = (image) => {
   if (!image) return '';
@@ -10,14 +11,15 @@ const getFullImageUrl = (image) => {
   return image.startsWith('/uploads/') ? `${base}${image}` : image;
 };
 
-const useGetMenu = () => {
+const useGetMenu = (language = 'en') => {
   const [groupedMenu, setGroupedMenu] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchMenuData = async () => {
     try {
-      const items = await getMenu();
+      const items = await getMenu(language);
 
+      const fallbackCategory = translations[language]?.menu?.uncategorized || 'Uncategorized';
       const transformedItems = items.map(item => ({
         ...item,
         image: getFullImageUrl(item.image),
@@ -25,7 +27,7 @@ const useGetMenu = () => {
 
       const categoriesMap = new Map();
       transformedItems.forEach((item) => {
-        const categoryName = item.Category?.name || 'Uncategorized';
+        const categoryName = item.Category?.name || fallbackCategory;
         if (!categoriesMap.has(categoryName)) {
           categoriesMap.set(categoryName, []);
         }
@@ -48,7 +50,7 @@ const useGetMenu = () => {
 
   useEffect(() => {
     fetchMenuData();
-  }, []);
+  }, [language]);
 
   return { groupedMenu, loading };
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLang } from '@/context';
 
 const ReservationsFilter = ({ onSearch }) => {
   const [filters, setFilters] = useState({
@@ -7,6 +8,7 @@ const ReservationsFilter = ({ onSearch }) => {
     phone: '',
     date: '',
   });
+  const { t } = useLang();
 
   const handleChange = (field, value) => {
     const updated = { ...filters, [field]: value };
@@ -24,21 +26,21 @@ const ReservationsFilter = ({ onSearch }) => {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 w-full ">
       <input
         type="text"
-        placeholder="Name"
+        placeholder={t('admin.reservations.filter_name')}
         className="input input-sm input-bordered w-full min-w-0"
         value={filters.name}
         onChange={(e) => handleChange('name', e.target.value)}
       />
       <input
         type="email"
-        placeholder="Email"
+        placeholder={t('admin.reservations.filter_email')}
         className="input input-sm input-bordered w-full min-w-0"
         value={filters.email}
         onChange={(e) => handleChange('email', e.target.value)}
       />
       <input
         type="text"
-        placeholder="Phone"
+        placeholder={t('admin.reservations.filter_phone')}
         className="input input-sm input-bordered w-full min-w-0"
         value={filters.phone}
         onChange={(e) => handleChange('phone', e.target.value)}
@@ -54,7 +56,7 @@ const ReservationsFilter = ({ onSearch }) => {
         className="btn btn-sm bg-gray-600 text-white hover:bg-gray-800 w-full min-w-0"
         onClick={handleClear}
       >
-        Clear
+        {t('common.clear')}
       </button>
     </div>
   );

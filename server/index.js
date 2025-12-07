@@ -11,6 +11,7 @@ import uploadRouter from './routes/uploadRouter.js';
 import session from 'express-session';
 import passport from 'passport';
 import './config/passport.js';
+import languageMiddleware from './middleware/language.js';
 
 
 
@@ -35,6 +36,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(languageMiddleware);
 
 // === Mount Routes
 routeMap.forEach(({ path, handler }) => app.use(path, handler));

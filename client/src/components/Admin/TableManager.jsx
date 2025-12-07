@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAdmin } from '@/context';
+import { useAdmin, useLang } from '@/context';
 import { errorHandler, asyncHandler } from '@/utils';
 import ActionButton from '@/components/UI/ActionButton';
 
@@ -16,10 +16,11 @@ const TableManager = () => {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingTables, setLoadingTables] = useState(true);
+  const { t } = useLang();
 
   const fetchTables = () => {
     setLoadingTables(true);
-    asyncHandler(getTables, 'Failed to fetch tables')
+    asyncHandler(getTables, t('common.error'))
       .then(data => setTables(data))
       .catch(errorHandler)
       .finally(() => setLoadingTables(false));
@@ -43,7 +44,7 @@ const TableManager = () => {
     const handler = editingId ? updateTable : createTable;
     const args = editingId ? [editingId, form] : [form];
 
-    asyncHandler(() => handler(...args), editingId ? 'Update failed' : 'Creation failed')
+    asyncHandler(() => handler(...args), t('common.error'))
       .then(() => {
         fetchTables();
         setForm({ number: '', seats: '', location: 'inRestaurant' });
@@ -63,7 +64,7 @@ const TableManager = () => {
   };
 
   const handleDelete = (id) => {
-    asyncHandler(() => deleteTable(id), 'Failed to delete table')
+    asyncHandler(() => deleteTable(id), t('common.error'))
       .then(() => fetchTables())
       .catch(errorHandler);
   };
@@ -77,7 +78,7 @@ const TableManager = () => {
         <input
           type="number"
           name="number"
-          placeholder="Table Number"
+          placeholder={t('admin.tables.number')}
           className="input input-bordered"
           value={form.number}
           onChange={handleChange}
@@ -86,7 +87,7 @@ const TableManager = () => {
         <input
           type="number"
           name="seats"
-          placeholder="Seats"
+          placeholder={t('admin.tables.seats')}
           className="input input-bordered"
           value={form.seats}
           onChange={handleChange}
@@ -98,21 +99,21 @@ const TableManager = () => {
           value={form.location}
           onChange={handleChange}
         >
-          <option value="inRestaurant">Inside Restaurant</option>
-          <option value="inHall">In Hall</option>
+          <option value="inRestaurant">{t('admin.tables.location_inside')}</option>
+          <option value="inHall">{t('admin.tables.location_hall')}</option>
         </select>
 
         <div className="col-span-1 md:col-span-3 flex gap-2">
           {editingId ? (
             <>
-              <ActionButton type="edit" label="Update Table" disabled={loading} />
-              <ActionButton type="decline" label="Cancel" onClick={() => {
+              <ActionButton type="edit" label={t('admin.tables.update')} disabled={loading} />
+              <ActionButton type="decline" label={t('common.cancel')} onClick={() => {
                 setForm({ number: '', seats: '', location: 'inRestaurant' });
                 setEditingId(null);
               }} />
             </>
           ) : (
-            <ActionButton type="add" label="Add Table" disabled={loading} />
+            <ActionButton type="add" label={t('admin.tables.add')} disabled={loading} />
           )}
         </div>
       </form>
@@ -127,9 +128,9 @@ const TableManager = () => {
             <thead>
               <tr className="text-left text-sm border-b border-[var(--border-color)]">
                 <th>#</th>
-                <th>Seats</th>
-                <th>Location</th>
-                <th className='text-right'>Actions</th>
+                <th>{t('admin.tables.seats')}</th>
+                <th>{t('admin.tables.location')}</th>
+                <th className='text-right'>{t('common.edit')}</th>
               </tr>
             </thead>
             <tbody>

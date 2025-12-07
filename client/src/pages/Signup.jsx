@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useAuth } from '@/context';
+import { useAuth, useLang } from '@/context';
 import { asyncHandler, errorHandler } from '@/utils';
 import { toast } from 'react-hot-toast';
 
@@ -17,6 +17,7 @@ const Signup = () => {
   const [error, setError] = useState('');
   const { signup } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLang();
 
   const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,7 +28,7 @@ const Signup = () => {
     setLoading(true);
 
     if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('auth.passwords_no_match'));
       setLoading(false);
       return;
     }
@@ -36,13 +37,13 @@ const Signup = () => {
 
     try {
       await signup(formData);
-      toast.success('Account created');
+      toast.success(t('auth.account_created'));
       navigate('/');
     } catch (err) {
       const msg =
         err?.response?.data?.error ||
         err?.message ||
-        'Signup failed';
+        t('auth.signup_error');
       toast.error(msg);
       setError(msg);
     } finally {
@@ -54,7 +55,7 @@ const Signup = () => {
     <section className="main-section min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full p-8 rounded-xl shadow-xl bg-[var(--n)] text-[var(--nc)] border border-[var(--border-color)] animate-fade-in-up">
         <h2 className="text-3xl font-serif font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
-          Create Account
+          {t('auth.create_account')}
         </h2>
 
         {error && (
@@ -63,12 +64,12 @@ const Signup = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {[ 
-            { label: 'First Name', name: 'firstName' },
-            { label: 'Last Name', name: 'lastName' },
-            { label: 'Phone', name: 'phone', type: 'text' },
-            { label: 'Email', name: 'email', type: 'email' },
-            { label: 'Password', name: 'password', type: 'password' },
-            { label: 'Confirm Password', name: 'confirmPassword', type: 'password' },
+            { label: t('auth.first_name'), name: 'firstName' },
+            { label: t('auth.last_name'), name: 'lastName' },
+            { label: t('auth.phone'), name: 'phone', type: 'text' },
+            { label: t('auth.email'), name: 'email', type: 'email' },
+            { label: t('auth.password'), name: 'password', type: 'password' },
+            { label: t('auth.confirm_password'), name: 'confirmPassword', type: 'password' },
           ].map(({ label, name, type = 'text' }) => (
             <div key={name} className="space-y-2">
               <label htmlFor={name} className="block text-sm font-medium opacity-90">
@@ -93,9 +94,9 @@ const Signup = () => {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="loading loading-spinner text-white w-4 h-4" />
-                Creating...
+                {t('auth.creating')}
               </span>
-            ) : 'Sign Up'}
+            ) : t('auth.signup')}
           </button>
         </form>
       </div>

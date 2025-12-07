@@ -1,5 +1,6 @@
 import React from 'react';
 import ActionButton from '@/components/UI/ActionButton';
+import { useLang } from '@/context';
 
 const ReservationManagerMobile = ({
   reservations,
@@ -11,6 +12,7 @@ const ReservationManagerMobile = ({
   filterActions,
   getStatusBadgeClasses,
 }) => {
+  const { t } = useLang();
   return (
     <div className="space-y-4 bg-[var(--b1)] text-[var(--bc)]">
       {reservations.map(res => {
@@ -25,14 +27,14 @@ const ReservationManagerMobile = ({
             </div>
 
             <div className="mt-1">
-              <span className="font-medium">Status: </span>
+              <span className="font-medium">{t('admin.reservations.status')}: </span>
               <span className={`badge ${getStatusBadgeClasses(res.status)}`}>
-                {res.status}
+                {t(`admin.reservations.status_label.${(res.status || '').toLowerCase()}`) || res.status}
               </span>
             </div>
 
             <div className="mt-1">
-              <span className="font-medium">Note: </span>{renderNote(res)}
+              <span className="font-medium">{t('admin.reservations.note')}: </span>{renderNote(res)}
             </div>
 
             <div className="flex flex-wrap gap-2 mt-3">

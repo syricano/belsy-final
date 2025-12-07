@@ -6,8 +6,9 @@ import Menu from '../models/Menu.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import { _internal as cartInternal } from './cartController.js';
 import { computeVat, roundPrice } from '../utils/vat.js';
+import { pickTranslation } from '../utils/localization.js';
 
-export const buildOrderResponse = (order) => {
+export const buildOrderResponse = (order, lang = 'en') => {
   const items = order.OrderItems?.map((item) => {
     const unitGross = Number(item.price) || 0;
     const pricing = computeVat({ gross: unitGross });
@@ -15,11 +16,16 @@ export const buildOrderResponse = (order) => {
     const lineTotalGross = roundPrice(unitGross * quantity);
     const lineTotalNet = roundPrice(pricing.net * quantity);
     const lineTotalVat = roundPrice(pricing.vat * quantity);
+    const displayName = pickTranslation(
+      item.Menu?.nameTranslations,
+      lang,
+      item.Menu?.name || item.name,
+    );
 
     return {
       id: item.id,
       menuId: item.menuId,
-      name: item.name,
+      name: displayName,
       price: pricing.gross,
       priceGross: pricing.gross,
       priceNet: pricing.net,
@@ -91,9 +97,10 @@ export const checkout = async (req, res, next) => {
       const menu = await Menu.findByPk(item.menuId);
       if (!menu) throw new ErrorResponse(`Menu item ${item.menuId} is no longer available`, 404);
       const price = roundPrice(menu.price);
+      const displayName = pickTranslation(menu.nameTranslations, req.lang, menu.name);
       itemsWithPricing.push({
         menuId: item.menuId,
-        name: menu.name,
+        name: displayName,
         price,
         quantity: item.quantity,
         lineTotal: roundPrice(price * item.quantity),
@@ -132,8 +139,8 @@ export const checkout = async (req, res, next) => {
       return createdOrder;
     });
 
-    const fullOrder = await Order.findByPk(order.id, { include: [OrderItem] });
-    res.status(201).json(buildOrderResponse(fullOrder));
+    const fullOrder = await Order.findByPk(order.id, { include: [{ model: OrderItem, include: [Menu] }] });
+    res.status(201).json(buildOrderResponse(fullOrder, req.lang));
   } catch (err) {
     next(err);
   }
@@ -144,10 +151,10 @@ export const getMyOrders = async (req, res, next) => {
     const userId = req.user?.id || req.userId;
     const orders = await Order.findAll({
       where: { userId },
-      include: [OrderItem],
+      include: [{ model: OrderItem, include: [Menu] }],
       order: [['createdAt', 'DESC']],
     });
-    res.json(orders.map(buildOrderResponse));
+    res.json(orders.map((order) => buildOrderResponse(order, req.lang)));
   } catch (err) {
     next(err);
   }
@@ -155,7 +162,7 @@ export const getMyOrders = async (req, res, next) => {
 
 export const getOrderById = async (req, res, next) => {
   try {
-    const order = await Order.findByPk(req.params.id, { include: [OrderItem] });
+    const order = await Order.findByPk(req.params.id, { include: [{ model: OrderItem, include: [Menu] }] });
     if (!order) throw new ErrorResponse('Order not found', 404);
 
     const isAdmin = req.user?.role === 'Admin';
@@ -165,7 +172,7 @@ export const getOrderById = async (req, res, next) => {
       throw new ErrorResponse('Not authorized to view this order', 403);
     }
 
-    res.json(buildOrderResponse(order));
+    res.json(buildOrderResponse(order, req.lang));
   } catch (err) {
     next(err);
   }
@@ -173,8 +180,8 @@ export const getOrderById = async (req, res, next) => {
 
 export const adminListOrders = async (req, res, next) => {
   try {
-    const orders = await Order.findAll({ include: [OrderItem], order: [['createdAt', 'DESC']] });
-    res.json(orders.map(buildOrderResponse));
+    const orders = await Order.findAll({ include: [{ model: OrderItem, include: [Menu] }], order: [['createdAt', 'DESC']] });
+    res.json(orders.map((order) => buildOrderResponse(order, req.lang)));
   } catch (err) {
     next(err);
   }
@@ -189,8 +196,8 @@ export const adminUpdateStatus = async (req, res, next) => {
     order.status = status;
     await order.save();
 
-    const withItems = await Order.findByPk(order.id, { include: [OrderItem] });
-    res.json(buildOrderResponse(withItems));
+    const withItems = await Order.findByPk(order.id, { include: [{ model: OrderItem, include: [Menu] }] });
+    res.json(buildOrderResponse(withItems, req.lang));
   } catch (err) {
     next(err);
   }
@@ -207,8 +214,8 @@ export const adminUpdatePayment = async (req, res, next) => {
     order.paidAt = paidAt || (paymentStatus === 'Paid' ? new Date() : null);
     await order.save();
 
-    const withItems = await Order.findByPk(order.id, { include: [OrderItem] });
-    res.json(buildOrderResponse(withItems));
+    const withItems = await Order.findByPk(order.id, { include: [{ model: OrderItem, include: [Menu] }] });
+    res.json(buildOrderResponse(withItems, req.lang));
   } catch (err) {
     next(err);
   }
@@ -247,8 +254,8 @@ export const userUpdatePayment = async (req, res, next) => {
       }
       order.status = 'Confirmed';
       await order.save();
-      const withItems = await Order.findByPk(order.id, { include: [OrderItem] });
-      res.json(buildOrderResponse(withItems));
+      const withItems = await Order.findByPk(order.id, { include: [{ model: OrderItem, include: [Menu] }] });
+      res.json(buildOrderResponse(withItems, req.lang));
       return;
     }
 

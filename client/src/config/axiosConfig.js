@@ -8,4 +8,11 @@ const axiosInstance = axios.create({
   withCredentials: true, // rely on httpOnly auth cookies
 });
 
+if (typeof window !== 'undefined') {
+  const savedLang = localStorage.getItem('belsy_lang');
+  if (savedLang) {
+    axiosInstance.defaults.headers.common['Accept-Language'] = savedLang;
+  }
+}
+
 export default axiosInstance;

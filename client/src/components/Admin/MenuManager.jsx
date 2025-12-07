@@ -4,6 +4,7 @@ import MenuManagerPC from './MenuManagerPC';
 import MenuManagerMobile from './MenuManagerMobile';
 import ActionButton from '@/components/UI/ActionButton';
 import { computeVat } from '@/utils';
+import { useLang } from '@/context';
 
 const PreviewImage = ({ url, selected, onSelect }) => {
   const [loaded, setLoaded] = useState(false);
@@ -59,6 +60,7 @@ const MenuManager = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const priceInfo = computeVat({ gross: form.price || 0 });
+  const { t } = useLang();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -127,34 +129,34 @@ const MenuManager = () => {
     <section className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-1">
         <div className="col-span-1 border rounded-xl bg-[var(--b1)] text-[var(--bc)] p-2 shadow">
-          <h3 className="text-lg font-semibold mb-4">Menu Item</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('admin.menus.item')}</h3>
           <form onSubmit={handleSafeSubmit} className="space-y-4">
-            <input type="text" name="name" className="input input-bordered w-full" placeholder="Dish name" value={form.name} onChange={handleChange} />
+            <input type="text" name="name" className="input input-bordered w-full" placeholder={t('admin.menus.name_placeholder')} value={form.name} onChange={handleChange} />
             <div className="space-y-1">
               <input
                 type="number"
                 name="price"
                 className="input input-bordered w-full"
-                placeholder="Price (incl. 19% VAT)"
+                placeholder={t('admin.menus.price_label')}
                 value={form.price}
                 step="0.01"
                 onChange={handleChange}
               />
-              <p className="text-xs opacity-80">Price (incl. 19% VAT)</p>
+              <p className="text-xs opacity-80">{t('admin.menus.price_label')}</p>
               <div className="text-xs opacity-80 bg-[var(--b2)] border border-[var(--border-color)] rounded-lg p-2">
-                <p>Net (excl. VAT): ${priceInfo.net.toFixed(2)}</p>
-                <p>VAT (19%): ${priceInfo.vat.toFixed(2)}</p>
+                <p>{t('admin.menus.net_label')}: ${priceInfo.net.toFixed(2)}</p>
+                <p>{t('admin.menus.vat_label')}: ${priceInfo.vat.toFixed(2)}</p>
               </div>
             </div>
             <select name="categoryId" className="select select-bordered w-full" value={form.categoryId} onChange={handleChange}>
-              <option value="">Select Category</option>
+              <option value="">{t('admin.menus.select_category')}</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
             <input
               type="text"
-              placeholder="Or create new category"
+              placeholder={t('admin.menus.new_category')}
               className="input input-bordered w-full"
               value={form.categoryName || ''}
               onChange={(e) => handleCategoryCheck(e.target.value)}
@@ -162,8 +164,8 @@ const MenuManager = () => {
 
             {form.editingCategoryId && (
               <div className="flex gap-2">
-                <ActionButton type="edit" label="Update Category" onClick={handleCategoryUpdate} />
-                <ActionButton type="decline" label="Cancel" onClick={() => setForm(prev => ({ ...prev, categoryName: '', editingCategoryId: null }))} />
+                <ActionButton type="edit" label={t('admin.menus.update_category')} onClick={handleCategoryUpdate} />
+                <ActionButton type="decline" label={t('common.cancel')} onClick={() => setForm(prev => ({ ...prev, categoryName: '', editingCategoryId: null }))} />
               </div>
             )}
 
@@ -176,7 +178,7 @@ const MenuManager = () => {
                   hover:bg-amber-800 focus:outline-none focus:ring-2 focus:ring-[var(--p)]
                   transition-all duration-200`}
               >
-                Choose a Picture
+                {t('admin.menus.choose_picture')}
               </button>
             </div>
             {form.image && (
@@ -191,12 +193,12 @@ const MenuManager = () => {
             <div className="grid grid-cols-2 gap-2">
               {editingId ? (
                 <>
-                  <ActionButton type="decline" onClick={resetForm} label="Unselect" className="w-full" />
-                  <ActionButton type="edit" label="Update" className="w-full" />
+                  <ActionButton type="decline" onClick={resetForm} label={t('admin.menus.unselect')} className="w-full" />
+                  <ActionButton type="edit" label={t('admin.menus.update')} className="w-full" />
                 </>
               ) : (
                 <div className="col-span-2">
-                  <ActionButton type="add" label="Add" className="w-full text-center" />
+                  <ActionButton type="add" label={t('common.add')} className="w-full text-center" />
                 </div>
               )}
             </div>

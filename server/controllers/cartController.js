@@ -4,6 +4,7 @@ import CartItem from '../models/CartItem.js';
 import Menu from '../models/Menu.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import { computeVat, roundPrice } from '../utils/vat.js';
+import { pickTranslation } from '../utils/localization.js';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -36,18 +37,23 @@ const findOrCreateCart = async (req, res) => {
   return cart;
 };
 
-const serializeCart = (cart) => {
+const serializeCart = (cart, lang = 'en') => {
   const items = cart.CartItems?.map((item) => {
     const unitGross = Number(item.price) || 0;
     const pricing = computeVat({ gross: unitGross });
     const lineTotalGross = roundPrice(unitGross * item.quantity);
     const lineTotalNet = roundPrice(pricing.net * item.quantity);
     const lineTotalVat = roundPrice(pricing.vat * item.quantity);
+    const displayName = pickTranslation(
+      item.Menu?.nameTranslations,
+      lang,
+      item.Menu?.name || item.name,
+    );
 
     return {
       id: item.id,
       menuId: item.menuId,
-      name: item.name,
+      name: displayName,
       price: pricing.gross,
       priceGross: pricing.gross,
       priceNet: pricing.net,
@@ -72,8 +78,8 @@ const serializeCart = (cart) => {
 export const getCart = async (req, res, next) => {
   try {
     const cart = await findOrCreateCart(req, res);
-    const withItems = await Cart.findByPk(cart.id, { include: [CartItem] });
-    res.json(serializeCart(withItems));
+    const withItems = await Cart.findByPk(cart.id, { include: [{ model: CartItem, include: [Menu] }] });
+    res.json(serializeCart(withItems, req.lang));
   } catch (err) {
     next(err);
   }
@@ -84,6 +90,8 @@ export const addItemToCart = async (req, res, next) => {
     const { menuId, quantity } = req.body;
     const menu = await Menu.findByPk(menuId);
     if (!menu) throw new ErrorResponse('Menu item not found', 404);
+    const lang = req.lang;
+    const localizedName = pickTranslation(menu.nameTranslations, lang, menu.name);
 
     const cart = await findOrCreateCart(req, res);
     const existing = await CartItem.findOne({ where: { cartId: cart.id, menuId } });
@@ -95,14 +103,14 @@ export const addItemToCart = async (req, res, next) => {
       await CartItem.create({
         cartId: cart.id,
         menuId,
-        name: menu.name,
+        name: localizedName,
         price: menu.price,
         quantity,
       });
     }
 
-    const withItems = await Cart.findByPk(cart.id, { include: [CartItem] });
-    res.status(201).json(serializeCart(withItems));
+    const withItems = await Cart.findByPk(cart.id, { include: [{ model: CartItem, include: [Menu] }] });
+    res.status(201).json(serializeCart(withItems, lang));
   } catch (err) {
     next(err);
   }
@@ -124,8 +132,8 @@ export const updateCartItem = async (req, res, next) => {
       await item.save();
     }
 
-    const withItems = await Cart.findByPk(cart.id, { include: [CartItem] });
-    res.json(serializeCart(withItems));
+    const withItems = await Cart.findByPk(cart.id, { include: [{ model: CartItem, include: [Menu] }] });
+    res.json(serializeCart(withItems, req.lang));
   } catch (err) {
     next(err);
   }
@@ -139,8 +147,8 @@ export const removeCartItem = async (req, res, next) => {
     if (!item) throw new ErrorResponse('Item not found in cart', 404);
     await item.destroy();
 
-    const withItems = await Cart.findByPk(cart.id, { include: [CartItem] });
-    res.json(serializeCart(withItems));
+    const withItems = await Cart.findByPk(cart.id, { include: [{ model: CartItem, include: [Menu] }] });
+    res.json(serializeCart(withItems, req.lang));
   } catch (err) {
     next(err);
   }

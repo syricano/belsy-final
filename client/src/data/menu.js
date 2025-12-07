@@ -14,8 +14,8 @@ export const updateMenuItem = (id, data) =>
 export const deleteMenuItem = (id) =>
   asyncHandler(() => axiosInstance.delete(`${baseURL}/${id}`), 'Delete menu item failed');
 
-export const getMenu = () =>
-  asyncHandler(() => axiosInstance.get(baseURL), 'Fetch menu failed');
+export const getMenu = (lang = 'en') =>
+  asyncHandler(() => axiosInstance.get(baseURL, { params: { lang } }), 'Fetch menu failed');
 
 // ========== MENU CATEGORIES ==========
 export const getCategories = () =>

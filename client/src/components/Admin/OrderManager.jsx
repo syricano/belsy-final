@@ -7,6 +7,7 @@ import {
   adminGetOrderById
 } from '@/data/orders';
 import ActionButton from '../UI/ActionButton';
+import { useLang } from '@/context';
 
 const statusOptions = ['Pending', 'Confirmed', 'Cancelled'];
 const paymentStatusOptions = ['Unpaid', 'Paid', 'Refunded', 'Failed'];
@@ -17,6 +18,7 @@ const OrderManager = () => {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const { t } = useLang();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -45,7 +47,7 @@ const OrderManager = () => {
 
   const handleStatus = async (id, status) => {
     setUpdating(true);
-    await asyncHandler(() => adminUpdateOrderStatus(id, status), 'Update failed')
+    await asyncHandler(() => adminUpdateOrderStatus(id, status), t('common.error'))
       .then(fetchOrders)
       .then(() => fetchOne(id))
       .catch(errorHandler)
@@ -54,7 +56,7 @@ const OrderManager = () => {
 
   const handlePayment = async (id, paymentStatus, paymentMethod) => {
     setUpdating(true);
-    await asyncHandler(() => adminUpdateOrderPayment(id, { paymentStatus, paymentMethod }), 'Payment update failed')
+    await asyncHandler(() => adminUpdateOrderPayment(id, { paymentStatus, paymentMethod }), t('common.error'))
       .then(fetchOrders)
       .then(() => fetchOne(id))
       .catch(errorHandler)
@@ -63,14 +65,14 @@ const OrderManager = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-serif font-semibold text-[var(--bc)] text-center">Manage Orders</h2>
+      <h2 className="text-3xl font-serif font-semibold text-[var(--bc)] text-center">{t('admin.orders.title')}</h2>
 
       {loading ? (
         <div className="w-full flex justify-center py-10">
           <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
         </div>
       ) : orders.length === 0 ? (
-        <p className="text-center text-[var(--bc)] opacity-70">No orders found.</p>
+        <p className="text-center text-[var(--bc)] opacity-70">{t('admin.orders.none')}</p>
       ) : (
         <div className="grid lg:grid-cols-3 gap-4">
           <div className="lg:col-span-1 space-y-3 max-h-[70vh] overflow-y-auto">
@@ -81,8 +83,8 @@ const OrderManager = () => {
                 onClick={() => fetchOne(order.id)}
               >
                 <div className="flex justify-between">
-                  <span className="font-semibold">Order #{order.id}</span>
-                  <span className="badge">{order.status}</span>
+                  <span className="font-semibold">{t('orders.order_label')} #{order.id}</span>
+                  <span className="badge">{t(`orders.status.${(order.status || '').toLowerCase()}`) || order.status}</span>
                 </div>
                 <p className="text-sm opacity-70">{order.customerName}</p>
                 <p className="text-sm opacity-70">${order.total?.toFixed(2)}</p>
@@ -94,7 +96,7 @@ const OrderManager = () => {
             {selected ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-2xl font-serif font-semibold">Order #{selected.id}</h3>
+                  <h3 className="text-2xl font-serif font-semibold">{t('orders.order_label')} #{selected.id}</h3>
                   <div className="flex gap-2">
                     <select
                       className="select select-bordered select-sm"
@@ -102,7 +104,7 @@ const OrderManager = () => {
                       onChange={(e) => handleStatus(selected.id, e.target.value)}
                       disabled={updating}
                     >
-                      {statusOptions.map((s) => <option key={s}>{s}</option>)}
+                      {statusOptions.map((s) => <option key={s}>{t(`orders.status.${s.toLowerCase()}`) || s}</option>)}
                     </select>
                     <select
                       className="select select-bordered select-sm"
@@ -110,7 +112,7 @@ const OrderManager = () => {
                       onChange={(e) => handlePayment(selected.id, e.target.value, selected.paymentMethod)}
                       disabled={updating}
                     >
-                      {paymentStatusOptions.map((s) => <option key={s}>{s}</option>)}
+                      {paymentStatusOptions.map((s) => <option key={s}>{t(`orders.payment_status.${s.toLowerCase()}`) || s}</option>)}
                     </select>
                     <select
                       className="select select-bordered select-sm"
@@ -118,12 +120,12 @@ const OrderManager = () => {
                       onChange={(e) => handlePayment(selected.id, selected.paymentStatus, e.target.value)}
                       disabled={updating}
                     >
-                      {paymentMethods.map((m) => <option key={m}>{m}</option>)}
+                      {paymentMethods.map((m) => <option key={m}>{t(`payment.${m}`) || m}</option>)}
                     </select>
                   </div>
                 </div>
                 <p className="opacity-80">{selected.customerName} • {selected.customerEmail} • {selected.customerPhone}</p>
-                {selected.note && <p className="text-sm opacity-80">Note: {selected.note}</p>}
+                {selected.note && <p className="text-sm opacity-80">{t('checkout.note')}: {selected.note}</p>}
                 <div className="border-t border-[var(--border-color)] pt-3 space-y-2">
                   {selected.items?.map((item) => (
                     <div key={item.id} className="flex justify-between">
@@ -133,12 +135,12 @@ const OrderManager = () => {
                   ))}
                 </div>
                 <div className="flex justify-between font-bold text-lg border-t border-[var(--border-color)] pt-3">
-                  <span>Total</span>
+                  <span>{t('cart.total') || 'Total'}</span>
                   <span>${selected.total?.toFixed(2)}</span>
                 </div>
               </div>
             ) : (
-              <p className="opacity-70">Select an order to view details.</p>
+              <p className="opacity-70">{t('orders.select_prompt')}</p>
             )}
           </div>
         </div>

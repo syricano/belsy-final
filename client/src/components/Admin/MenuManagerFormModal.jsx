@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ActionButton from '@/components/UI/ActionButton';
 import { computeVat } from '@/utils';
+import { useLang } from '@/context';
 
 const MenuManagerFormModal = ({ item, onClose, onSubmit }) => {
   const [form, setForm] = useState({
@@ -34,14 +35,15 @@ const MenuManagerFormModal = ({ item, onClose, onSubmit }) => {
   };
 
   const priceInfo = computeVat({ gross: form.price || 0 });
+  const { t } = useLang();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="bg-[var(--b1)] text-[var(--bc)] w-full max-w-md rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-semibold mb-4">Edit Menu Item</h3>
+        <h3 className="text-xl font-semibold mb-4">{t('admin.menus.edit_title')}</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className="block text-sm font-medium mb-1">{t('admin.menus.name')}</label>
             <input
               name="name"
               value={form.name}
@@ -51,7 +53,7 @@ const MenuManagerFormModal = ({ item, onClose, onSubmit }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Price (incl. 19% VAT)</label>
+            <label className="block text-sm font-medium mb-1">{t('admin.menus.price_label')}</label>
             <input
               name="price"
               value={form.price}
@@ -62,12 +64,12 @@ const MenuManagerFormModal = ({ item, onClose, onSubmit }) => {
               required
             />
             <div className="text-xs opacity-80 bg-[var(--b2)] border border-[var(--border-color)] rounded-lg p-2 mt-1">
-              <p>Net (excl. VAT): ${priceInfo.net.toFixed(2)}</p>
-              <p>VAT (19%): ${priceInfo.vat.toFixed(2)}</p>
+              <p>{t('admin.menus.net_label')}: ${priceInfo.net.toFixed(2)}</p>
+              <p>{t('admin.menus.vat_label')}: ${priceInfo.vat.toFixed(2)}</p>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Category ID</label>
+            <label className="block text-sm font-medium mb-1">{t('admin.menus.category_id')}</label>
             <input
               name="categoryId"
               value={form.categoryId}
@@ -77,7 +79,7 @@ const MenuManagerFormModal = ({ item, onClose, onSubmit }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Image URL</label>
+            <label className="block text-sm font-medium mb-1">{t('admin.menus.image')}</label>
             <input
               name="image"
               value={form.image}
@@ -86,8 +88,8 @@ const MenuManagerFormModal = ({ item, onClose, onSubmit }) => {
             />
           </div>
           <div className="flex gap-3 pt-2">
-            <ActionButton type="edit" label="Update" />
-            <ActionButton type="decline" label="Cancel" onClick={onClose} />
+            <ActionButton type="edit" label={t('admin.menus.update')} />
+            <ActionButton type="decline" label={t('common.cancel')} onClick={onClose} />
           </div>
         </form>
       </div>

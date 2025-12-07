@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLang } from '@/context';
 
 const imageModules = import.meta.glob('/src/assets/slider/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -6,6 +7,7 @@ const imageModules = import.meta.glob('/src/assets/slider/*.{jpg,jpeg,png,webp}'
 const images = Object.values(imageModules).map((mod) => mod.default);
 
 const ImageSlider = () => {
+  const { t } = useLang();
   const [loading, setLoading] = useState(true);
   const [loadedImages, setLoadedImages] = useState([]);
 
@@ -33,7 +35,7 @@ const ImageSlider = () => {
     <section className="py-8 bg-[var(--main-bg-color)] text-[var(--main-text-color)]">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-3xl font-serif text-center mb-6 text-[var(--bc)]">
-          A Glimpse of Our Atmosphere
+          {t('home.slider_title')}
         </h2>
 
         {loading ? (

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import MenuCategory from '@/components/Menus/MenuCategory';
 import useGetMenu from '@/hooks/useGetMenu';
+import { useLang } from '@/context';
 
 const MenuPage = () => {
-  const { groupedMenu, loading } = useGetMenu();
+  const { language, t } = useLang();
+  const { groupedMenu, loading } = useGetMenu(language);
   const [expandedCategory, setExpandedCategory] = useState(null);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ const MenuPage = () => {
   if (!groupedMenu.length) {
     return (
       <div className="w-full flex justify-center py-20 text-[var(--bc)] text-xl font-medium">
-        No menu items available.
+        {t('menu.no_items')}
       </div>
     );
   }
@@ -37,7 +39,7 @@ const MenuPage = () => {
       <div className="py-16 max-w-7xl mx-auto w-full animate-fade-in-up">
         <div className="h-20">
           <h1 className="px-6 text-4xl font-serif text-center font-semibold text-[var(--bc)] bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-black">
-            Discover Our Menu
+            {t('menu.title')}
           </h1>
         </div>
 

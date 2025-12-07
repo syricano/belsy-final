@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const translationSchema = z.record(z.string()).optional();
+
 export const userSchema = {
   POST: z.object({
     firstName: z.string().min(2).max(100),
@@ -143,6 +145,8 @@ export const menuSchema = z.object({
     }
   ),
   categoryId: z.coerce.number(),
+  nameTranslations: translationSchema,
+  descriptionTranslations: translationSchema,
 });
 
 
@@ -157,6 +161,7 @@ export const addressSchema = z.object({
 // Category Schema
 export const categorySchema = z.object({
   name: z.string().min(2).max(100),
+  nameTranslations: translationSchema,
 });
 
 

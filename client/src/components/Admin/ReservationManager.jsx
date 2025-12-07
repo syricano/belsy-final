@@ -5,6 +5,7 @@ import AdminResponseModal from './AdminResponseModal';
 import EditReservationModal from '../Reservations/EditReservationModal';
 import ReservationManagerPC from './ReservationManagerPC';
 import ReservationManagerMobile from './ReservationManagerMobile';
+import { useLang } from '@/context';
 
 const ReservationManager = () => {
   const {
@@ -32,6 +33,7 @@ const ReservationManager = () => {
   const [activeNoteY, setActiveNoteY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const reservationsPerPage = 10;
+  const { t } = useLang();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -67,7 +69,7 @@ const ReservationManager = () => {
             }}
             className="ml-2 btn btn-xs btn-outline"
           >
-            Read more »
+            {t('admin.reservations.read_more')}
           </button>
         )}
       </>
@@ -102,7 +104,7 @@ const ReservationManager = () => {
   return (
     <section className="space-y-6 overflow-x-auto rounded-lg">
       <h2 className="text-3xl font-serif font-semibold text-[var(--bc)] text-center">
-        Reservations
+        {t('admin.reservations.title')}
       </h2>
 
       <ReservationsFilter onSearch={handleSearch} />
@@ -112,7 +114,7 @@ const ReservationManager = () => {
           <span className="loading loading-spinner text-[var(--bc)] w-10 h-10" />
         </div>
       ) : currentReservations.length === 0 ? (
-        <p className="text-center text-[var(--bc)] opacity-60">No reservations found.</p>
+        <p className="text-center text-[var(--bc)] opacity-60">{t('admin.reservations.none')}</p>
       ) : isMobile ? (
         <ReservationManagerMobile
           reservations={currentReservations}
@@ -156,10 +158,10 @@ const ReservationManager = () => {
           className="absolute left-1/2 transform -translate-x-1/2 bg-base-100 text-[var(--bc)] shadow-xl border border-[var(--border-color)] max-w-md w-full rounded-xl p-6 z-50"
           style={{ top: `${activeNoteY}px` }}
         >
-          <h3 className="text-lg font-bold mb-2">Reservation Note</h3>
+          <h3 className="text-lg font-bold mb-2">{t('admin.reservations.note_title')}</h3>
           <p className="mb-4 whitespace-pre-wrap">{activeNote}</p>
           <div className="flex justify-end">
-            <button className="btn btn-sm btn-outline" onClick={() => setActiveNote(null)}>Close</button>
+            <button className="btn btn-sm btn-outline" onClick={() => setActiveNote(null)}>{t('common.close')}</button>
           </div>
         </div>
       )}

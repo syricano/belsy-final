@@ -11,9 +11,19 @@ const Menu = sequelize.define('Menu', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  nameTranslations: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: null,
+  },
   description: {
     type: DataTypes.TEXT,
     allowNull: true,
+  },
+  descriptionTranslations: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: null,
   },
   price: {
     type: DataTypes.DECIMAL(10, 2),
